@@ -1,0 +1,30 @@
+{
+  "tasks": [
+    {
+      "type": "cppbuild",
+      "label": "C/C++: avr-gcc сборка активного файла",
+      "command": "/home/hinto/.platformio/packages/toolchain-atmelavr/bin/avr-gcc",
+      "args": [
+        "-fdiagnostics-color=always",
+        "-g",
+        "${file}",
+        "-o",
+        "${fileDirname}/${fileBasenameNoExtension}",
+        "-mmcu=atmega128",
+        ""
+      ],
+      "options": {
+        "cwd": "${fileDirname}"
+      },
+      "problemMatcher": [
+        "$gcc"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "detail": "Задача создана отладчиком."
+    }
+  ],
+  "version": "2.0.0"
+}
