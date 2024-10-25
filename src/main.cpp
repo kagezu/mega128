@@ -12,12 +12,6 @@ ST7735S lcd;
 
 int main(void)
 {
-
-  delayMicroseconds(55000);
-
-  lcd.init();
-  lcd.clear(0);
-
   int x = 1;
   while (true)
   {
