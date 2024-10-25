@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "../../src/init.h"
+#include "../../include/init.h"
 
 // init.h
 // LCD_PORT   Порт управления дисплеем

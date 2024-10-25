@@ -4,11 +4,6 @@ ST7735S::ST7735S(byte format)
 {
   INIT_LCD_PORT
   SET_RESET
-  // delayMicroseconds(15000);
-  // RES_RESET
-  // delayMicroseconds(15000);
-  // SET_RESET
-  // delayMicroseconds(15000);
   RES_CS; // CS Выбор дисплея
 
   command(0x11);            // Проснуться
