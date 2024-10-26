@@ -5,63 +5,61 @@
 
 ST7735S lcd(RGB_12);
 
-void setSymbol(byte x, byte y, byte symbol)
+const byte dx = 4;
+const byte dy = 5;
+
+byte cursor_x = 0;
+byte cursor_y = 0;
+
+void set_at(byte x, byte y)
 {
-  // lcd.setBlock(x, y, x + 5, y + 6);
-  for (byte i = 0; i < 6; i++)
+  cursor_x = x;
+  cursor_y = y;
+}
+
+void symbol(byte symbol)
+{
+  lcd.symbol(symbol, cursor_x, cursor_y, dx, dy);
+  cursor_x += dx + 2;
+  if (cursor_x >= MAX_X - dx)
   {
-    byte data = pgm_read_byte(font_6x5 + symbol * 6 + i - 192);
-    byte v = 0x10;
-    byte j = 0;
-    while (v)
-    {
-      word color = data & v ? 0xfff : 0x500;
-      // lcd.data_12(color);
-      lcd.pixel(x + 5 - j, y + i, color);
-      v = v >> 1;
-      j++;
-    }
+    cursor_y += dy + 2;
+    cursor_x = 0;
+    if (cursor_y >= MAX_Y - dy)
+      cursor_y = 0;
   }
+}
+
+void print(char *string, byte length)
+{
+  for (byte i = 0; i < length; i++)
+    symbol(string[i]);
 }
 
 int main(void)
 {
-  // lcd.clear(0x500);
+  lcd.clear(0x00);
+
+  char string[] = "0123456789 1234567890X";
+  for (byte i = 0; i < 23; i++)
+    print(string, sizeof(string));
+
   /*
-    char string[] = "0123456789 1234567890X";
-    byte n = 0;
-    byte y = 0;
+    lcd.clear(0x000);
     byte x = 0;
-
-    while (n < sizeof(string) - 1)
+    while (true)
     {
-      // setSymbol(x, y, string[n++]);
-
-      x += 6;
-      if (x > 123)
-      {
-        y += 7;
-        x = 0;
-        if (y > 153)
-          y = 0;
-      }
+      lcd.test(x++);
     }
-    */
 
-  byte x;
-  while (true)
-  {
-    lcd.test(x++);
+
+    PORTE &= ~_BV(PE6); // Set 0 to A16
+    DDRE |= _BV(PE6);   // Output A16
+
+    MCUCR |= _BV(SRE); // ESRAM Enable
+
+    byte __volatile__ *address = (byte *)0x1000;
+    // PORTE ^= _BV(PE6);
   }
-
-  /*
-  PORTE &= ~_BV(PE6); // Set 0 to A16
-  DDRE |= _BV(PE6);   // Output A16
-
-  MCUCR |= _BV(SRE); // ESRAM Enable
-
-  byte __volatile__ *address = (byte *)0x1000;
-  // PORTE ^= _BV(PE6);
-}
-*/
+  */
 }

@@ -1,4 +1,5 @@
 #include "ST7735S.h"
+#include "font_6x5.h"
 
 ST7735S::ST7735S(byte mode)
 {
@@ -136,6 +137,16 @@ void ST7735S::set_rect(byte x1, byte y1, byte x2, byte y2)
   data_8(y2);
 
   command(RAMWR); // Memory Write
+
+  TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK;
+  if (_pixelFormat == RGB_16)
+  {
+    TICK_TSK TICK_TSK TICK_TSK TICK_TSK
+  }
+  if (_pixelFormat == RGB_18)
+  {
+    TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK
+  }
 };
 
 void ST7735S::data_0()
@@ -372,8 +383,36 @@ void ST7735S::data_rgb(byte r, byte g, byte b)
 void ST7735S::pixel(byte x, byte y, word color)
 {
   set_rect(x, y, x, y);
-  TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK;
-  data_12(color);
+  if (_pixelFormat == RGB_12)
+  {
+    data_12(color);
+    DISPLAY_DISCONNECT;
+    return;
+  }
+  data_8(color >> 8);
+  data_8(color);
+  DISPLAY_DISCONNECT
+}
+
+void ST7735S::pixel(byte x, byte y, byte r, byte g, byte b)
+{
+  set_rect(x, y, x, y);
+
+  if (_pixelFormat == RGB_12)
+  {
+    data_12(r, g, b);
+    DISPLAY_DISCONNECT;
+    return;
+  }
+
+  if (_pixelFormat == RGB_16)
+  {
+    data_16(r, g, b);
+    DISPLAY_DISCONNECT;
+    return;
+  }
+
+  data_24(r, g, b);
   DISPLAY_DISCONNECT
 }
 
@@ -423,12 +462,26 @@ void ST7735S::rect(byte x1, byte y1, byte x2, byte y2, word color)
   DISPLAY_DISCONNECT // CS Снять выбор дисплея
 };
 
+void ST7735S::symbol(byte symbol, byte x, byte y, byte dx, byte dy)
+{
+  set_rect(x, y, x + dx, y + dy);
+  for (byte j = 0; j <= dy; y++)
+  {
+    byte data = 0xaa; // pgm_read_byte(font_6x5 + symbol * 6 - 192 + j);
+    for (byte x = 0; x <= dx; x++)
+      if (data & (1 << x))
+        data_12(0xfff);
+      else
+        data_12(0x000);
+  }
+  DISPLAY_DISCONNECT
+}
+
 // тестирование дисплея
 
 void ST7735S::test(byte d)
 {
   set_rect(0, 0, MAX_X, MAX_Y);
-
   for (byte y = 0; y <= MAX_Y; y++)
   {
     word yy = y * y;
@@ -436,10 +489,11 @@ void ST7735S::test(byte d)
     for (byte x = 0; x <= MAX_X; x++)
     {
       word xx = x * x;
-      word r = ((xx + yy) >> 8) + d;
-      word g = ((yy - xx) >> 8) + d;
-      word b = ((x * y) >> 8) + d;
+      word r = ((xx + yy) >> 9) + d;
+      word g = ((yy - xx) >> 9) + d;
+      word b = ((x * y) >> 9) + d;
 
+      // data_rgb(r, g, b);
       data_rgb(r, g, b);
     }
   }

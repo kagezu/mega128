@@ -103,12 +103,14 @@ public:
   void data_12(byte r, byte g, byte b);
   void data_16(byte r, byte g, byte b);
   void data_24(byte r, byte g, byte b);
-  void set_rect(byte x1, byte y1, byte x2, byte y2);
   void data_rgb(byte r, byte g, byte b);
+  void set_rect(byte x1, byte y1, byte x2, byte y2);
+
   void pixel(byte x, byte y, word color);
   void pixel(byte x, byte y, byte r, byte g, byte b);
   void rect(byte x1, byte y1, byte x2, byte y2, word color);
-  void rect(byte x1, byte y1, byte x2, byte y2, byte r, byte g, byte b);
+
+  void symbol(byte symbol, byte x, byte y, byte dx, byte dy);
 
   inline void clear(word color) { rect(0, 0, MAX_X, MAX_Y, color); };
 
