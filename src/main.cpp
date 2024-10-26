@@ -1,15 +1,9 @@
 #include <Arduino.h>
 #include "ST7735S.h"
 #include "font_6x5.h"
+#include "util/atomic.h"
 
-void error()
-{
-  PORTF = 0xFF;
-  while (true)
-    ;
-}
-
-ST7735S lcd;
+ST7735S lcd(RGB_12);
 
 void setSymbol(byte x, byte y, byte symbol)
 {
@@ -28,66 +22,46 @@ void setSymbol(byte x, byte y, byte symbol)
       j++;
     }
   }
-
-  SET_CS // CS Снять выбор дисплея
 }
 
 int main(void)
 {
-  lcd.clear(0x500);
-
-  char string[] = "0123456789 1234567890X";
-  byte n = 0;
-  byte y = 0;
-  byte x = 0;
-
-  while (n < sizeof(string) - 1)
-  {
-    setSymbol(x, y, string[n++]);
-
-    x += 6;
-    if (x > 123)
-    {
-      y += 7;
-      x = 0;
-      if (y > 153)
-        y = 0;
-    }
-  }
+  // lcd.clear(0x500);
   /*
-    x = 1;
-    while (true)
+    char string[] = "0123456789 1234567890X";
+    byte n = 0;
+    byte y = 0;
+    byte x = 0;
+
+    while (n < sizeof(string) - 1)
     {
-      lcd.test(x++);
-      //  lcd.clear(0x00f);
-      //  lcd.clear(0x0f0);
-      //  lcd.clear(0xf00);
+      // setSymbol(x, y, string[n++]);
+
+      x += 6;
+      if (x > 123)
+      {
+        y += 7;
+        x = 0;
+        if (y > 153)
+          y = 0;
+      }
     }
     */
 
+  byte x;
+  while (true)
+  {
+    lcd.test(x++);
+  }
+
+  /*
   PORTE &= ~_BV(PE6); // Set 0 to A16
   DDRE |= _BV(PE6);   // Output A16
 
   MCUCR |= _BV(SRE); // ESRAM Enable
 
-  while (true)
-  {
-    x = 0;
-    y = 0;
-
-    word __volatile__ *address = (word *)0x6000;
-    do
-    {
-      lcd.pixel(x++, y, *address);
-      address++;
-      if (x > 127)
-      {
-        y++;
-        x = 0;
-        if (y > 159)
-          y = 0;
-      }
-    } while (x || y);
-    PORTE ^= _BV(PE6);
-  }
+  byte __volatile__ *address = (byte *)0x1000;
+  // PORTE ^= _BV(PE6);
+}
+*/
 }

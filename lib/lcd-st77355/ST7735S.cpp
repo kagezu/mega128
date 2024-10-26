@@ -1,25 +1,25 @@
 #include "ST7735S.h"
 
-ST7735S::ST7735S(byte format)
+ST7735S::ST7735S(byte mode)
 {
   INIT_LCD_PORT
-  SET_RESET
-  RES_CS; // CS Выбор дисплея
+  delayMicroseconds(15000); // Ждать стабилизации напряжений
+  DISPLAY_CONNECT;          // CS Выбор дисплея
 
-  command(0x11);            // Проснуться
+  command(SLPOUT);          // Проснуться
   delayMicroseconds(15000); // Ждать стабилизации напряжений
 
-  command(0xB1); // ?
+  command(FRMCTR1); // In normal mode (Full colors)
   data_8(0x05);
   data_8(0x3C);
   data_8(0x3C);
 
-  command(0xB2); // ?
+  command(FRMCTR2); // In Idle mode (8-colors)
   data_8(0x05);
   data_8(0X3C);
   data_8(0X3C);
 
-  command(0xB3); // ?
+  command(FRMCTR3); // In partial mode + Full colors
   data_8(0x05);
   data_8(0x3C);
   data_8(0x3C);
@@ -27,39 +27,39 @@ ST7735S::ST7735S(byte format)
   data_8(0x3C);
   data_8(0x3C);
 
-  command(0xB4); // ?
+  command(INVCTR); // Display inversion control
   data_8(0x03);
 
-  command(0xC0); // ?
+  command(PWCTR1); // Power control setting
   data_8(0x28);
   data_8(0x08);
   data_8(0x04);
 
-  command(0xC1); // ?
+  command(PWCTR2); // Power control setting
   data_8(0xC0);
 
-  command(0xC2); // ?
+  command(PWCTR3); // In normal mode (Full colors)
   data_8(0x0D);
   data_8(0X00);
 
-  command(0xC3); // ?
+  command(PWCTR4); // In Idle mode (8-colors)
   data_8(0x8D);
   data_8(0x2A);
 
-  command(0xC4); // ?
+  command(PWCTR5); // In partial mode + Full colors
   data_8(0x8D);
   data_8(0xEE);
 
-  command(0xC5); // ?
+  command(VMCTR1); // VCOM control 1
   data_8(0x1A);
 
   command(0x17); // ?
   data_8(0x05);
 
-  command(0x36); // Memory Data Access Control
+  command(MADCTL); // Memory Data Access Control
   data_8(0xD8);
 
-  command(0xE0); // ?
+  command(GAMCTRP1); // Set Gamma adjustment (+ polarity)
   data_8(0x03);
   data_8(0x22);
   data_8(0x07);
@@ -77,7 +77,7 @@ ST7735S::ST7735S(byte format)
   data_8(0x03);
   data_8(0x13);
 
-  command(0xE1); // ?
+  command(GAMCTRN1); // Set Gamma adjustment (- polarity)
   data_8(0x04);
   data_8(0x16);
   data_8(0x06);
@@ -95,106 +95,295 @@ ST7735S::ST7735S(byte format)
   data_8(0x04);
   data_8(0x13);
 
-  command(0x3A); // Interface Pixel Format
-  data_8(format);
+  command(COLMOD);
+  data_8(mode);
+  _pixelFormat = mode;
 
-  command(0x29); // Display On
-
-  SET_CS // CS Снять выбор дисплея
+  command(DISPON); // Display On
+  DISPLAY_DISCONNECT
 }
 
-void ST7735S::setBlock(byte x1, byte y1, byte x2, byte y2)
+void ST7735S::command(byte command)
 {
-  RES_CS; // CS Выбор дисплея
+  COMMAND_MODE; // Запись команды
+  data_8(command);
+  DATA_MODE // Запись данных
+};
 
-  command(0x2a); // Column Address Set
+void ST7735S::set_mode(byte mode)
+{
+  _pixelFormat = mode;
+  DISPLAY_CONNECT
+  command(COLMOD);
+  data_8(mode);
+  DISPLAY_DISCONNECT
+};
+
+void ST7735S::set_rect(byte x1, byte y1, byte x2, byte y2)
+{
+  DISPLAY_CONNECT; // CS Выбор дисплея
+
+  command(CASET); // Column Address Set
   data_0();
   data_8(x1);
   data_0();
   data_8(x2);
 
-  command(0x2b); // Row Address Set
+  command(RASET); // Row Address Set
   data_0();
   data_8(y1);
   data_0();
   data_8(y2);
 
-  command(0x2c); // Memory Write
+  command(RAMWR); // Memory Write
 };
 
-void ST7735S::data_12(word data)
+void ST7735S::data_0()
 {
-  byte bit0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
-  byte bit1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
-  byte set = LCD_PORT;
-
-  LCD_PORT = data & 0x800 ? bit1 : bit0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x400 ? bit1 : bit0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x200 ? bit1 : bit0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x100 ? bit1 : bit0;
-  LCD_PORT = set;
-
-  LCD_PORT = data & 0x80 ? bit1 : bit0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x40 ? bit1 : bit0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x20 ? bit1 : bit0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x10 ? bit1 : bit0;
-  LCD_PORT = set;
-
-  LCD_PORT = data & 0x8 ? bit1 : bit0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x4 ? bit1 : bit0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x2 ? bit1 : bit0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x1 ? bit1 : bit0;
-  LCD_PORT = set;
+  LCD_PORT &= ~LCD_SDA;
+  TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK
 };
 
 void ST7735S::data_8(byte data)
 {
-  byte bit0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
-  byte bit1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
+  CLI;
+  byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
+  byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
   byte set = LCD_PORT;
 
-  LCD_PORT = data & 0x80 ? bit1 : bit0;
+  LCD_PORT = data & 0x80 ? b1 : b0;
   LCD_PORT = set;
-  LCD_PORT = data & 0x40 ? bit1 : bit0;
+  LCD_PORT = data & 0x40 ? b1 : b0;
   LCD_PORT = set;
-  LCD_PORT = data & 0x20 ? bit1 : bit0;
+  LCD_PORT = data & 0x20 ? b1 : b0;
   LCD_PORT = set;
-  LCD_PORT = data & 0x10 ? bit1 : bit0;
+  LCD_PORT = data & 0x10 ? b1 : b0;
   LCD_PORT = set;
 
-  LCD_PORT = data & 0x8 ? bit1 : bit0;
+  LCD_PORT = data & 0x8 ? b1 : b0;
   LCD_PORT = set;
-  LCD_PORT = data & 0x4 ? bit1 : bit0;
+  LCD_PORT = data & 0x4 ? b1 : b0;
   LCD_PORT = set;
-  LCD_PORT = data & 0x2 ? bit1 : bit0;
+  LCD_PORT = data & 0x2 ? b1 : b0;
   LCD_PORT = set;
-  LCD_PORT = data & 0x1 ? bit1 : bit0;
+  LCD_PORT = data & 0x1 ? b1 : b0;
   LCD_PORT = set;
+
+  SEI;
+};
+
+void ST7735S::data_12(word data)
+{
+  CLI;
+  byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
+  byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
+  byte set = LCD_PORT;
+
+  LCD_PORT = data & 0x800 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = data & 0x400 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = data & 0x200 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = data & 0x100 ? b1 : b0;
+  LCD_PORT = set;
+
+  LCD_PORT = data & 0x80 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = data & 0x40 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = data & 0x20 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = data & 0x10 ? b1 : b0;
+  LCD_PORT = set;
+
+  LCD_PORT = data & 0x8 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = data & 0x4 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = data & 0x2 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = data & 0x1 ? b1 : b0;
+  LCD_PORT = set;
+
+  SEI;
+};
+
+void ST7735S::data_12(byte r, byte g, byte b)
+{
+  CLI;
+  byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
+  byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
+  byte set = LCD_PORT;
+
+  LCD_PORT = b & 0x8 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = b & 0x4 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = b & 0x2 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = b & 0x1 ? b1 : b0;
+  LCD_PORT = set;
+
+  LCD_PORT = g & 0x8 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = g & 0x4 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = g & 0x2 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = g & 0x1 ? b1 : b0;
+  LCD_PORT = set;
+
+  LCD_PORT = r & 0x8 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = r & 0x4 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = r & 0x2 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = r & 0x1 ? b1 : b0;
+  LCD_PORT = set;
+
+  SEI;
+};
+
+void ST7735S::data_16(byte r, byte g, byte b)
+{
+  CLI;
+
+  byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
+  byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
+  byte set = LCD_PORT;
+
+  LCD_PORT = r & 0x10 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = r & 0x8 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = r & 0x4 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = r & 0x2 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = r & 0x1 ? b1 : b0;
+  LCD_PORT = set;
+
+  LCD_PORT = g & 0x20 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = g & 0x10 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = g & 0x8 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = g & 0x4 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = g & 0x2 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = g & 0x1 ? b1 : b0;
+  LCD_PORT = set;
+
+  LCD_PORT = b & 0x10 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = b & 0x8 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = b & 0x4 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = b & 0x2 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = b & 0x1 ? b1 : b0;
+  LCD_PORT = set;
+
+  SEI;
+};
+
+void ST7735S::data_24(byte r, byte g, byte b)
+{
+  CLI;
+
+  byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
+  byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
+  byte set = LCD_PORT;
+
+  LCD_PORT = r & 0x20 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = r & 0x10 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = r & 0x8 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = r & 0x4 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = r & 0x2 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = r & 0x1 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = b0;
+  LCD_PORT = set;
+  LCD_PORT = b0;
+  LCD_PORT = set;
+
+  LCD_PORT = g & 0x20 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = g & 0x10 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = g & 0x8 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = g & 0x4 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = g & 0x2 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = g & 0x1 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = b0;
+  LCD_PORT = set;
+  LCD_PORT = b0;
+  LCD_PORT = set;
+
+  LCD_PORT = b & 0x20 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = b & 0x10 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = b & 0x8 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = b & 0x4 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = b & 0x2 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = b & 0x1 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = b0;
+  LCD_PORT = set;
+  LCD_PORT = b0;
+  LCD_PORT = set;
+
+  SEI;
+};
+
+void ST7735S::data_rgb(byte r, byte g, byte b)
+{
+  if (_pixelFormat == RGB_12)
+  {
+    data_12(r, g, b);
+    return;
+  }
+  if (_pixelFormat == RGB_16)
+  {
+    data_16(r, g, b);
+    return;
+  }
+  data_24(r, g, b);
 };
 
 void ST7735S::pixel(byte x, byte y, word color)
 {
-  setBlock(x, y, x, y);
+  set_rect(x, y, x, y);
   TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK;
   data_12(color);
-  SET_CS // CS Снять выбор дисплея
+  DISPLAY_DISCONNECT
 }
 
 void ST7735S::rect(byte x1, byte y1, byte x2, byte y2, word color)
 {
-  setBlock(x1, y1, x2, y2);
+  set_rect(x1, y1, x2, y2);
 
   word len = (x2 - x1 + 1) * (y2 - y1 + 1) + 1;
 
+  CLI;
   byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
   byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
   byte set = LCD_PORT;
@@ -230,83 +419,30 @@ void ST7735S::rect(byte x1, byte y1, byte x2, byte y2, word color)
     LCD_PORT = set;
   }
 
-  SET_CS // CS Снять выбор дисплея
-};
-
-void ST7735S::data_0()
-{
-  LCD_PORT &= ~LCD_SDA;
-  TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK
-};
-
-void ST7735S::command(byte command)
-{
-  RES_RS // Запись команды
-      data_8(command);
-  SET_RS // Запись данных
-};
-
-void ST7735S::data_rgb(byte r, byte g, byte b)
-{
-  byte bit0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
-  byte bit1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
-  byte set = LCD_PORT;
-
-  LCD_PORT = b & 0x8 ? bit1 : bit0;
-  LCD_PORT = set;
-  LCD_PORT = b & 0x4 ? bit1 : bit0;
-  LCD_PORT = set;
-  LCD_PORT = b & 0x2 ? bit1 : bit0;
-  LCD_PORT = set;
-  LCD_PORT = b & 0x1 ? bit1 : bit0;
-  LCD_PORT = set;
-
-  LCD_PORT = g & 0x8 ? bit1 : bit0;
-  LCD_PORT = set;
-  LCD_PORT = g & 0x4 ? bit1 : bit0;
-  LCD_PORT = set;
-  LCD_PORT = g & 0x2 ? bit1 : bit0;
-  LCD_PORT = set;
-  LCD_PORT = g & 0x1 ? bit1 : bit0;
-  LCD_PORT = set;
-
-  LCD_PORT = r & 0x8 ? bit1 : bit0;
-  LCD_PORT = set;
-  LCD_PORT = r & 0x4 ? bit1 : bit0;
-  LCD_PORT = set;
-  LCD_PORT = r & 0x2 ? bit1 : bit0;
-  LCD_PORT = set;
-  LCD_PORT = r & 0x1 ? bit1 : bit0;
-  LCD_PORT = set;
+  SEI;
+  DISPLAY_DISCONNECT // CS Снять выбор дисплея
 };
 
 // тестирование дисплея
 
 void ST7735S::test(byte d)
 {
-  setBlock(0, 0, 127, 159);
+  set_rect(0, 0, MAX_X, MAX_Y);
 
-  word r, g, b;
-
-  for (byte y = 0; y < 160; y++)
+  for (byte y = 0; y <= MAX_Y; y++)
   {
     word yy = y * y;
 
-    for (byte x = 0; x < 128; x++)
+    for (byte x = 0; x <= MAX_X; x++)
     {
       word xx = x * x;
-      //       word sum = xx+yy;
-      //       r = ((sum/(x+d))>>4)+d;
-      //       g = ((sum/(y+d))>>4)+d>>1;
-      //       b = ((sum/(x+y))>>4)+d<<1;
-
-      r = ((xx + yy) >> 8) + d;
-      g = ((yy - xx) >> 8) + (d >> 1);
-      b = ((xx - yy) >> 8) + (d << 1);
+      word r = ((xx + yy) >> 8) + d;
+      word g = ((yy - xx) >> 8) + d;
+      word b = ((x * y) >> 8) + d;
 
       data_rgb(r, g, b);
     }
   }
 
-  SET_CS // CS Снять выбор дисплея
+  DISPLAY_DISCONNECT // CS Снять выбор дисплея
 };
