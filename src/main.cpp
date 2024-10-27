@@ -3,7 +3,7 @@
 #include "font_6x5.h"
 #include "util/atomic.h"
 
-ST7735S lcd(RGB_12);
+ST7735S lcd(RGB_16);
 
 const byte dx = 4;
 const byte dy = 5;
@@ -38,28 +38,26 @@ void print(char *string, byte length)
 
 int main(void)
 {
-  lcd.clear(0x00);
+  // lcd.clear(0x00);
 
-  char string[] = "0123456789 1234567890X";
-  for (byte i = 0; i < 23; i++)
-    print(string, sizeof(string));
+  // char string[] = "0123456789 1234567890X";
+  // for (byte i = 0; i < 23; i++)
+  //   print(string, sizeof(string));
+
+  byte x = 0;
+  while (true)
+  {
+    lcd.test(x++);
+  }
 
   /*
-    lcd.clear(0x000);
-    byte x = 0;
-    while (true)
-    {
-      lcd.test(x++);
+      PORTE &= ~_BV(PE6); // Set 0 to A16
+      DDRE |= _BV(PE6);   // Output A16
+
+      MCUCR |= _BV(SRE); // ESRAM Enable
+
+      byte __volatile__ *address = (byte *)0x1000;
+      // PORTE ^= _BV(PE6);
     }
-
-
-    PORTE &= ~_BV(PE6); // Set 0 to A16
-    DDRE |= _BV(PE6);   // Output A16
-
-    MCUCR |= _BV(SRE); // ESRAM Enable
-
-    byte __volatile__ *address = (byte *)0x1000;
-    // PORTE ^= _BV(PE6);
-  }
-  */
+    */
 }
