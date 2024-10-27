@@ -3,6 +3,10 @@
 #ifndef init_h
 #define init_h
 
+// Настройки дисплея
+
+#define RGB_FORMAT RGB_16
+
 #ifdef __AVR_ATmega128__
 #define LCD_PORT PORTE
 #define LCD_CS _BV(PE5)
@@ -27,6 +31,8 @@
   DDRC |= LCD_RS | LCD_SDA | LCD_SCK | LCD_CS | LCD_RESET; \
   PORTC |= LCD_RS | LCD_SDA | LCD_SCK | LCD_CS | LCD_RESET;
 #endif
+
+// вспомогательные скрипты
 
 #define SET_BIT(port, mask) port |= mask;
 #define RES_BIT(port, mask) port &= ~mask;

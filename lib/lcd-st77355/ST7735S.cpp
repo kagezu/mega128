@@ -1,7 +1,7 @@
 #include "ST7735S.h"
 #include "font_6x5.h"
 
-ST7735S::ST7735S(byte mode)
+ST7735S::ST7735S()
 {
   INIT_LCD_PORT
   delayMicroseconds(15000); // Ждать стабилизации напряжений
@@ -97,8 +97,7 @@ ST7735S::ST7735S(byte mode)
   data_8(0x13);
 
   command(COLMOD);
-  data_8(mode);
-  _pixelFormat = mode;
+  data_8(RGB_FORMAT);
 
   command(DISPON); // Display On
   DISPLAY_DISCONNECT
@@ -109,15 +108,6 @@ void ST7735S::command(byte command)
   COMMAND_MODE; // Запись команды
   data_8(command);
   DATA_MODE // Запись данных
-};
-
-void ST7735S::set_mode(byte mode)
-{
-  _pixelFormat = mode;
-  DISPLAY_CONNECT
-  command(COLMOD);
-  data_8(mode);
-  DISPLAY_DISCONNECT
 };
 
 void ST7735S::set_rect(byte x1, byte y1, byte x2, byte y2)
@@ -172,6 +162,8 @@ void ST7735S::data_8(byte data)
 
   SEI;
 };
+
+#if RGB_FORMAT == RGB_12
 
 void ST7735S::data_12(word data)
 {
@@ -247,10 +239,56 @@ void ST7735S::data_12(byte r, byte g, byte b)
   SEI;
 };
 
+#elif RGB_FORMAT == RGB_16
+
+void ST7735S::data_16(word data)
+{
+  CLI;
+  byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
+  byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
+  byte set = LCD_PORT;
+
+  LCD_PORT = data & 0x8000 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = data & 0x4000 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = data & 0x2000 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = data & 0x1000 ? b1 : b0;
+  LCD_PORT = set;
+
+  LCD_PORT = data & 0x800 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = data & 0x400 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = data & 0x200 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = data & 0x100 ? b1 : b0;
+  LCD_PORT = set;
+
+  LCD_PORT = data & 0x80 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = data & 0x40 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = data & 0x20 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = data & 0x10 ? b1 : b0;
+  LCD_PORT = set;
+
+  LCD_PORT = data & 0x8 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = data & 0x4 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = data & 0x2 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = data & 0x1 ? b1 : b0;
+  LCD_PORT = set;
+
+  SEI;
+};
 void ST7735S::data_16(byte r, byte g, byte b)
 {
   CLI;
-
   byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
   byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
   byte set = LCD_PORT;
@@ -293,10 +331,11 @@ void ST7735S::data_16(byte r, byte g, byte b)
   SEI;
 };
 
+#elif RGB_FORMAT == RGB_18
+
 void ST7735S::data_24(byte r, byte g, byte b)
 {
   CLI;
-
   byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
   byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
   byte set = LCD_PORT;
@@ -355,34 +394,40 @@ void ST7735S::data_24(byte r, byte g, byte b)
   SEI;
 };
 
-void ST7735S::data_rgb(byte r, byte g, byte b)
+#endif
+
+inline void ST7735S::data_rgb(byte r, byte g, byte b)
 {
-  if (_pixelFormat == RGB_12)
-  {
-    data_12(r, g, b);
-    return;
-  }
-  if (_pixelFormat == RGB_16)
-  {
-    data_16(r, g, b);
-    return;
-  }
+#if RGB_FORMAT == RGB_12
+  data_12(r, g, b);
+#elif RGB_FORMAT == RGB_16
+  data_16(r, g, b);
+#elif RGB_FORMAT == RGB_18
   data_24(r, g, b);
+#endif
 };
 
 void ST7735S::pixel(byte x, byte y, word color)
 {
   set_rect(x, y, x, y);
   TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK;
-  if (_pixelFormat == RGB_16)
-  {
-    TICK_TSK TICK_TSK TICK_TSK TICK_TSK;
-    data_8(color >> 8);
-    data_8(color);
-    DISPLAY_DISCONNECT;
-    return;
-  }
+
+#if RGB_FORMAT == RGB_12
   data_12(color);
+
+#elif RGB_FORMAT == RGB_16
+  TICK_TSK TICK_TSK TICK_TSK TICK_TSK;
+  data_8(color >> 8);
+  data_8(color);
+
+#elif RGB_FORMAT == RGB_18 // Заглушка
+  TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK;
+  data_8(color);
+  data_8(color);
+  data_8(color);
+
+#endif
+
   DISPLAY_DISCONNECT;
 }
 
@@ -390,28 +435,26 @@ void ST7735S::pixel(byte x, byte y, byte r, byte g, byte b)
 {
   set_rect(x, y, x, y);
   TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK;
-  if (_pixelFormat == RGB_12)
-  {
-    data_12(r, g, b);
-    DISPLAY_DISCONNECT;
-    return;
-  }
-  if (_pixelFormat == RGB_16)
-  {
-    TICK_TSK TICK_TSK TICK_TSK TICK_TSK;
-    data_16(r, g, b);
-    DISPLAY_DISCONNECT;
-    return;
-  }
-  TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK
-      data_24(r, g, b);
+
+#if RGB_FORMAT == RGB_12
+  data_12(r, g, b);
+
+#elif RGB_FORMAT == RGB_16
+  TICK_TSK TICK_TSK TICK_TSK TICK_TSK;
+  data_16(r, g, b);
+
+#elif RGB_FORMAT == RGB_18
+  TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK TICK_TSK;
+  data_24(r, g, b);
+
+#endif
+
   DISPLAY_DISCONNECT;
 }
 
 void ST7735S::rect(byte x1, byte y1, byte x2, byte y2, word color)
 {
   set_rect(x1, y1, x2, y2);
-
   word len = (x2 - x1 + 1) * (y2 - y1 + 1) + 1;
 
   CLI;
@@ -421,6 +464,17 @@ void ST7735S::rect(byte x1, byte y1, byte x2, byte y2, word color)
 
   while (len--)
   {
+#if RGB_FORMAT == RGB_16
+    LCD_PORT = color & 0x8000 ? b1 : b0;
+    LCD_PORT = set;
+    LCD_PORT = color & 0x4000 ? b1 : b0;
+    LCD_PORT = set;
+    LCD_PORT = color & 0x2000 ? b1 : b0;
+    LCD_PORT = set;
+    LCD_PORT = color & 0x1000 ? b1 : b0;
+    LCD_PORT = set;
+
+#endif
 
     LCD_PORT = color & 0x800 ? b1 : b0;
     LCD_PORT = set;
@@ -462,9 +516,9 @@ void ST7735S::symbol(byte symbol, byte x, byte y, byte dx, byte dy)
     byte data = 0xaa; // pgm_read_byte(font_6x5 + symbol * 6 - 192 + j);
     for (byte x = 0; x <= dx; x++)
       if (data & (1 << x))
-        data_12(0xfff);
+        data_16(0xff, 0xff, 0xff);
       else
-        data_12(0x000);
+        data_16(0x00, 0x00, 0x00);
   }
   DISPLAY_DISCONNECT
 }
@@ -486,11 +540,42 @@ void ST7735S::test(byte d)
       word b = ((x * y) >> 8) + d;
 
       data_rgb(r, g, b);
-      // pixel(x, y, r, g, b);
-      // set_rect(x, y, x + 1, y);
+    }
+  }
+  DISPLAY_DISCONNECT
+}
+
+void ST7735S::write_mem(byte d)
+{
+  word *ptr = (word *)0x6000;
+  // set_rect(0, 0, MAX_X, MAX_Y);
+  for (byte y = 0; y <= MAX_Y; y++)
+  {
+    word yy = y * y;
+
+    for (byte x = 0; x <= MAX_X; x++)
+    {
+      word xx = x * x;
+      word r = ((xx + yy) >> 8) + d;
+      word g = ((yy - xx) >> 8) + d;
+      word b = ((x * y) >> 8) + d;
+
       // data_rgb(r, g, b);
+      *ptr = (r << 11) + ((g & 0x3f) << 5) + (b & 0x001f);
+      ptr++;
     }
   }
 
+  // DISPLAY_DISCONNECT // CS Снять выбор дисплея
+}
+
+void ST7735S::read_mem()
+{
+  word *ptr = (word *)0x6000;
+  set_rect(0, 0, MAX_X, MAX_Y);
+  word count = 160 * 128;
+  while (count--)
+    data_16(*(ptr++));
+
   DISPLAY_DISCONNECT // CS Снять выбор дисплея
-};
+}

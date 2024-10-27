@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include "../../include/init.h"
 
 #define RGB_12 0x03 // 4x4x4 bit
 #define RGB_16 0x05 // 5x6x5 bit Баг: применяется только при старте
@@ -75,6 +74,9 @@
 // LCD_SDA    0/1 Данные
 // LCD_SCK    Тактирование при инверсии
 // INIT_LCD_PORT Инициализация DDRx
+// RGB_FORMAT Цветовой формат дисплея
+
+#include "../../include/init.h"
 
 #define DISPLAY_DISCONNECT SET_BIT(LCD_PORT, LCD_CS) // Снять выбор дисплея
 #define DATA_MODE SET_BIT(LCD_PORT, LCD_RS)          // Запись данных
@@ -90,21 +92,25 @@
 
 class ST7735S
 {
-private:
-  byte _pixelFormat;
-
 public:
-  ST7735S(byte format = RGB_12);
+  ST7735S();
   void command(byte data);
-  void set_mode(byte mode);
+  void set_rect(byte x1, byte y1, byte x2, byte y2);
   void data_0();
   void data_8(byte data);
+
+#if RGB_FORMAT == RGB_12
   void data_12(word data);
   void data_12(byte r, byte g, byte b);
+#elif RGB_FORMAT == RGB_16
+  // void data_16(word data);
+  void data_16(word data);
   void data_16(byte r, byte g, byte b);
+#elif RGB_FORMAT == RGB_18
   void data_24(byte r, byte g, byte b);
-  void data_rgb(byte r, byte g, byte b);
-  void set_rect(byte x1, byte y1, byte x2, byte y2);
+#endif
+
+  inline void data_rgb(byte r, byte g, byte b);
 
   void pixel(byte x, byte y, word color);
   void pixel(byte x, byte y, byte r, byte g, byte b);
@@ -114,5 +120,8 @@ public:
 
   inline void clear(word color) { rect(0, 0, MAX_X, MAX_Y, color); };
 
+  // Тесты
   void test(byte d);
+  void write_mem(byte d);
+  void read_mem();
 };
