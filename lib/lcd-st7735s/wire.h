@@ -1,11 +1,10 @@
-#include <Arduino.h>
-
-#ifndef init_h
-#define init_h
-
-// Настройки дисплея
-
-#define RGB_FORMAT RGB_16
+// init.h
+// LCD_PORT   Порт управления дисплеем
+// LCD_CS     0 = Выбор дисплея / 1 = Снять выбор дисплея
+// LCD_RS     0 = Запись команды / 1 = Запись данных
+// LCD_SDA    0/1 Данные
+// LCD_SCK    Тактирование при инверсии
+// INIT_LCD_PORT Инициализация DDRx
 
 #ifdef __AVR_ATmega128__
 #define LCD_PORT PORTE
@@ -30,14 +29,5 @@
 #define INIT_LCD_PORT                                      \
   DDRC |= LCD_RS | LCD_SDA | LCD_SCK | LCD_CS | LCD_RESET; \
   PORTC |= LCD_RS | LCD_SDA | LCD_SCK | LCD_CS | LCD_RESET;
-#endif
-
-// вспомогательные скрипты
-
-#define SET_BIT(port, mask) port |= mask;
-#define RES_BIT(port, mask) port &= ~mask;
-
-#define CLI __asm__ __volatile__("cli") // Отключает прерывания
-#define SEI __asm__ __volatile__("sei") // Включение прерываний
 
 #endif

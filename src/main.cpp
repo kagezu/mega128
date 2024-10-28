@@ -1,4 +1,4 @@
-#include <Arduino.h>
+#include "init.h"
 #include "ST7735S.h"
 #include "font_6x5.h"
 
@@ -37,38 +37,9 @@ void print(char *string, byte length)
 
 int main(void)
 {
-  PORTE &= ~_BV(PE6); // Set 0 to A16
-  DDRE |= _BV(PE6);   // Output A16
-  MCUCR |= _BV(SRE);  // ESRAM Enable
-
-  // lcd.clear(0x00);
-
-  // char string[] = "0123456789 1234567890X";
-  // for (byte i = 0; i < 23; i++)
-  //   print(string, sizeof(string));
-
-  lcd.write_mem(5);
-  PORTE |= _BV(PE6); // Set 1 to A16
-  lcd.write_mem(9);
-  PORTE &= ~_BV(PE6); // Set 0 to A16
-  // byte x = 0;
+  // uint32_t x;
+  byte x;
   while (true)
-  {
-
-    lcd.read_mem();
-    PORTE |= _BV(PE6); // Set 1 to A16
-    lcd.read_mem();
-    PORTE &= ~_BV(PE6); // Set 0 to A16
-  }
-
-  /*
-      PORTE &= ~_BV(PE6); // Set 0 to A16
-      DDRE |= _BV(PE6);   // Output A16
-
-      MCUCR |= _BV(SRE); // ESRAM Enable
-
-      byte __volatile__ *address = (byte *)0x1000;
-      // PORTE ^= _BV(PE6);
-    }
-    */
+    lcd.demo(x++);
+  // lcd.clear(x++ + (x << 7) + (x << 14));
 }
