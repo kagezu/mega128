@@ -1,5 +1,5 @@
+#include <avr/pgmspace.h>
 #include "ST7735S.h"
-#include "font_6x5.h"
 
 ST7735S::ST7735S()
 {
@@ -466,20 +466,20 @@ void ST7735S::rect(byte x1, byte y1, byte x2, byte y2, uint32_t color)
   DISPLAY_DISCONNECT
 };
 
-// void ST7735S::symbol(byte symbol, byte x, byte y, byte dx, byte dy)
-// {
-//   set_rect(x, y, x + dx, y + dy);
-//   for (byte j = 0; j <= dy; y++)
-//   {
-//     byte data = 0xaa; // pgm_read_byte(font_6x5 + symbol * 6 - 192 + j);
-//     for (byte x = 0; x <= dx; x++)
-//       if (data & (1 << x))
-//         data_rgb2(0xff, 0xff, 0xff);
-//       else
-//         data_rgb(0x00, 0x00, 0x00);
-//   }
-//   DISPLAY_DISCONNECT
-// }
+void ST7735S::symbol(const byte *font, byte symbol, byte x, byte y, byte dx, byte dy)
+{
+  set_rect(x, y, x + dx - 1, y + dy - 1);
+  for (byte j = 0; j < dy; j++)
+  {
+    byte data = pgm_read_byte(font + symbol * 6 - 192 + j);
+    for (byte i = 0; i < dx; i++)
+      if (data & (1 << i))
+        data_rgb(0xff, 0xff, 0xff);
+      else
+        data_rgb(0x00, 0x00, 0x00);
+  }
+  DISPLAY_DISCONNECT
+}
 
 // тестирование дисплея
 

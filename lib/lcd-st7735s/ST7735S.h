@@ -1,3 +1,6 @@
+#ifndef ST7735S_h
+#define ST7735S_h
+
 #include "../../src/init.h"
 #include "wire.h"
 
@@ -100,8 +103,10 @@ public:
 
   inline void clear(uint32_t color) { rect(0, 0, MAX_X, MAX_Y, color); };
 
-  void symbol(byte symbol, byte x, byte y, byte dx, byte dy);
+  void symbol(const byte *font, byte symbol, byte x, byte y, byte dx, byte dy);
 
   // Тесты
   void demo(byte d);
 };
+
+#endif
