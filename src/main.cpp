@@ -5,19 +5,35 @@
 ST7735S lcd;
 Font micro(&lcd);
 
+word offset = 0x1100;
+
+void **createDim2(word countString, word countElement, char sizeElement)
+{
+  void **ptr = (void **)offset;
+  offset += countString * 2;
+  for (word i = 0; i < countString; i++)
+  {
+    ptr[i] = (void *)offset;
+    offset += countElement * sizeElement;
+  }
+  return ptr;
+}
+
 int main(void)
 {
-  // lcd.clear(0);
-  // while (true)
-  // {
-  //   micro.print("0123456789 0123456789 ABC");
-  //   micro.print("ABCDEFGHIJ-abcdefghij xfd");
-  // }
+  lcd.clear(0);
 
-  byte x;
-  while (true)
-    lcd.demo(x++);
+  micro.set_at(30, 50);
+  micro.print("0xA000 ");
+  micro.print(0xA000);
 
-  // uint32_t x;
-  // lcd.clear(x++ + (x << 7) + (x << 14));
-}
+  micro.set_at(30, 60);
+  micro.print("0x1100 ");
+  micro.print(0x1100);
+
+  //   byte x;
+  //   while (true)
+  //     lcd.demo(x++);
+
+  //   word **memory = (word **)createDim2(160, 128, 2);
+  }

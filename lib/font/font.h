@@ -40,4 +40,21 @@ public:
     while (char ch = *string++)
       symbol(ch);
   }
+
+  void print(word number)
+  {
+    char string[6];
+    byte i = 0;
+    word mult = 10000;
+    while (number)
+    {
+      char n = number / mult;
+      if (i || n)
+        string[i++] = '0' + n;
+      number -= n * mult;
+      mult /= 10;
+    }
+    string[i] = 0;
+    print(string);
+  }
 };
