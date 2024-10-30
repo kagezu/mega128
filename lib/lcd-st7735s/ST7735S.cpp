@@ -469,7 +469,7 @@ void ST7735S::rect(byte x1, byte y1, byte x2, byte y2, uint32_t color)
 void ST7735S::symbol(const byte *font, byte symbol, byte x, byte y, byte dx, byte dy)
 {
   set_rect(x, y, x + dx - 1, y + dy - 1);
-  for (byte j = 0; j < dy; j++)
+  for (char j = 0; j < dy; j++)
   {
     byte data = pgm_read_byte(font + symbol * 6 - 192 + j);
     for (byte i = 0; i < dx; i++)

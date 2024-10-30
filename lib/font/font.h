@@ -10,7 +10,7 @@ public:
 public:
   Font(ST7735S *lcd);
 
-  const byte dx = 4;
+  const byte dx = 5;
   const byte dy = 6;
 
   byte cursor_x = 0;
@@ -46,7 +46,7 @@ public:
     char string[6];
     byte i = 0;
     word mult = 10000;
-    while (number)
+    while (number || mult)
     {
       char n = number / mult;
       if (i || n)
@@ -55,6 +55,41 @@ public:
       mult /= 10;
     }
     string[i] = 0;
+    print(string);
+  }
+
+  byte hexToChar(byte number)
+  {
+    number &= 0xf;
+    return number > 9 ? number + 7 + '0' : number + '0';
+  }
+
+  void printHex(word number)
+  {
+    char string[7];
+    string[0] = '0';
+    string[1] = 'x';
+    string[6] = 0;
+
+    string[5] = hexToChar(number);
+    number >>= 4;
+    string[4] = hexToChar(number);
+    number >>= 4;
+    string[3] = hexToChar(number);
+    number >>= 4;
+    string[2] = hexToChar(number);
+
+    print(string);
+  }
+
+  void printHex(byte number)
+  {
+    char string[4];
+    string[3] = 0;
+    string[2] = hexToChar(number);
+    number >>= 4;
+    string[1] = hexToChar(number);
+    string[0] = ' ';
     print(string);
   }
 };
