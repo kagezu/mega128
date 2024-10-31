@@ -468,7 +468,8 @@ void ST7735S::rect(byte x1, byte y1, byte x2, byte y2, uint32_t color)
 
 void ST7735S::symbol(const byte *font, byte symbol, byte x, byte y, byte dx, byte dy)
 {
-  set_rect(x, y, x + dx - 1, y + dy - 1);
+  // set_rect(x, y, x + dx - 1, y + dy - 1);
+  set_rect(x, y, x + dx - 1, y + dy);
   for (char j = 0; j < dy; j++)
   {
     byte data = pgm_read_byte(font + symbol * 6 - 192 + j);
@@ -478,6 +479,10 @@ void ST7735S::symbol(const byte *font, byte symbol, byte x, byte y, byte dx, byt
       else
         data_rgb(0x00, 0x00, 0x00);
   }
+
+  for (byte i = 0; i < dx; i++)
+    data_rgb(0x00, 0x00, 0x00);
+
   DISPLAY_DISCONNECT
 }
 

@@ -1,0 +1,8 @@
+{
+  "files.associations": {
+    "*.php": "php",
+    "*.js": "javascript",
+    "*.html": "html",
+    "wiring_private.h": "c"
+  }
+}
