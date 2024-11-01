@@ -1,30 +1,23 @@
 ﻿#include <Arduino.h>
 #include "ST7735S.h"
 #include "font.h"
-#include "xmem_page.h"
+#include "x_page.h"
 
 byte m[100];
 ST7735S lcd;
 Font micro(&lcd);
-XmemPage page;
-
-class App {
-public:
-  App()
-  {
-    page.use();
-    byte x;
-    while (true)
-      lcd.demo(x++);
-  }
-};
-
-App app;
+XPage page(0);
+void *temp = page.create(100);
+byte(&a)[10][10] = (byte(&)[10][10])temp;
 
 int main(void)
 {
+  for (char y = 0; y < 10; y++)
+    for (char x = 0; x < 10; x++)
+      a[y][x] = x * y;
+
   lcd.clear(0);
-  byte *ptr = (byte *)m;
+  byte *ptr = (byte *)a;
   while (true) {
     for (char k = 7; k >= 0; k--) {
       byte *p = (byte *)ptr;
@@ -37,4 +30,8 @@ int main(void)
     }
     ptr += 4;
   }
+
+  byte x;
+  while (true)
+    lcd.demo(x++);
 }

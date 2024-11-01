@@ -3,7 +3,5 @@
   "name": "xmem",
   "version": "1.0.0",
   "platforms": "atmelavr",
-  "headers": [
-    "init.h"
-  ]
+  "headers": []
 }
