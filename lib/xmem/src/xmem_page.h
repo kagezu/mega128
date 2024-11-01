@@ -1,9 +1,14 @@
-#include "../../../src/init.h"
+#include <Arduino.h>
+#include "setup.h"
 
-class XmemPage
-{
+#ifndef XMEM_PAGE_H
+#define XMEM_PAGE_H
+
+class XmemPage {
 public:
   XmemPage() {}
 
   void use();
 };
+
+#endif

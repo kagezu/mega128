@@ -5,8 +5,8 @@
 
 // вспомогательные скрипты
 
-#define SET_BIT(port, mask) port |= mask;
-#define RES_BIT(port, mask) port &= ~mask;
+#define SET_BITS(port, mask) port |= mask;
+#define RES_BITS(port, mask) port &= ~mask;
 
 // Команды ассемблера
 

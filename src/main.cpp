@@ -1,4 +1,4 @@
-﻿#include "init.h"
+﻿#include <Arduino.h>
 #include "ST7735S.h"
 #include "font.h"
 #include "xmem_page.h"
@@ -8,8 +8,7 @@ ST7735S lcd;
 Font micro(&lcd);
 XmemPage page;
 
-class App
-{
+class App {
 public:
   App()
   {
@@ -26,14 +25,11 @@ int main(void)
 {
   lcd.clear(0);
   byte *ptr = (byte *)m;
-  while (true)
-  {
-    for (char k = 7; k >= 0; k--)
-    {
+  while (true) {
+    for (char k = 7; k >= 0; k--) {
       byte *p = (byte *)ptr;
-      for (char i = 0; i < 18; i++)
-      {
-        micro.set_at(0, i * 8 + k);
+      for (char i = 0; i < 18; i++) {
+        micro.at(0, i * 8 + k);
         micro.printHex((word)p);
         for (char j = 0; j < 4; j++)
           micro.printHex(*p++);

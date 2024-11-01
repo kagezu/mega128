@@ -1,20 +1,18 @@
 #include <Arduino.h>
-#include "wire.h"
+#include "setup.h"
 
-#ifndef ST7735S_h
-#define ST7735S_h
-
-#define SET_BITS(target, mask) target |= mask;
-#define RES_BITS(target, mask) target &= ~mask;
+#ifndef ST7735S_H
+#define ST7735S_H
 
 #define RGB_12 0x03 // 4x4x4 bit
 #define RGB_16 0x05 // 5x6x5 bit
 #define RGB_18 0x06 // 6x6x6 bit (24 bit transfer)
 
-#define RGB_FORMAT RGB_16
-
 #define MAX_X 127
 #define MAX_Y 159
+
+#define SET_BITS(target, mask) target |= mask;
+#define RES_BITS(target, mask) target &= ~mask;
 
 #define DISPLAY_DISCONNECT SET_BITS(LCD_PORT, LCD_CS) // Снять выбор дисплея
 #define DATA_MODE SET_BITS(LCD_PORT, LCD_RS)          // Запись данных
@@ -86,20 +84,19 @@
 #define EXTCTRL 0xf0  // Extension Command Control
 #define VCOM4L 0xff   // Vcom 4 Level control
 
-class ST7735S
-{
+class ST7735S {
 public:
   ST7735S();
-  void command(byte data);
-  void set_rect(byte x1, byte y1, byte x2, byte y2);
-  void data_0();
-  void data_8(byte data);
-  void data_rgb(byte r, byte g, byte b);
+  void sendCommand(byte data);
+  void setAddr(byte x1, byte y1, byte x2, byte y2);
+  void sendZero();
+  void sendByte(byte data);
+  void sendRGB(byte r, byte g, byte b);
 
 #if RGB_FORMAT == RGB_12
-  void data_12(word data);
+  void send12b(word data);
 #elif RGB_FORMAT == RGB_16
-  void data_16(word data);
+  void sendWord(word data);
 #endif
 
   void pixel(byte x, byte y, word color);
@@ -108,7 +105,7 @@ public:
 
   inline void clear(uint32_t color) { rect(0, 0, MAX_X, MAX_Y, color); };
 
-  void symbol(const byte *font, byte symbol, byte x, byte y, byte dx, byte dy);
+  void symbol(const byte* font, byte symbol, byte x, byte y, byte dx, byte dy);
 
   // Тесты
   void demo(byte d);

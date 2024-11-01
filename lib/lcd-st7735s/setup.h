@@ -2,8 +2,11 @@
 // LCD_CS     0 = Выбор дисплея / 1 = Снять выбор дисплея
 // LCD_RS     0 = Запись команды / 1 = Запись данных
 // LCD_SDA    0/1 Данные
-// LCD_SCK    Тактирование при инверсии
-// INIT_LCD_PORT Инициализация DDRx
+// LCD_SCK    Тактирование
+// INIT_LCD_PORT Инициализация порта
+// RGB_FORMAT RGB_12 = 4x4x4 bit / RGB_16 = 5x6x5 bit / RGB_18 = 6x6x6 bit
+
+#define RGB_FORMAT RGB_16
 
 #ifdef __AVR_ATmega128__
 #define LCD_PORT PORTE
