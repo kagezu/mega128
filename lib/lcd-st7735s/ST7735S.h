@@ -1,25 +1,30 @@
+#include <Arduino.h>
+#include "wire.h"
+
 #ifndef ST7735S_h
 #define ST7735S_h
 
-#include "../../src/init.h"
-#include "wire.h"
+#define SET_BITS(target, mask) target |= mask;
+#define RES_BITS(target, mask) target &= ~mask;
 
 #define RGB_12 0x03 // 4x4x4 bit
 #define RGB_16 0x05 // 5x6x5 bit
 #define RGB_18 0x06 // 6x6x6 bit (24 bit transfer)
 
+#define RGB_FORMAT RGB_16
+
 #define MAX_X 127
 #define MAX_Y 159
 
-#define DISPLAY_DISCONNECT SET_BIT(LCD_PORT, LCD_CS) // Снять выбор дисплея
-#define DATA_MODE SET_BIT(LCD_PORT, LCD_RS)          // Запись данных
-#define SET_SDA SET_BIT(LCD_PORT, LCD_SDA)           // Данные
-#define SET_SCK SET_BIT(LCD_PORT, LCD_SCK)           // Тактирование
+#define DISPLAY_DISCONNECT SET_BITS(LCD_PORT, LCD_CS) // Снять выбор дисплея
+#define DATA_MODE SET_BITS(LCD_PORT, LCD_RS)          // Запись данных
+#define SET_SDA SET_BITS(LCD_PORT, LCD_SDA)           // Данные
+#define SET_SCK SET_BITS(LCD_PORT, LCD_SCK)           // Тактирование
 
-#define DISPLAY_CONNECT RES_BIT(LCD_PORT, LCD_CS) // Выбор дисплея
-#define COMMAND_MODE RES_BIT(LCD_PORT, LCD_RS)    // Запись команды
-#define RES_SDA RES_BIT(LCD_PORT, LCD_SDA)        // Данные
-#define RES_SCK RES_BIT(LCD_PORT, LCD_SCK)        // Тактирование
+#define DISPLAY_CONNECT RES_BITS(LCD_PORT, LCD_CS) // Выбор дисплея
+#define COMMAND_MODE RES_BITS(LCD_PORT, LCD_RS)    // Запись команды
+#define RES_SDA RES_BITS(LCD_PORT, LCD_SDA)        // Данные
+#define RES_SCK RES_BITS(LCD_PORT, LCD_SCK)        // Тактирование
 
 // Команды дисплея
 
