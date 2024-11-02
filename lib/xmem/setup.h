@@ -3,17 +3,17 @@
 #if defined(__AVR_ATmega328P__)
 
 // Профиль используется для тестирования и совместимости
-#define XMEM_1K_X1   1  // 1k SRAM
+#define XMEM_1K_X1   true  // 1k SRAM
 
 #elif defined(__AVR_ATmega128__)
 
 // Используется всё адресное пространство,
 // используется 60к на страницу
-#define XMEM_60K_X2    1  // 60k 2 page
+#define XMEM_60K_X2    true  // 60k 2 page
 
 // Используется страницы в 32к,
 // за пределами области циклически дублируются адреса
-// #define XMEM_32K_X4    1  // 32k 4 page
+// #define XMEM_32K_X4    true  // 32k 4 page
 
 // Управляет 16м битом физического адреса памяти
 #define XMEM_A16        PE6

@@ -7,7 +7,7 @@
 #define XMEM_BEGIN      0x400
 #define XMEM_END        0x800
 #define XMEM_INIT
-#define XMEM_PAGE(page) page
+#define XMEM_PAGE(page)
 
 #elif defined(XMEM_60K_X2)
 #define XMEM_BEGIN      0x1100
@@ -36,8 +36,8 @@ private:
   word _offset;
 
 public:
-  XPage(byte numberPage);
-  inline void init();
+  XPage(byte numberPage = 0, word offset = XMEM_BEGIN);
+  inline void init(word offset = XMEM_BEGIN);
   inline word free();
   void use();
   void *create(word memorySize);

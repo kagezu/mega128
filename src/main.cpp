@@ -3,35 +3,38 @@
 #include "font.h"
 #include "x_page.h"
 
-byte m[100];
-ST7735S lcd;
-Font micro(&lcd);
-XPage page(0);
-void *temp = page.create(100);
-byte(&a)[10][10] = (byte(&)[10][10])temp;
+
+byte volatile m[32];
+// ST7735S lcd;
+// Font micro(&lcd);
+XPage page(0, 0x0500);
+void volatile *temp = page.create(25);
+byte volatile (&a)[5][5] = (byte(&)[5][5])temp;
 
 int main(void)
 {
-  for (char y = 0; y < 10; y++)
-    for (char x = 0; x < 10; x++)
-      a[y][x] = x * y;
+  for (byte y = 0; y < 5; y++)
+    for (byte x = 0; x < 5; x++)
+      a[y][x] = x + y;
 
-  lcd.clear(0);
-  byte *ptr = (byte *)a;
-  while (true) {
-    for (char k = 7; k >= 0; k--) {
-      byte *p = (byte *)ptr;
-      for (char i = 0; i < 18; i++) {
-        micro.at(0, i * 8 + k);
-        micro.printHex((word)p);
-        for (char j = 0; j < 4; j++)
-          micro.printHex(*p++);
+  /*
+    lcd.clear(0);
+    byte *ptr = (byte *)a;
+    while (true) {
+      for (byte k = 7; k >= 0; k--) {
+        byte *p = (byte *)ptr;
+        for (byte i = 0; i < 18; i++) {
+          micro.at(0, i * 8 + k);
+          micro.printHex((word)p);
+          for (byte j = 0; j < 4; j++)
+            micro.printHex(*p++);
+        }
       }
+      ptr += 4;
     }
-    ptr += 4;
-  }
 
-  byte x;
-  while (true)
-    lcd.demo(x++);
+    byte x;
+    while (true)
+      lcd.demo(x++);
+  */
 }
