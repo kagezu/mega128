@@ -4,10 +4,10 @@
 
 class Font {
 public:
-  ST7735S* display;
+  ST7735S *display;
 
 public:
-  Font(ST7735S* lcd);
+  Font(ST7735S *lcd);
 
   const byte dx = 5;
   const byte dy = 6;
@@ -33,9 +33,15 @@ public:
     }
   }
 
-  void print(const char* string)
+  void print(const char *string)
   {
     while (char ch = *string++)
+      symbol(ch);
+  }
+
+  void printPstr(const char *string)
+  {
+    while (char ch = pgm_read_byte(string++))
       symbol(ch);
   }
 
