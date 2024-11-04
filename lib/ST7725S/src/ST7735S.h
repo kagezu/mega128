@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "setup.h"
+#include "config.h"
 
 #ifndef ST7735S_H
 #define ST7735S_H
@@ -105,7 +105,7 @@ public:
 
   inline void clear(uint32_t color) { rect(0, 0, MAX_X, MAX_Y, color); };
 
-  void symbol(const byte* font, byte symbol, byte x, byte y, byte dx, byte dy);
+  void symbol(const byte *font, byte symbol, byte x, byte y, byte dx, byte dy);
 
   // Тесты
   void demo(byte d);

@@ -1,7 +1,7 @@
 ﻿#include <Arduino.h>
-#include "ST7735S.h"
-#include "font.h"
 #include <x_page.h>
+#include <ST7735S.h>
+#include <font.h>
 
 byte m[32];
 ST7735S lcd;
