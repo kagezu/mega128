@@ -1,18 +1,18 @@
 ﻿#include <Arduino.h>
 #include "ST7735S.h"
 #include "font.h"
-#include "x_page.h"
+#include <x_page.h>
 
 byte m[32];
 ST7735S lcd;
 Font micro(&lcd);
-XPage page(0, 0x0500);
-byte(&a)[5][5] = (byte(&)[5][5]) * (byte *)page.create(25);
-byte *temp = (byte *)page.create(25);
-// byte(&a)[5][5] = (byte(&)[5][5]) * temp;
+XPage page;
+byte(&a)[5][5] = (byte(&)[5][5]) * page.create(25);
+byte *temp = page.create(25);
 
 int main(void)
 {
+  XPage::init();
   lcd.clear(0);
 
   word w;
