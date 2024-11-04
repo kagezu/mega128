@@ -1,5 +1,6 @@
 #include <avr/pgmspace.h>
 #include "ST7735S.h"
+#include "../../../include/rgb18.h"
 
 ST7735S::ST7735S()
 {
@@ -180,7 +181,7 @@ void ST7735S::sendByte(byte data)
 };
 
 #if RGB_FORMAT == RGB_12
-void ST7735S::send12b(word data)
+void ST7735S::sendRGB(word data)
 {
   byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
   byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
@@ -215,7 +216,7 @@ void ST7735S::send12b(word data)
 };
 
 #elif RGB_FORMAT == RGB_16
-void ST7735S::sendWord(word data)
+void ST7735S::sendRGB(word data)
 {
   byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
   byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
@@ -259,49 +260,52 @@ void ST7735S::sendWord(word data)
 };
 #endif
 
+void ST7735S::sendRGB(uint32_t color)
+{
+  sendRGB(color >> 16, color >> 8, color);
+}
+
 void ST7735S::sendRGB(byte r, byte g, byte b)
 {
   byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
   byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
   byte set = LCD_PORT;
 
-#if RGB_FORMAT == RGB_18
+  LCD_PORT = b & 0x80 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = b & 0x40 ? b1 : b0;
+  LCD_PORT = set;
   LCD_PORT = b & 0x20 ? b1 : b0;
   LCD_PORT = set;
-#endif
-#if RGB_FORMAT == RGB_18 || RGB_FORMAT == RGB_16
   LCD_PORT = b & 0x10 ? b1 : b0;
   LCD_PORT = set;
-#endif
+#if RGB_FORMAT == RGB_18 || RGB_FORMAT == RGB_16
   LCD_PORT = b & 0x8 ? b1 : b0;
   LCD_PORT = set;
+#endif
+#if RGB_FORMAT == RGB_18
   LCD_PORT = b & 0x4 ? b1 : b0;
   LCD_PORT = set;
-  LCD_PORT = b & 0x2 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = b & 0x1 ? b1 : b0;
-  LCD_PORT = set;
-#if RGB_FORMAT == RGB_18
   LCD_PORT = b0;
   LCD_PORT = set;
   LCD_PORT = b0;
   LCD_PORT = set;
 #endif
 
-#if RGB_FORMAT == RGB_18 || RGB_FORMAT == RGB_16
+  LCD_PORT = g & 0x80 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = g & 0x40 ? b1 : b0;
+  LCD_PORT = set;
   LCD_PORT = g & 0x20 ? b1 : b0;
   LCD_PORT = set;
   LCD_PORT = g & 0x10 ? b1 : b0;
   LCD_PORT = set;
-#endif
+#if RGB_FORMAT == RGB_18 || RGB_FORMAT == RGB_16
   LCD_PORT = g & 0x8 ? b1 : b0;
   LCD_PORT = set;
   LCD_PORT = g & 0x4 ? b1 : b0;
   LCD_PORT = set;
-  LCD_PORT = g & 0x2 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = g & 0x1 ? b1 : b0;
-  LCD_PORT = set;
+#endif
 #if RGB_FORMAT == RGB_18
   LCD_PORT = b0;
   LCD_PORT = set;
@@ -309,28 +313,27 @@ void ST7735S::sendRGB(byte r, byte g, byte b)
   LCD_PORT = set;
 #endif
 
-#if RGB_FORMAT == RGB_18
+  LCD_PORT = r & 0x80 ? b1 : b0;
+  LCD_PORT = set;
+  LCD_PORT = r & 0x40 ? b1 : b0;
+  LCD_PORT = set;
   LCD_PORT = r & 0x20 ? b1 : b0;
   LCD_PORT = set;
-#endif
-#if RGB_FORMAT == RGB_18 || RGB_FORMAT == RGB_16
   LCD_PORT = r & 0x10 ? b1 : b0;
   LCD_PORT = set;
-#endif
+#if RGB_FORMAT == RGB_18 || RGB_FORMAT == RGB_16
   LCD_PORT = r & 0x8 ? b1 : b0;
   LCD_PORT = set;
+#endif
+#if RGB_FORMAT == RGB_18
   LCD_PORT = r & 0x4 ? b1 : b0;
   LCD_PORT = set;
-  LCD_PORT = r & 0x2 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = r & 0x1 ? b1 : b0;
-  LCD_PORT = set;
-#if RGB_FORMAT == RGB_18
   LCD_PORT = b0;
   LCD_PORT = set;
   LCD_PORT = b0;
   LCD_PORT = set;
 #endif
+
 };
 
 void ST7735S::pixel(byte x, byte y, word color)
@@ -338,13 +341,13 @@ void ST7735S::pixel(byte x, byte y, word color)
   setAddr(x, y, x, y);
 
 #if RGB_FORMAT == RGB_12
-  send12b(0);
-  send12b(color);
+  sendRGB((word)0);
+  sendRGB(color);
 
 #elif RGB_FORMAT == RGB_16
   sendZero();
   sendZero();
-  sendWord(color);
+  sendRGB(color);
 
 #elif RGB_FORMAT == RGB_18 // Заглушка
   sendZero();
@@ -362,7 +365,7 @@ void ST7735S::pixel(byte x, byte y, byte r, byte g, byte b)
   setAddr(x, y, x, y);
 
 #if RGB_FORMAT == RGB_12
-  send12b(0);
+  sendRGB((word)0);
   sendRGB(r, g, b);
 
 #elif RGB_FORMAT == RGB_16
@@ -394,78 +397,74 @@ void ST7735S::rect(byte x1, byte y1, byte x2, byte y2, uint32_t color)
   byte set = LCD_PORT;
 
   while (len--) {
-#if RGB_FORMAT == RGB_18
+    LCD_PORT = b & 0x80 ? b1 : b0;
+    LCD_PORT = set;
+    LCD_PORT = b & 0x40 ? b1 : b0;
+    LCD_PORT = set;
     LCD_PORT = b & 0x20 ? b1 : b0;
     LCD_PORT = set;
-#endif
-#if RGB_FORMAT == RGB_18 || RGB_FORMAT == RGB_16
     LCD_PORT = b & 0x10 ? b1 : b0;
     LCD_PORT = set;
-#endif
+  #if RGB_FORMAT == RGB_18 || RGB_FORMAT == RGB_16
     LCD_PORT = b & 0x8 ? b1 : b0;
     LCD_PORT = set;
+  #endif
+  #if RGB_FORMAT == RGB_18
     LCD_PORT = b & 0x4 ? b1 : b0;
     LCD_PORT = set;
-    LCD_PORT = b & 0x2 ? b1 : b0;
-    LCD_PORT = set;
-    LCD_PORT = b & 0x1 ? b1 : b0;
-    LCD_PORT = set;
-#if RGB_FORMAT == RGB_18
     LCD_PORT = b0;
     LCD_PORT = set;
     LCD_PORT = b0;
     LCD_PORT = set;
-#endif
+  #endif
 
-#if RGB_FORMAT == RGB_18 || RGB_FORMAT == RGB_16
+    LCD_PORT = g & 0x80 ? b1 : b0;
+    LCD_PORT = set;
+    LCD_PORT = g & 0x40 ? b1 : b0;
+    LCD_PORT = set;
     LCD_PORT = g & 0x20 ? b1 : b0;
     LCD_PORT = set;
     LCD_PORT = g & 0x10 ? b1 : b0;
     LCD_PORT = set;
-#endif
+  #if RGB_FORMAT == RGB_18 || RGB_FORMAT == RGB_16
     LCD_PORT = g & 0x8 ? b1 : b0;
     LCD_PORT = set;
+  #endif
+  #if RGB_FORMAT == RGB_18
     LCD_PORT = g & 0x4 ? b1 : b0;
     LCD_PORT = set;
-    LCD_PORT = g & 0x2 ? b1 : b0;
-    LCD_PORT = set;
-    LCD_PORT = g & 0x1 ? b1 : b0;
-    LCD_PORT = set;
-#if RGB_FORMAT == RGB_18
     LCD_PORT = b0;
     LCD_PORT = set;
     LCD_PORT = b0;
     LCD_PORT = set;
-#endif
+  #endif
 
-#if RGB_FORMAT == RGB_18
+    LCD_PORT = r & 0x80 ? b1 : b0;
+    LCD_PORT = set;
+    LCD_PORT = r & 0x40 ? b1 : b0;
+    LCD_PORT = set;
     LCD_PORT = r & 0x20 ? b1 : b0;
     LCD_PORT = set;
-#endif
-#if RGB_FORMAT == RGB_18 || RGB_FORMAT == RGB_16
     LCD_PORT = r & 0x10 ? b1 : b0;
     LCD_PORT = set;
-#endif
+  #if RGB_FORMAT == RGB_18 || RGB_FORMAT == RGB_16
     LCD_PORT = r & 0x8 ? b1 : b0;
     LCD_PORT = set;
+  #endif
+  #if RGB_FORMAT == RGB_18
     LCD_PORT = r & 0x4 ? b1 : b0;
     LCD_PORT = set;
-    LCD_PORT = r & 0x2 ? b1 : b0;
-    LCD_PORT = set;
-    LCD_PORT = r & 0x1 ? b1 : b0;
-    LCD_PORT = set;
-#if RGB_FORMAT == RGB_18
     LCD_PORT = b0;
     LCD_PORT = set;
     LCD_PORT = b0;
     LCD_PORT = set;
-#endif
+  #endif
   }
 
   DISPLAY_DISCONNECT
 };
 
-void ST7735S::symbol(const byte* font, byte symbol, byte x, byte y, byte dx, byte dy)
+void ST7735S::symbol(const byte *font, byte symbol, byte x, byte y, byte dx, byte dy)
 {
   // setAddr(x, y, x + dx - 1, y + dy - 1);
   setAddr(x, y, x + dx - 1, y + dy);
@@ -496,25 +495,18 @@ void ST7735S::demo(byte d)
     for (byte x = VIEWPORT_OFFSET; x <= MAX_X + VIEWPORT_OFFSET; x++) {
       word xx = x * x;
 
-#if RGB_FORMAT == RGB_12
-      word r = ((xx + yy) >> 10) + d;
-      word g = ((yy - xx) >> 10) + d;
-      word b = ((x * y) >> 10) - d;
-#endif
+      byte e = d << 2;
+      word r = ((xx + yy) >> 6) + e;
+      word g = ((yy - xx) >> 6) + e;
+      word b = ((x * y) >> 6) - e;
 
-#if RGB_FORMAT == RGB_16
-      word r = ((xx + yy) >> 9) + d;
-      word g = ((yy - xx) >> 8) + d;
-      word b = ((x * y) >> 9) - d;
-#endif
+      // sendRGB(r, g, b);
 
-#if RGB_FORMAT == RGB_18
-      word r = ((xx + yy) >> 8) + d;
-      word g = ((yy - xx) >> 8) + d;
-      word b = ((x * y) >> 8) - d;
-#endif
-
-      sendRGB(r, g, b);
+      RGB rgb(r, g, b);
+      RGB a(rgb);
+      // sendRGB(rgb.red<<4, rgb.green<<4, rgb.blue<<4);
+      // sendRGB((uint16_t)rgb);
+      sendRGB(a);
     }
   }
   DISPLAY_DISCONNECT

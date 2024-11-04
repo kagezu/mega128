@@ -67,6 +67,32 @@ public:
     return number > 9 ? number + 7 + '0' : number + '0';
   }
 
+  void printHex(uint32_t number)
+  {
+    char string[11];
+    string[0] = '0';
+    string[1] = 'x';
+    string[10] = 0;
+
+    string[9] = hexToChar(number);
+    number >>= 4;
+    string[8] = hexToChar(number);
+    number >>= 4;
+    string[7] = hexToChar(number);
+    number >>= 4;
+    string[6] = hexToChar(number);
+    number >>= 4;
+    string[5] = hexToChar(number);
+    number >>= 4;
+    string[4] = hexToChar(number);
+    number >>= 4;
+    string[3] = hexToChar(number);
+    number >>= 4;
+    string[2] = hexToChar(number);
+
+    print(string);
+  }
+
   void printHex(word number)
   {
     char string[7];

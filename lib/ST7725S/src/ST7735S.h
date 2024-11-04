@@ -92,12 +92,8 @@ public:
   void sendZero();
   void sendByte(byte data);
   void sendRGB(byte r, byte g, byte b);
-
-#if RGB_FORMAT == RGB_12
-  void send12b(word data);
-#elif RGB_FORMAT == RGB_16
-  void sendWord(word data);
-#endif
+  void sendRGB(word data);
+  void sendRGB(uint32_t color);
 
   void pixel(byte x, byte y, word color);
   void pixel(byte x, byte y, byte r, byte g, byte b);

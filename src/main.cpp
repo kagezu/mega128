@@ -1,49 +1,52 @@
-﻿#include <Arduino.h>
-#include <x_page.h>
-#include <ST7735S.h>
-#include <font.h>
+﻿#include <init.h>
 
-byte m[32];
 ST7735S lcd;
 Font micro(&lcd);
-XPage page;
-byte(&a)[5][5] = (byte(&)[5][5]) * page.create(25);
-byte *temp = page.create(25);
 
 int main(void)
 {
-  XPage::init();
+  byte x;
+  while (true) {
+    lcd.demo(x++);
+  }
+
   lcd.clear(0);
 
-  word w;
+  byte b = 0xee;
+  word w = 0xff99;
+  uint32_t u = 0xaabbccdd;
+  // RGB rgb;
+
+
   micro.at(20, 10);
-  micro.printPstr(PSTR("stack: "));
-  w = SP;
-  micro.printHex(w);
+  micro.printPstr(PSTR("b: "));
+  micro.printHex(b);
 
   micro.at(20, 20);
-  micro.printPstr(PSTR("(word)m: "));
-  micro.printHex((word)m);
+  micro.printPstr(PSTR("(w: "));
+  micro.printHex(w);
 
   micro.at(20, 30);
-  micro.printPstr(PSTR("micro: "));
-  micro.printHex((word)&micro);
+  micro.printPstr(PSTR("u: "));
+  micro.printHex(u);
 
+  /*
   micro.at(20, 40);
-  micro.printPstr(PSTR("page: "));
-  micro.printHex((word)&page);
+  micro.printPstr(PSTR("RGB: "));
+  micro.printHex((uint32_t)(RGB)u);
 
-  micro.at(20, 50);
-  micro.printPstr(PSTR("temp: "));
-  micro.printHex((word)temp);
+    micro.at(20, 50);
+    micro.printPstr(PSTR("temp: "));
+    micro.printHex((word)temp);
 
-  micro.at(20, 60);
-  micro.printPstr(PSTR("(word)a: "));
-  micro.printHex((word)&a);
+    micro.at(20, 60);
+    micro.printPstr(PSTR("(word)a: "));
+    micro.printHex((word)&a);
 
-  micro.at(20, 70);
-  micro.printPstr(PSTR("a[][]: "));
-  micro.printHex((word)a);
+    micro.at(20, 70);
+    micro.printPstr(PSTR("a[][]: "));
+    micro.printHex((word)a);
+  */
 
   /*
    lcd.clear(0);
@@ -60,9 +63,5 @@ int main(void)
      }
      ptr += 4;
    }
-
-     byte x;
-     while (true)
-       lcd.demo(x++);
    */
 }
