@@ -1,4 +1,7 @@
-#pragma once
+#ifndef FONT_6x5_H
+#define FONT_6x5_H
+
+#include <Arduino.h>
 #include <avr/pgmspace.h>
 
 const byte FONT_6x5[] PROGMEM = {
@@ -227,3 +230,4 @@ const byte FONT_6x5[] PROGMEM = {
 0, 0, 9, 21, 23, 9,
 0, 0, 6, 5, 6, 5,
 };
+#endif

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef FONT_H
+#define FONT_H
+
 #include <Arduino.h>
 #include "ST7735S.h"
 #include "font_6x5.h"
@@ -123,3 +125,4 @@ public:
     print(string);
   }
 };
+#endif

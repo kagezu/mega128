@@ -1,3 +1,6 @@
+#ifndef ST7735S_H
+#define ST7735S_H
+
 #include <Arduino.h>
 #include "config.h"
 
@@ -5,8 +8,16 @@
 #define RGB_16 0x05 // 5x6x5 bit
 #define RGB_18 0x06 // 6x6x6 bit (24 bit transfer)
 
-#define MAX_X 127
-#define MAX_Y 159
+#define MAX_X 128
+#define MAX_Y 160
+
+#if RGB_FORMAT == RGB_12
+#include "rgb12.h"
+#elif RGB_FORMAT == RGB_16
+#include "rgb16.h"
+#elif RGB_FORMAT == RGB_18
+#include "rgb18.h"
+#endif
 
 #define SET_BITS(target, mask) target |= mask;
 #define RES_BITS(target, mask) target &= ~mask;
@@ -96,10 +107,11 @@ public:
   void pixel(byte x, byte y, byte r, byte g, byte b);
   void rect(byte x1, byte y1, byte x2, byte y2, uint32_t color);
 
-  inline void clear(uint32_t color) { rect(0, 0, MAX_X, MAX_Y, color); };
+  inline void clear(uint32_t color) { rect(0, 0, MAX_X - 1, MAX_Y - 1, color); };
 
   void symbol(const byte *font, byte symbol, byte x, byte y, byte dx, byte dy);
 
   // Тесты
   void demo(byte d);
 };
+#endif

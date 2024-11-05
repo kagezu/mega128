@@ -1,4 +1,6 @@
-#pragma once
+#ifndef XPAGE_H
+#define XPAGE_H
+
 #include "config.h"
 
 #ifdef XMEM_USE
@@ -50,3 +52,4 @@ public:
   static  void init() {};
 #endif
 };
+#endif

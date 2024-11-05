@@ -487,11 +487,11 @@ void ST7735S::symbol(const byte *font, byte symbol, byte x, byte y, byte dx, byt
 #define VIEWPORT_OFFSET 30
 void ST7735S::demo(byte d)
 {
-  setAddr(0, 0, MAX_X, MAX_Y);
-  for (byte y = VIEWPORT_OFFSET; y <= MAX_Y + VIEWPORT_OFFSET; y++) {
+  setAddr(0, 0, MAX_X - 1, MAX_Y - 1);
+  for (byte y = VIEWPORT_OFFSET; y < MAX_Y + VIEWPORT_OFFSET; y++) {
     word yy = y * y;
 
-    for (byte x = VIEWPORT_OFFSET; x <= MAX_X + VIEWPORT_OFFSET; x++) {
+    for (byte x = VIEWPORT_OFFSET; x < MAX_X + VIEWPORT_OFFSET; x++) {
       word xx = x * x;
 
       byte e = d << 2;
