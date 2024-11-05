@@ -1,6 +1,5 @@
 #include <avr/pgmspace.h>
 #include "ST7735S.h"
-#include "../../../include/rgb18.h"
 
 ST7735S::ST7735S()
 {
@@ -500,13 +499,7 @@ void ST7735S::demo(byte d)
       word g = ((yy - xx) >> 6) + e;
       word b = ((x * y) >> 6) - e;
 
-      // sendRGB(r, g, b);
-
-      RGB rgb(r, g, b);
-      RGB a(rgb);
-      // sendRGB(rgb.red<<4, rgb.green<<4, rgb.blue<<4);
-      // sendRGB((uint16_t)rgb);
-      sendRGB(a);
+      sendRGB(r, g, b);
     }
   }
   DISPLAY_DISCONNECT

@@ -2,6 +2,8 @@
 
 ST7735S lcd;
 Font micro(&lcd);
+XPage page0;
+Draw display(&page0, &lcd);
 
 int main(void)
 {

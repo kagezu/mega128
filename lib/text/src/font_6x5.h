@@ -1,3 +1,4 @@
+#pragma once
 #include <avr/pgmspace.h>
 
 const byte FONT_6x5[] PROGMEM = {

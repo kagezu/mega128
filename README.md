@@ -1,4 +1,4 @@
-# Проект «mega128»
+# Project «mega128»
 
 ### Project to create libraries for:
 

@@ -1,9 +1,6 @@
 #include <Arduino.h>
 #include "config.h"
 
-#ifndef ST7735S_H
-#define ST7735S_H
-
 #define RGB_12 0x03 // 4x4x4 bit
 #define RGB_16 0x05 // 5x6x5 bit
 #define RGB_18 0x06 // 6x6x6 bit (24 bit transfer)
@@ -106,5 +103,3 @@ public:
   // Тесты
   void demo(byte d);
 };
-
-#endif

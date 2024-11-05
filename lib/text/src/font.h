@@ -1,3 +1,4 @@
+#pragma once
 #include <Arduino.h>
 #include "ST7735S.h"
 #include "font_6x5.h"
