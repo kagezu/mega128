@@ -1,8 +1,8 @@
-#include "lcd_driver.h"
+#include "display.h"
 
 #define swap(a, b) { int16_t t = a; a = b; b = t; }
 
-void LcdDriver::pixel(byte x, byte y, byte r, byte g, byte b)
+void Display::pixel(byte x, byte y, byte r, byte g, byte b)
 {
   if (x >= MAX_X || y >= MAX_Y) return;
   setAddr(x, y, x, y);
@@ -24,7 +24,7 @@ void LcdDriver::pixel(byte x, byte y, byte r, byte g, byte b)
   DISPLAY_DISCONNECT
 }
 
-void LcdDriver::pixel(byte x, byte y, RGB color)
+void Display::pixel(byte x, byte y, RGB color)
 {
   if (x >= MAX_X || y >= MAX_Y) return;
   setAddr(x, y, x, y);
@@ -46,7 +46,7 @@ void LcdDriver::pixel(byte x, byte y, RGB color)
   DISPLAY_DISCONNECT;
 }
 
-void LcdDriver::line(byte x0, byte y0, byte x1, byte y1, RGB color)
+void Display::line(byte x0, byte y0, byte x1, byte y1, RGB color)
 {
   bool steep = abs(y1 - y0) > abs(x1 - x0);
   if (steep) {
@@ -81,7 +81,7 @@ void LcdDriver::line(byte x0, byte y0, byte x1, byte y1, RGB color)
   }
 }
 
-void LcdDriver::circle(byte x, byte y, byte r, RGB color)
+void Display::circle(byte x, byte y, byte r, RGB color)
 {
   int16_t f = 1 - r;
   int16_t ddF_x = 1;
@@ -115,7 +115,7 @@ void LcdDriver::circle(byte x, byte y, byte r, RGB color)
   }
 }
 
-void LcdDriver::symbol(const byte *font, byte symbol, byte x, byte y, byte dx, byte dy)
+void Display::symbol(const byte *font, byte symbol, byte x, byte y, byte dx, byte dy)
 {
   // setAddr(x, y, x + dx - 1, y + dy - 1);
   setAddr(x, y, x + dx - 1, y + dy);
@@ -137,7 +137,7 @@ void LcdDriver::symbol(const byte *font, byte symbol, byte x, byte y, byte dx, b
 // тестирование дисплея
 
 #define VIEWPORT_OFFSET 30
-void LcdDriver::demo(byte d)
+void Display::demo(byte d)
 {
   setAddr(0, 0, MAX_X - 1, MAX_Y - 1);
   for (byte y = VIEWPORT_OFFSET; y < MAX_Y + VIEWPORT_OFFSET; y++) {

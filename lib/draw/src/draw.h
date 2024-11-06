@@ -2,7 +2,7 @@
 #define DRAW_H
 
 #include <Arduino.h>
-#include <lcd_driver.h>
+#include <display.h>
 #include <x_page.h>
 
 
@@ -13,12 +13,12 @@ class Draw {
 protected:
   const rgb_bitmap _bitmap;
   XPage *_page;
-  LcdDriver *_lcd;
+  Display *_lcd;
   byte _x = 0, _y = 0;
   RGB _color = RGB(0U);
 
 public:
-  Draw(XPage *page, LcdDriver *lcd) :
+  Draw(XPage *page, Display *lcd) :
     _bitmap((rgb_bitmap)*page->create(BITMAP_SIZE)),
     _page(page),
     _lcd(lcd)

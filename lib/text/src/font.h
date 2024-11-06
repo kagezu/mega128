@@ -2,15 +2,15 @@
 #define FONT_H
 
 #include <Arduino.h>
-#include "lcd_driver.h"
+#include "display.h"
 #include "font_6x5.h"
 
 class Font {
 public:
-  LcdDriver *display;
+  Display *display;
 
 public:
-  Font(LcdDriver *lcd);
+  Font(Display *lcd);
 
   const byte dx = 5;
   const byte dy = 6;

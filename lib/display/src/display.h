@@ -1,9 +1,9 @@
 #ifndef LCD_DRIVER_H
 #define LCD_DRIVER_H
 
-#include "ST7735S.h"
+#include "ST7735S/ST7735S.h"
 
-class LcdDriver : private ST7735S {
+class Display : private ST7735S {
 public:
   // primitive
   void pixel(byte x, byte y, byte r, byte g, byte b);

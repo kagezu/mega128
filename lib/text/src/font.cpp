@@ -1,3 +1,3 @@
 #include "font.h"
 
-Font::Font(LcdDriver *lcd) :display(lcd) {};
+Font::Font(Display *lcd) :display(lcd) {};

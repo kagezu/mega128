@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <lcd_driver.h>
+#include <display.h>
 #include <x_page.h>
 #include <font.h>
 #include <draw.h>
