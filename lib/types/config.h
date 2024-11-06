@@ -4,9 +4,18 @@
 // LCD_SDA    0/1 Данные
 // LCD_SCK    Тактирование
 // INIT_LCD_PORT Инициализация порта
-// RGB__FORMAT RGB_12 = 4x4x4 bit / RGB_16 = 5x6x5 bit / RGB_18 = 6x6x6 bit
+
+#ifndef CONFIG_H
+#define CONFIG_H
 
 #define RGB_FORMAT RGB_18
+
+#define RGB_12 0x03 // 4x4x4 bit
+#define RGB_16 0x05 // 5x6x5 bit
+#define RGB_18 0x06 // 6x6x6 bit (24 bit transfer)
+
+#define MAX_X 128
+#define MAX_Y 160
 
 #ifdef __AVR_ATmega128__
 #define LCD_PORT PORTE
@@ -31,4 +40,6 @@
 #define INIT_LCD_PORT                                      \
   DDRC |= LCD_RS | LCD_SDA | LCD_SCK | LCD_CS | LCD_RESET; \
   PORTC |= LCD_RS | LCD_SDA | LCD_SCK | LCD_CS | LCD_RESET;
+#endif
+
 #endif

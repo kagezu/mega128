@@ -3,21 +3,7 @@
 
 #include <Arduino.h>
 #include "config.h"
-
-#define RGB_12 0x03 // 4x4x4 bit
-#define RGB_16 0x05 // 5x6x5 bit
-#define RGB_18 0x06 // 6x6x6 bit (24 bit transfer)
-
-#define MAX_X 128
-#define MAX_Y 160
-
-#if RGB_FORMAT == RGB_12
-#include "rgb/rgb12.h"
-#elif RGB_FORMAT == RGB_16
-#include "rgb/rgb16.h"
-#elif RGB_FORMAT == RGB_18
-#include "rgb/rgb18.h"
-#endif
+#include "rgb/rgb.h"
 
 #define SET_BITS(target, mask) target |= mask;
 #define RES_BITS(target, mask) target &= ~mask;
