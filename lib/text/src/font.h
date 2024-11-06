@@ -2,7 +2,7 @@
 #define FONT_H
 
 #include <Arduino.h>
-#include "display.h"
+#include "display/display.h"
 #include "font_6x5.h"
 
 class Font {
