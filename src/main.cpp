@@ -7,18 +7,26 @@ LcdDriver lcd;
 
 int main(void)
 {
-    lcd.clear(0);
+  lcd.clear(0);
 
-  word x=0;
+  word x = 0;
   while (true) {
-    for (byte i = 0; i < 128; i++)
+    for (byte i = 0; i < 128; i++) {
       lcd.line(63, 79, i, 0, x++);
-    for (byte i = 0; i < 159; i++)
+      lcd.circle(63, 79, i, x);
+    }
+    for (byte i = 0; i < 159; i++) {
       lcd.line(63, 79, 127, i, x++);
-    for (byte i = 127; i > 0; i--)
+      lcd.circle(63, 79, i, x);
+    }
+    for (byte i = 127; i > 0; i--) {
       lcd.line(63, 79, i, 159, x++);
-    for (byte i = 159; i > 0; i--)
+      lcd.circle(63, 79, i, x);
+    }
+    for (byte i = 159; i > 0; i--) {
       lcd.line(63, 79, 0, i, x++);
+      lcd.circle(63, 79, i, x);
+    }
   }
 
   /*

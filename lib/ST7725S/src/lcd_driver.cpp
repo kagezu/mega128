@@ -4,6 +4,7 @@
 
 void LcdDriver::pixel(byte x, byte y, byte r, byte g, byte b)
 {
+  if (x >= MAX_X || y >= MAX_Y) return;
   setAddr(x, y, x, y);
 
 #if RGB_FORMAT == RGB_12
@@ -23,8 +24,9 @@ void LcdDriver::pixel(byte x, byte y, byte r, byte g, byte b)
   DISPLAY_DISCONNECT
 }
 
-void LcdDriver::pixel(byte x, byte y, word color)
+void LcdDriver::pixel(byte x, byte y, RGB color)
 {
+  if (x >= MAX_X || y >= MAX_Y) return;
   setAddr(x, y, x, y);
 
 #if RGB_FORMAT == RGB_12
@@ -44,7 +46,7 @@ void LcdDriver::pixel(byte x, byte y, word color)
   DISPLAY_DISCONNECT;
 }
 
-void LcdDriver::line(byte x0, byte y0, byte x1, byte y1, word c)
+void LcdDriver::line(byte x0, byte y0, byte x1, byte y1, RGB color)
 {
   bool steep = abs(y1 - y0) > abs(x1 - x0);
   if (steep) {
@@ -67,15 +69,49 @@ void LcdDriver::line(byte x0, byte y0, byte x1, byte y1, word c)
 
   while (x0 <= x1) {
     if (steep)
-      pixel(y0, x0++, c);
+      pixel(y0, x0++, color);
     else
-      pixel(x0++, y0, c);
+      pixel(x0++, y0, color);
 
     err -= dy;
     if (err < 0) {
       y0 += yStep;
       err += dx;
     }
+  }
+}
+
+void LcdDriver::circle(byte x, byte y, byte r, RGB color)
+{
+  int16_t f = 1 - r;
+  int16_t ddF_x = 1;
+  int16_t ddF_y = -2 * r;
+  int16_t x1 = 0;
+  int16_t y1 = r;
+
+  pixel(x, y + r, color);
+  pixel(x, y - r, color);
+  pixel(x + r, y, color);
+  pixel(x - r, y, color);
+
+  while (x1 < y1) {
+    if (f >= 0) {
+      y1--;
+      ddF_y += 2;
+      f += ddF_y;
+    }
+    x1++;
+    ddF_x += 2;
+    f += ddF_x;
+
+    pixel(x + x1, y + y1, color);
+    pixel(x - x1, y + y1, color);
+    pixel(x + x1, y - y1, color);
+    pixel(x - x1, y - y1, color);
+    pixel(x + y1, y + x1, color);
+    pixel(x - y1, y + x1, color);
+    pixel(x + y1, y - x1, color);
+    pixel(x - y1, y - x1, color);
   }
 }
 

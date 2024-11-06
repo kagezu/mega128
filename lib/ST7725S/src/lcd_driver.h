@@ -7,8 +7,9 @@ class LcdDriver : private ST7735S {
 public:
   // primitive
   void pixel(byte x, byte y, byte r, byte g, byte b);
-  void pixel(byte x, byte y, word color);
-  void line(byte x0, byte y0, byte x1, byte y1, word c);
+  void pixel(byte x, byte y, RGB color);
+  void line(byte x0, byte y0, byte x1, byte y1, RGB color);
+  void circle(byte x, byte y, byte r, RGB color);
 
   // в разработке
 public:
