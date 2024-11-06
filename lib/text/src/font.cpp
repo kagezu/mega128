@@ -1,6 +1,3 @@
 #include "font.h"
 
-Font::Font(ST7735S* lcd)
-{
-  display = lcd;
-}
+Font::Font(LcdDriver *lcd) :display(lcd) {};

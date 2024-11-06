@@ -110,21 +110,21 @@ void ST7735S::sendCommand(byte command)
   DATA_MODE // Запись данных
 };
 
-void ST7735S::setAddr(byte x1, byte y1, byte x2, byte y2)
+void ST7735S::setAddr(byte x0, byte y0, byte x1, byte y1)
 {
   DISPLAY_CONNECT; // CS Выбор дисплея
 
   sendCommand(CASET); // Column Address Set
   sendZero();
-  sendByte(x1);
+  sendByte(x0);
   sendZero();
-  sendByte(x2);
+  sendByte(x1);
 
   sendCommand(RASET); // Row Address Set
   sendZero();
-  sendByte(y1);
+  sendByte(y0);
   sendZero();
-  sendByte(y2);
+  sendByte(y1);
 
   sendCommand(RAMWR); // Memory Write
 };
@@ -180,7 +180,7 @@ void ST7735S::sendByte(byte data)
 };
 
 #if RGB_FORMAT == RGB_12
-void ST7735S::sendRGB(word data)
+void ST7735S::sendRGB(uint16_t data)
 {
   byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
   byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
@@ -215,7 +215,7 @@ void ST7735S::sendRGB(word data)
 };
 
 #elif RGB_FORMAT == RGB_16
-void ST7735S::sendRGB(word data)
+void ST7735S::sendRGB(uint16_t data)
 {
   byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
   byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
@@ -257,11 +257,26 @@ void ST7735S::sendRGB(word data)
   LCD_PORT = data & 0x1 ? b1 : b0;
   LCD_PORT = set;
 };
+
+#elif RGB_FORMAT == RGB_18
+void ST7735S::sendRGB(uint16_t data) // формат 0x0rgb
+{
+  sendRGB((data >> 4) & 0xf0, data & 0xf0, data << 4);
+}
 #endif
 
 void ST7735S::sendRGB(uint32_t color)
 {
   sendRGB(color >> 16, color >> 8, color);
+}
+
+void ST7735S::sendRGB(RGB color)
+{
+#if RGB_FORMAT == RGB_12 || RGB_FORMAT == RGB_16
+  sendRGB((uint16_t)color);
+#elif RGB_FORMAT == RGB_18
+  sendRGB(color.r, color.g, color.b);
+#endif
 }
 
 void ST7735S::sendRGB(byte r, byte g, byte b)
@@ -332,65 +347,16 @@ void ST7735S::sendRGB(byte r, byte g, byte b)
   LCD_PORT = b0;
   LCD_PORT = set;
 #endif
-
 };
 
-void ST7735S::pixel(byte x, byte y, word color)
+void ST7735S::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
 {
-  setAddr(x, y, x, y);
+  byte r = color.r;
+  byte g = color.g;
+  byte b = color.b;
 
-#if RGB_FORMAT == RGB_12
-  sendRGB((word)0);
-  sendRGB(color);
-
-#elif RGB_FORMAT == RGB_16
-  sendZero();
-  sendZero();
-  sendRGB(color);
-
-#elif RGB_FORMAT == RGB_18 // Заглушка
-  sendZero();
-  sendZero();
-  sendZero();
-  sendRGB(color, color, color);
-
-#endif
-
-  DISPLAY_DISCONNECT;
-}
-
-void ST7735S::pixel(byte x, byte y, byte r, byte g, byte b)
-{
-  setAddr(x, y, x, y);
-
-#if RGB_FORMAT == RGB_12
-  sendRGB((word)0);
-  sendRGB(r, g, b);
-
-#elif RGB_FORMAT == RGB_16
-  sendZero();
-  sendZero();
-  sendRGB(r, g, b);
-
-#elif RGB_FORMAT == RGB_18
-  sendZero();
-  sendZero();
-  sendZero();
-  sendRGB(r, g, b);
-
-#endif
-
-  DISPLAY_DISCONNECT
-}
-
-void ST7735S::rect(byte x1, byte y1, byte x2, byte y2, uint32_t color)
-{
-  byte r = color >> 16;
-  byte g = color >> 8;
-  byte b = color;
-
-  setAddr(x1, y1, x2, y2);
-  word len = (x2 - x1 + 1) * (y2 - y1 + 1);
+  setAddr(x0, y0, x1, y1);
+  word len = (x1 - x0 + 1) * (y1 - y0 + 1);
   byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
   byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
   byte set = LCD_PORT;
@@ -462,45 +428,3 @@ void ST7735S::rect(byte x1, byte y1, byte x2, byte y2, uint32_t color)
 
   DISPLAY_DISCONNECT
 };
-
-void ST7735S::symbol(const byte *font, byte symbol, byte x, byte y, byte dx, byte dy)
-{
-  // setAddr(x, y, x + dx - 1, y + dy - 1);
-  setAddr(x, y, x + dx - 1, y + dy);
-  for (char j = 0; j < dy; j++) {
-    byte data = pgm_read_byte(font + symbol * 6 - 192 + j);
-    for (byte i = 0; i < dx; i++)
-      if (data & (1 << i))
-        sendRGB(0xff, 0xff, 0xff);
-      else
-        sendRGB(0x00, 0x00, 0x00);
-  }
-
-  for (byte i = 0; i < dx; i++)
-    sendRGB(0x00, 0x00, 0x00);
-
-  DISPLAY_DISCONNECT
-}
-
-// тестирование дисплея
-
-#define VIEWPORT_OFFSET 30
-void ST7735S::demo(byte d)
-{
-  setAddr(0, 0, MAX_X - 1, MAX_Y - 1);
-  for (byte y = VIEWPORT_OFFSET; y < MAX_Y + VIEWPORT_OFFSET; y++) {
-    word yy = y * y;
-
-    for (byte x = VIEWPORT_OFFSET; x < MAX_X + VIEWPORT_OFFSET; x++) {
-      word xx = x * x;
-
-      byte e = d << 2;
-      word r = ((xx + yy) >> 6) + e;
-      word g = ((yy - xx) >> 6) + e;
-      word b = ((x * y) >> 6) - e;
-
-      sendRGB(r, g, b);
-    }
-  }
-  DISPLAY_DISCONNECT
-}

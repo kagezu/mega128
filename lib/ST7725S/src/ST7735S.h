@@ -95,23 +95,23 @@
 class ST7735S {
 public:
   ST7735S();
+
+private:
   void sendCommand(byte data);
-  void setAddr(byte x1, byte y1, byte x2, byte y2);
+
+protected:
+  void setAddr(byte x0, byte y0, byte x1, byte y1);
   void sendZero();
   void sendByte(byte data);
   void sendRGB(byte r, byte g, byte b);
-  void sendRGB(word data);
+  void sendRGB(uint16_t data); // формат 0x0rgb / RGB_16
   void sendRGB(uint32_t color);
+  void sendRGB(RGB color);
 
-  void pixel(byte x, byte y, word color);
-  void pixel(byte x, byte y, byte r, byte g, byte b);
-  void rect(byte x1, byte y1, byte x2, byte y2, uint32_t color);
-
-  inline void clear(uint32_t color) { rect(0, 0, MAX_X - 1, MAX_Y - 1, color); };
-
-  void symbol(const byte *font, byte symbol, byte x, byte y, byte dx, byte dy);
-
-  // Тесты
-  void demo(byte d);
+  void rect(byte x0, byte y0, byte x1, byte y1, RGB color);
+  inline void rect(byte x0, byte y0, byte x1, byte y1, uint32_t color) \
+  { rect(x0, y0, x1, y1, RGB(color)); }
+  inline void rect(byte x0, byte y0, byte x1, byte y1, uint16_t color) \
+  { rect(x0, y0, x1, y1, RGB(color)); }
 };
 #endif

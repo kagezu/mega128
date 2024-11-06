@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <ST7735S.h>
+#include <lcd_driver.h>
 #include <x_page.h>
 #include <font.h>
 #include <draw.h>

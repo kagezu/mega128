@@ -2,7 +2,7 @@
 
 void Draw::point(byte x, byte y)
 {
-  _lcd->pixel(x, y, _color.r, _color.g, _color.b)
+  _lcd->pixel(x, y, _color.r, _color.g, _color.b);
 }
 
 void Draw::moveTo(byte x, byte y)

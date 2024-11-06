@@ -1,12 +1,27 @@
 ﻿#include <init.h>
 
-ST7735S lcd;
-Font micro(&lcd);
-XPage page0;
-Draw display(&page0, &lcd);
+LcdDriver lcd;
+// Font micro(&lcd);
+// XPage page0;
+// Draw display(&page0, &lcd);
 
 int main(void)
 {
+    lcd.clear(0);
+
+  word x=0;
+  while (true) {
+    for (byte i = 0; i < 128; i++)
+      lcd.line(63, 79, i, 0, x++);
+    for (byte i = 0; i < 159; i++)
+      lcd.line(63, 79, 127, i, x++);
+    for (byte i = 127; i > 0; i--)
+      lcd.line(63, 79, i, 159, x++);
+    for (byte i = 159; i > 0; i--)
+      lcd.line(63, 79, 0, i, x++);
+  }
+
+  /*
   byte x;
   while (true) {
     lcd.demo(x++);
@@ -32,7 +47,6 @@ int main(void)
   micro.printPstr(PSTR("u: "));
   micro.printHex(u);
 
-  /*
   micro.at(20, 40);
   micro.printPstr(PSTR("RGB: "));
   micro.printHex((uint32_t)(RGB)u);

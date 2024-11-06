@@ -1,7 +1,10 @@
 #ifndef DRAW_H
 #define DRAW_H
 
-#include "init.h"
+#include <Arduino.h>
+#include <lcd_driver.h>
+#include <x_page.h>
+
 
 typedef RGB(&rgb_bitmap)[1][MAX_X];
 #define BITMAP_SIZE MAX_Y * MAX_X * sizeof(RGB)
@@ -9,13 +12,13 @@ typedef RGB(&rgb_bitmap)[1][MAX_X];
 class Draw {
 protected:
   const rgb_bitmap _bitmap;
-  const XPage *_page;
-  const ST7735S *_lcd;
+  XPage *_page;
+  LcdDriver *_lcd;
   byte _x = 0, _y = 0;
-  RGB _color = 0;
+  RGB _color = RGB(0U);
 
 public:
-  Draw(XPage *page, ST7735S *lcd) :
+  Draw(XPage *page, LcdDriver *lcd) :
     _bitmap((rgb_bitmap)*page->create(BITMAP_SIZE)),
     _page(page),
     _lcd(lcd)
