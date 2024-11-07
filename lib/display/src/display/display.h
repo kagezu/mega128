@@ -20,9 +20,11 @@ public:
   // Реализация интерфейса Draw
 public:
   void pixel(byte x, byte y, RGB color);
+  void wLine(uint8_t x, uint8_t y, uint8_t length);
+  void hLine(uint8_t x, uint8_t y, uint8_t length);
 
 public:
-  inline void clear(RGB color) { rect(0, 0, MAX_X - 1, MAX_Y - 1, color); };
+  inline void clear(RGB color) { rect(0, 0, MAX_X, MAX_Y, color); };
 };
 
 #endif

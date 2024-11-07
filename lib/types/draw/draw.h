@@ -16,6 +16,7 @@ public:
   void background(RGB b) { _background = b; }
   void transparent(uint8_t t) { _transparent = t; }
 
+  // Реализуется в данном классе
 public:
   inline void pixel(uint8_t x, uint8_t y) { pixel(x, y, _color); }
   inline void lineTo(uint8_t x, uint8_t y) { line(_pointX, _pointY, x, y); _pointX = x; _pointY = y; }

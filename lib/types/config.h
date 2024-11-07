@@ -14,8 +14,12 @@
 #define RGB_16 0x05 // 5x6x5 bit
 #define RGB_18 0x06 // 6x6x6 bit (24 bit transfer)
 
-#define MAX_X 128
-#define MAX_Y 160
+#define WEIGHT 128
+#define HEIGHT 160
+
+#define MAX_X WEIGHT - 1
+#define MAX_Y HEIGHT - 1
+
 
 #ifdef __AVR_ATmega128__
 #define LCD_PORT PORTE

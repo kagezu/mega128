@@ -1,4 +1,4 @@
-#include "x_page.h"
+#include "xpage.h"
 
 XPage::XPage(word physicalAddress, byte bitMask, word start)
 {
