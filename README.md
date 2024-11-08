@@ -1,9 +1,9 @@
-# Project «mega128»
+# Проект «mega128»
 
-### Project to create libraries for:
+### Проект по созданию библиотек для:
++ ATmega128 / ATmega32* + display ST7735S
++ ATmega128 + eXternal MEMory (XMEM)
 
-ATmega128/32 + display ST7735S
-ATmega128 + eXternal MEMory (XMEM)
-
-development environment:
-PlatformIO - https://platformio.org
+#### Среда разработки:
++ PlatformIO - https://platformio.org
++ VSCode - https://code.visualstudio.com
