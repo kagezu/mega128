@@ -18,16 +18,23 @@ public:
 
   // Реализуется в данном классе
 public:
+  // Линии и фигуры
   inline void pixel(uint8_t x, uint8_t y) { pixel(x, y, _color); }
   inline void lineTo(uint8_t x, uint8_t y) { line(_pointX, _pointY, x, y); _pointX = x; _pointY = y; }
-  inline void lineToFat(uint8_t x, uint8_t y) { lineFat(_pointX, _pointY, x, y); _pointX = x; _pointY = y; }
   void line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
   void roundRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius);
-  void lineFat(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
   void rectLine(uint8_t x, uint8_t y, uint8_t width, uint8_t height);
-  void rectFat(uint8_t x, uint8_t y, uint8_t width, uint8_t height);
   void circle(uint8_t x, uint8_t y, uint8_t  radius);
+
+  // Утолщённые линии и фигуры
+  inline void lineToFat(uint8_t x, uint8_t y) { lineFat(_pointX, _pointY, x, y); _pointX = x; _pointY = y; }
+  void lineFat(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
+  void rectFat(uint8_t x, uint8_t y, uint8_t width, uint8_t height);
   void circleFat(uint8_t x, uint8_t y, uint8_t  radius);
+
+  // Полные фигуры
+  void circleFill(uint8_t x, uint8_t y, uint8_t  radius);
+  void roundRectFill(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t  radius);
 
   // Реализуется в дочернем классе
 public:
@@ -37,11 +44,7 @@ public:
 
   virtual void wLineFat(uint8_t x, uint8_t y, uint8_t x1);
   virtual void hLineFat(uint8_t x, uint8_t y, uint8_t y1);
-  // virtual void roundRectFat(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t  radius);
-
-  // virtual void circleFill(uint8_t x, uint8_t y, uint8_t  radius);
-  // virtual void rectFill(uint8_t x, uint8_t y, uint8_t width, uint8_t height);
-  // virtual void roundRectFill(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t  radius);
+  virtual void rectFill(uint8_t x, uint8_t y, uint8_t width, uint8_t height);
 
 public:
   virtual void clear(RGB color);

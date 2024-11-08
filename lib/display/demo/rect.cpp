@@ -4,8 +4,15 @@ Display lcd;
 
 int main(void)
 {
+  RGB c = 0u;
   lcd.clear(0U);
-  lcd.fat(5);
-  lcd.circleFat(63, 79, 50);
-
+  lcd.color(0xa0a0ffU);
+  lcd.roundRectFill(5, 5, 90, 90, 20);
+  while (true) {
+    lcd.color(c);
+    lcd.roundRectFill(10, 10, 80, 80, 15);
+    c.r += 3;
+    c.g += 5;
+    c.b += 7;
+  }
 }

@@ -25,6 +25,7 @@ public:
 
   void wLineFat(uint8_t x, uint8_t y, uint8_t x1);
   void hLineFat(uint8_t x, uint8_t y, uint8_t y1);
+  inline void rectFill(uint8_t x, uint8_t y, uint8_t width, uint8_t height) { rect(x, y, x + width - 1, y + height - 1, _color); }
 
 public:
   inline void clear(RGB color) { rect(0, 0, MAX_X, MAX_Y, color); };

@@ -1,8 +1,8 @@
 ﻿// Линии и окружности
-#include "../lib/display/demo/line.cpp"
+// #include "../lib/display/demo/line.cpp"
 
 // Прямоугольники
-// #include "../lib/display/demo/rect.cpp"
+#include "../lib/display/demo/rect.cpp"
 
 // Скринсейвер
 // #include "../lib/display/demo/screensaver.cpp"

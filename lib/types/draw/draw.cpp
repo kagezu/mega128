@@ -113,6 +113,66 @@ void Draw::circleFat(uint8_t x, uint8_t y, uint8_t radius)
   }
 }
 
+void Draw::circleFill(uint8_t x, uint8_t y, uint8_t radius)
+{
+  radius++;
+  int16_t f = 1 - radius;
+  int16_t ddF_x = 1;
+  int16_t ddF_y = -2 * radius;
+  int16_t dx = 0;
+  int16_t dy = radius;
+
+  wLine(x - radius + 1, y, x + radius - 1);
+  while (dx < dy) {
+    if (f >= 0) {
+      dy--;
+      ddF_y += 2;
+      f += ddF_y;
+      wLine(x - dx + 1, y + dy, x + dx - 1);
+      wLine(x - dx + 1, y - dy, x + dx - 1);
+    }
+    dx++;
+    ddF_x += 2;
+    f += ddF_x;
+
+    wLine(x - dy + 1, y + dx, x + dy - 1);
+    wLine(x - dy + 1, y - dx, x + dy - 1);
+  }
+}
+
+void Draw::roundRectFill(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius)
+{
+  int16_t f = 1 - radius;
+  int16_t ddF_x = 1;
+  int16_t ddF_y = -2 * radius;
+  int16_t dx = 0;
+  int16_t dy = radius;
+
+  uint8_t x1 = x + radius;
+  uint8_t y1 = y + radius;
+  uint8_t x2 = x + width - radius - 1;
+  uint8_t y2 = y + height - radius - 1;
+
+  rectFill(x, y1, width, height + ddF_y);
+
+  while (dx < dy) {
+    if (f >= 0) {
+      dy--;
+      ddF_y += 2;
+      f += ddF_y;
+
+      wLine(x1 - dx, y1 - dy, x2 + dx);
+      wLine(x1 - dx, y2 + dy, x2 + dx);
+    }
+    dx++;
+    ddF_x += 2;
+    f += ddF_x;
+
+    wLine(x1 - dy, y1 - dx, x2 + dy);
+    wLine(x1 - dy, y2 + dx, x2 + dy);
+  }
+}
+
 void Draw::roundRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius)
 {
   int16_t f = 1 - radius;
