@@ -20,9 +20,3 @@
 // #define XMEM_A18_INIT   bitSet(DDRB, XMEM_A18);
 
 #endif
-
-#ifdef __AVR_ATmega328P__
-// Профиль используется для тестирования и совместимости
-#define XMEM_START      0x400
-#define XMEM_END        RAMEND
-#endif

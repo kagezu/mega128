@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include "display/display.h"
-#include "x_page.h"
+#include "xpage.h"
 
 
 typedef RGB(&rgb_bitmap)[1][MAX_X];

@@ -6,6 +6,11 @@
 #ifdef XMEM_USE
 #define XMEM_START      RAMEND+1
 #define XMEM_END        XRAMEND
+
+#elif __AVR_ATmega328P__
+// Профиль используется для тестирования и совместимости
+#define XMEM_START      0x400
+#define XMEM_END        RAMEND
 #endif
 
 // Физически возможный минимальный размер страницы
