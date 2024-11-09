@@ -1,5 +1,5 @@
 ﻿// Линии и окружности
-#include "../lib/display/demo/line.cpp"
+// #include "../lib/display/demo/line.cpp"
 
 // Прямоугольники
 // #include "../lib/display/demo/rect.cpp"
@@ -9,3 +9,6 @@
 
 // Вывод памяти на экран
 // #include "../lib/text/demo/memory_scroll.cpp"
+
+// Выделение памяти
+#include "../lib/xmem/demo/pages.cpp"

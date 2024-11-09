@@ -14,7 +14,7 @@ XPage::XPage(word physicalAddress, byte bitMask, word start)
   init();
 }
 
-byte *XPage::create(word memorySize)
+byte *XPage::malloc(word memorySize)
 {
   if (free() < memorySize) return 0;
   word result = _offset;

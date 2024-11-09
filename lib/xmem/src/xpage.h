@@ -42,7 +42,7 @@ public:
     @param start адрес начала eXternal SRAM
    */
   XPage(word physicalAddress = 0, byte bitMask = XMEM_60K, word start = XMEM_START);
-  byte *create(word memorySize);
+  byte *malloc(word memorySize);
 
 public:
   inline void reset() { _offset = _start; }
