@@ -8,6 +8,7 @@ class Display : private ST7735S, public Draw {
 public:
   // Специфические для данного класса
   void pixel(byte x, byte y, byte r, byte g, byte b);
+  void copyBuffer(RGB *source);
 
   // в разработке
 public:
@@ -29,6 +30,7 @@ public:
 
 public:
   inline void clear(RGB color) { rect(0, 0, MAX_X, MAX_Y, color); };
+  void copyBitmap(uint8_t x, uint8_t y, uint8_t width, uint8_t height, RGB *source, uint16_t incLine = 0);
 };
 
 #endif

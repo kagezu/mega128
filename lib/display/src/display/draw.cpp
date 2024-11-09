@@ -21,7 +21,6 @@ void Display::pixel(byte x, byte y, RGB color)
   sendZero();
   sendRGB(color);
 #endif
-
   DISPLAY_DISCONNECT;
 }
 
@@ -59,4 +58,15 @@ void Display::hLineFat(uint8_t x, uint8_t y, uint8_t y1)
   if (x1 > MAX_X) x1 = MAX_X;
   if (y == y1) pixel(x, y, _color);
   else  rect(x, y, x1, y1, _color);
+}
+
+void Display::copyBitmap(uint8_t x, uint8_t y, uint8_t width, uint8_t height, RGB *source, uint16_t incLine)
+{
+  setAddr(x, y, x + width - 1, y + height - 1);
+  for (byte j = 0; j < height; j++) {
+    for (byte i = 0; i < width; i++)
+      sendRGB(*source++);
+    source += incLine;
+  }
+  DISPLAY_DISCONNECT;
 }

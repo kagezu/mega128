@@ -18,7 +18,14 @@ void Display::pixel(byte x, byte y, byte r, byte g, byte b)
   sendZero();
   sendRGB(r, g, b);
 #endif
+  DISPLAY_DISCONNECT
+}
 
+void Display::copyBuffer(RGB *source)
+{
+  uint16_t length = WEIGHT * HEIGHT;
+  setAddr(0, 0, MAX_X, MAX_Y);
+  while (length--) sendRGB(*source++);
   DISPLAY_DISCONNECT
 }
 

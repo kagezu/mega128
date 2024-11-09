@@ -48,6 +48,5 @@ public:
 
 public:
   virtual void clear(RGB color);
-  // virtual void copyRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, RGB *source, uint16_t incLine);
-
+  virtual void copyBitmap(uint8_t x, uint8_t y, uint8_t width, uint8_t height, RGB *source, uint16_t incLine);
 };
