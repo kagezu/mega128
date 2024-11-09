@@ -3,8 +3,6 @@
 
 #include "display.h"
 
-// #define swap(a, b) { int16_t t = a; a = b; b = t; }
-
 void Display::pixel(byte x, byte y, RGB color)
 {
   if (x > MAX_X || y > MAX_Y) return;

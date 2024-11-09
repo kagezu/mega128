@@ -5,44 +5,44 @@ Display lcd;
 int main(void)
 {
 
-  byte k = 3, i;
+  byte k = 5, i;
 
   lcd.clear(0U);
   lcd.fat(k);
 
-  RGB c(0, 0, 0);
+  RGB c = 0xffffffu;
   while (true) {
-    for (i = 0; i < 128 - k; i++) {
+    for (i = 0; i < 128; i++) {
       lcd.color(c);
       lcd.lineFat(63, 79, i, 0);
-      // lcd.circleFat(63, 79, (i >> 2) + 10);
-      c.b += 2;
+      lcd.circleFat(63, 79, (i >> 2) + 10);
+      c.b++;
       c.g++;
-      c.r += 3;
+      c.r++;
     }
-    for (i = 0; i < 159 - k; i++) {
+    for (i = 0; i < 159; i++) {
       lcd.color(c);
       lcd.lineFat(63, 79, 127, i);
-      // lcd.circleFat(63, 79, (i >> 2) + 10);
-      c.b += 3;
+      lcd.circleFat(63, 79, (i >> 2) + 10);
+      c.b++;
       c.g++;
-      c.r += 2;
+      c.r--;
     }
-    for (i = 127; i < 128 && i>k; i--) {
+    for (i = 127; i < 128; i--) {
       lcd.color(c);
       lcd.lineFat(63, 79, i, 159);
-      // lcd.circleFat(63, 79, (i >> 2) + 10);
+      lcd.circleFat(63, 79, (i >> 2) + 10);
       c.b++;
-      c.g += 3;
-      c.r += 2;
+      c.g--;
+      c.r++;
     }
-    for (i = 159; i < 160 && i>k; i--) {
+    for (i = 159; i < 160; i--) {
       lcd.color(c);
       lcd.lineFat(63, 79, 0, i);
-      // lcd.circleFat(63, 79, (i >> 2) + 10);
+      lcd.circleFat(63, 79, (i >> 2) + 10);
       c.b--;
-      c.g += 2;
-      c.r++;
+      c.g++;
+      c.r--;
     }
   }
 }

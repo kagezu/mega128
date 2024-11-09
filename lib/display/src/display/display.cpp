@@ -57,6 +57,7 @@ void Display::demo(byte d)
       word g = ((yy - xx) >> 6) + e;
       word b = ((x * y) >> 6) - e;
 
+      // sendRGB(RGB(r, g, b));
       sendRGB(r, g, b);
     }
   }

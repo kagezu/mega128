@@ -11,11 +11,9 @@ public:
   RGB(uint8_t red, uint8_t green, uint8_t blue)
     :b(blue), g(green), r(red)
   {}
-
   RGB(uint32_t rgb) // формат 0x00rrggbb
     :b(rgb), g(rgb >> 8), r(rgb >> 16)
   {}
-
   RGB(uint16_t rgb) // формат 0x0rgb
     : b(rgb << 4), g(rgb & 0xf0), r((rgb >> 4) & 0xf0)
   {}

@@ -351,9 +351,19 @@ void ST7735S::sendRGB(byte r, byte g, byte b)
 
 void ST7735S::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
 {
+#if RGB_FORMAT == RGB_12
+  byte r = (uint16_t)color >> 4;
+  byte g = (uint16_t)color;
+  byte b = (uint16_t)color << 4;
+#elif RGB_FORMAT == RGB_16
+  byte r = (uint16_t)color >> 8;
+  byte g = (uint16_t)color >> 3;
+  byte b = (uint16_t)color << 3;
+#elif RGB_FORMAT == RGB_18
   byte r = color.r;
   byte g = color.g;
   byte b = color.b;
+#endif
 
   setAddr(x0, y0, x1, y1);
   word len = (x1 - x0 + 1) * (y1 - y0 + 1);
@@ -394,10 +404,10 @@ void ST7735S::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
   #if RGB_FORMAT == RGB_18 || RGB_FORMAT == RGB_16
     LCD_PORT = g & 0x8 ? b1 : b0;
     LCD_PORT = set;
-  #endif
-  #if RGB_FORMAT == RGB_18
     LCD_PORT = g & 0x4 ? b1 : b0;
     LCD_PORT = set;
+  #endif
+  #if RGB_FORMAT == RGB_18
     LCD_PORT = b0;
     LCD_PORT = set;
     LCD_PORT = b0;
