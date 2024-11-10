@@ -1,9 +1,7 @@
 #ifndef ST7735S_H
 #define ST7735S_H
 
-#include <Arduino.h>
 #include "config.h"
-#include "rgb/rgb.h"
 
 #define SET_BITS(target, mask) target |= mask;
 #define RES_BITS(target, mask) target &= ~mask;
