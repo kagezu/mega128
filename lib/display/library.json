@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/platformio/platformio-core/develop/platformio/assets/schema/library.json",
-  "name": "ST7735S",
+  "name": "display",
   "version": "1.0.0",
   "platforms": "atmelavr",
   "headers": []

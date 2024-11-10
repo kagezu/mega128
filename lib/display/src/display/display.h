@@ -21,16 +21,9 @@ public:
   // Реализация интерфейса Draw
 public:
   void pixel(byte x, byte y, RGB color);
-  void wLine(uint8_t x, uint8_t y, uint8_t x1);
-  void hLine(uint8_t x, uint8_t y, uint8_t y1);
-
-  void wLineFat(uint8_t x, uint8_t y, uint8_t x1);
-  void hLineFat(uint8_t x, uint8_t y, uint8_t y1);
-  inline void rectFill(uint8_t x, uint8_t y, uint8_t width, uint8_t height) { rect(x, y, x + width - 1, y + height - 1, _color); }
-
-public:
+  inline void rectFill(uint8_t x, uint8_t y, uint8_t x1, uint8_t y1) { rect(x, y, x1, y1, _color); }
   inline void clear(RGB color) { rect(0, 0, MAX_X, MAX_Y, color); };
-  void copyBitmap(uint8_t x, uint8_t y, uint8_t width, uint8_t height, RGB *source, uint16_t incLine = 0);
+  void copyBitmap(uint8_t x, uint8_t y, uint8_t width, uint8_t height, RGB *source);
 };
 
 #endif

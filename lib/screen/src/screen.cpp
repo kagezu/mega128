@@ -1,18 +1,46 @@
 #include "screen.h"
 
-void Screen::point(byte x, byte y)
+void Screen::pixel(uint8_t x, uint8_t y, RGB color)
 {
-  _lcd->pixel(x, y, _color.r, _color.g, _color.b);
+  _bitmap[y][x] = color;
 }
 
-void Screen::moveTo(byte x, byte y)
+void Screen::rectFill(uint8_t x, uint8_t y, uint8_t x1, uint8_t y1)
 {
-  _x = x;
-  _y = y;
+  RGB *bitmap = &_bitmap[y][x];
+  uint8_t incLine = MAX_X - x1 + x;
+  while (y++ <= y1) {
+    while (x++ <= x1)
+      *bitmap++ = _color;
+    bitmap += incLine;
+  }
 }
 
-void Screen::lineTo(byte x, byte y)
-{}
+void Screen::clear(RGB color)
+{
+  RGB *bitmap = (RGB *)_bitmap[0];
+  uint16_t length = WEIGHT * HEIGHT;
+  while (length--) *bitmap++ = color;
+}
 
-void Screen::line(byte x1, byte y1, byte x2, byte y2)
-{}
+void Screen::copyBitmap(uint8_t x, uint8_t y, uint8_t width, uint8_t height, RGB *source)
+{
+  RGB *bitmap = &_bitmap[y][x];
+  uint8_t inc = WEIGHT - width;
+  for (byte j = 0; j < height; j++) {
+    for (byte i = 0; i < width; i++)
+      *bitmap++ = *source++;
+    bitmap += inc;
+  }
+}
+
+void Screen::saveBitmap(uint8_t x, uint8_t y, uint8_t width, uint8_t height, RGB *target)
+{
+  RGB *bitmap = &_bitmap[y][x];
+  uint8_t inc = WEIGHT - width;
+  for (byte j = 0; j < height; j++) {
+    for (byte i = 0; i < width; i++)
+      *target++ = *bitmap++;
+    bitmap += inc;
+  }
+}

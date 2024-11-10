@@ -1,7 +1,8 @@
 #ifndef ST7735S_H
 #define ST7735S_H
 
-#include "config.h"
+#include "display.config.h"
+#include "rgb/rgb.h"
 
 #define SET_BITS(target, mask) target |= mask;
 #define RES_BITS(target, mask) target &= ~mask;
@@ -93,9 +94,11 @@ protected:
   void sendRGB(RGB color);
 
   void rect(byte x0, byte y0, byte x1, byte y1, RGB color);
-  inline void rect(byte x0, byte y0, byte x1, byte y1, uint32_t color) \
-  { rect(x0, y0, x1, y1, RGB(color)); }
-  inline void rect(byte x0, byte y0, byte x1, byte y1, uint16_t color) \
-  { rect(x0, y0, x1, y1, RGB(color)); }
+  /*
+    inline void rect(byte x0, byte y0, byte x1, byte y1, uint32_t color) \
+    { rect(x0, y0, x1, y1, RGB(color)); }
+    inline void rect(byte x0, byte y0, byte x1, byte y1, uint16_t color) \
+    { rect(x0, y0, x1, y1, RGB(color)); }
+  */
 };
 #endif
