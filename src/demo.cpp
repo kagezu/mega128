@@ -8,7 +8,7 @@
 
 // -------------  class Text  --------------
 // Вывод памяти на экран
-// #include "../lib/text/demo/memory_scroll.cpp"
+#include "../lib/text/demo/memory_scroll.cpp"
 
 // -------------  class XPage  --------------
 // Выделение памяти
@@ -16,4 +16,4 @@
 
 // -------------  class Screen  --------------
 // Выделение памяти
-#include "../lib/screen/demo/drawing.cpp"
+// #include "../lib/screen/demo/drawing.cpp"

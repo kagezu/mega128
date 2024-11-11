@@ -3,17 +3,15 @@
 
 #include <Arduino.h>
 #include "display/display.h"
-#include "font_6x5.h"
 
-class Font {
+class Text {
+private:
+  Draw *_display;
+  byte *_font;
+
 public:
-  Display *display;
-
-public:
-  Font(Display *lcd);
-
-  const byte dx = 5;
-  const byte dy = 6;
+  Text(Draw *lcd) :_display(lcd) {};
+  void font(const byte *font) { _font = (byte *)font; }
 
   byte cursorX = 0;
   byte cursorY = 0;
@@ -26,7 +24,12 @@ public:
 
   void symbol(byte symbol)
   {
-    display->symbol(FONT_6x5, symbol, cursorX, cursorY, dx, dy);
+    byte dx = pgm_read_byte(_font);
+    byte dy = pgm_read_byte(_font + 1);
+    byte ds = pgm_read_byte(_font + 2);
+    byte *source = (byte *)(_font + (symbol - ds) * dy + 3);
+
+    _display->symbol(source, cursorX, cursorY, dx, dy);
     cursorX += dx + 1;
     if (cursorX > MAX_X - dx) {
       cursorY += dy + 2;
@@ -35,7 +38,24 @@ public:
         cursorY = 0;
     }
   }
+  /*
+  void symbol(byte symbol)
+  {
+    byte dx = pgm_read_byte(_font);
+    byte dy = pgm_read_byte(_font + 1);
+    byte ds = pgm_read_byte(_font + 2);
+    byte *source = (byte *)(_font + (symbol - ds) * dy + 3);
 
+    _display->symbol(source, cursorX, cursorY, dx, dy);
+    cursorX += dx + 1;
+    if (cursorX > MAX_X - dx) {
+      cursorY += dy + 2;
+      cursorX = 0;
+      if (cursorY > MAX_Y - dy)
+        cursorY = 0;
+    }
+  }
+*/
   void print(const char *string)
   {
     while (char ch = *string++)
@@ -74,7 +94,7 @@ public:
   {
     char string[11];
     string[0] = '0';
-    string[1] = 'x';
+    string[1] = ':';
     string[10] = 0;
 
     string[9] = hexToChar(number);
@@ -100,7 +120,7 @@ public:
   {
     char string[7];
     string[0] = '0';
-    string[1] = 'x';
+    string[1] = ':';
     string[6] = 0;
 
     string[5] = hexToChar(number);
@@ -121,7 +141,7 @@ public:
     string[2] = hexToChar(number);
     number >>= 4;
     string[1] = hexToChar(number);
-    string[0] = ' ';
+    string[0] = '.';
     print(string);
   }
 };

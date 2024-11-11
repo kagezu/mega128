@@ -4,7 +4,8 @@
 #include <Arduino.h>
 #include <avr/pgmspace.h>
 
-const byte FONT_6x5[] PROGMEM = {
+const byte font_6x5[] PROGMEM = {
+5,6,32,
 0, 0, 0, 0, 0, 0,
 1, 1, 1, 1, 0, 1,
 5, 5, 0, 0, 0, 0,

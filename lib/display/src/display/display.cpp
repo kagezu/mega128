@@ -33,6 +33,52 @@ void Display::copyBitmap(uint8_t x, uint8_t y, uint8_t width, uint8_t height, RG
   DISPLAY_DISCONNECT;
 }
 
+void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
+{
+  setAddr(x, y, x + dx - 1, y + dy - 1);
+
+  for (char i = 0; i < 8; i++) {
+    for (byte j = 0; j < dx; j++) {
+      word data = pgm_read_word(source + j);
+      if (data & (1u << i))
+        sendRGB(_color);
+      else
+        sendRGB(_background);
+    }
+  }
+
+  for (char i = 0; i < 8; i++) {
+    for (byte j = 0; j < dx; j++) {
+      word data = pgm_read_word(source + j + 8);
+      if (data & (1u << i))
+        sendRGB(_color);
+      else
+        sendRGB(_background);
+    }
+  }
+
+  DISPLAY_DISCONNECT
+}
+
+/*
+void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
+{
+  setAddr(x, y, x + dx - 1, y + dy - 1);
+  for (char j = 0; j < dy; j++) {
+    byte data = pgm_read_byte(source + j);
+    for (byte i = 0; i < dx; i++) {
+      if (data & 1)
+        sendRGB(_color);
+      else
+        sendRGB(_background);
+      data >>= 1;
+    }
+  }
+
+  DISPLAY_DISCONNECT
+}
+*/
+
 // Специфические для данного класса
 void Display::pixel(byte x, byte y, byte r, byte g, byte b)
 {
@@ -61,25 +107,6 @@ void Display::copyBuffer(RGB *source)
   setAddr(0, 0, MAX_X, MAX_Y);
   while (length--) sendRGB(*source++);
   DISPLAY_DISCONNECT;
-}
-
-// в разработке
-void Display::symbol(const byte *font, byte symbol, byte x, byte y, byte dx, byte dy)
-{
-  // setAddr(x, y, x + dx - 1, y + dy - 1);
-  setAddr(x, y, x + dx - 1, y + dy);
-  for (char j = 0; j < dy; j++) {
-    byte data = pgm_read_byte(font + symbol * 6 - 192 + j);
-    for (byte i = 0; i < dx; i++)
-      if (data & (1 << i))
-        sendRGB(_color);
-      else
-        sendRGB(_background);
-  }
-  for (byte i = 0; i < dx; i++)
-    sendRGB(_background);
-
-  DISPLAY_DISCONNECT
 }
 
 // тестирование дисплея

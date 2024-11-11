@@ -11,28 +11,28 @@ void draw()
   static RGB c = 0xffffffu;
   for (byte i = 0; i < 128; i++) {
     scr.color(c);
-    scr.lineFat(63, 79, i, 0);
+    scr.line(63, 79, i, 0);
     c.b++;
     c.g++;
     c.r++;
   }
   for (byte i = 0; i < 159; i++) {
     scr.color(c);
-    scr.lineFat(63, 79, 127, i);
+    scr.line(63, 79, 127, i);
     c.b++;
     c.g++;
     c.r--;
   }
   for (byte i = 127; i < 128; i--) {
     scr.color(c);
-    scr.lineFat(63, 79, i, 159);
+    scr.line(63, 79, i, 159);
     c.b++;
     c.g--;
     c.r++;
   }
   for (byte i = 159; i < 160; i--) {
     scr.color(c);
-    scr.lineFat(63, 79, 0, i);
+    scr.line(63, 79, 0, i);
     c.b--;
     c.g++;
     c.r--;
@@ -52,23 +52,23 @@ void initTimer1(uint8_t f)
 
 ISR(TIMER1_COMPA_vect)
 {
-  page1.use();
+  // cli();
+  // if ((byte)random() > 127)  page0.use();
+  // else page1.use();
   lcd.copyBuffer(scr.getSource());
-  // draw();
+  TIFR |= _BV(OCF1A);
+  // sei();
 }
 
 int main()
 {
   page0.use();
-  scr.clear(RGB(0,255,0));
-  page1.use();
-  scr.clear(RGB(128,0,255));
-  initTimer1(1);
+  scr.clear(RGB(0, 255, 0));
+  initTimer1(30);
 
-  scr.fat(3);
+  // scr.fat(3);
 
   while (true) {
-    page0.use();
     draw();
   }
 }

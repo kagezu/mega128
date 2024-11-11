@@ -10,10 +10,6 @@ public:
   void pixel(byte x, byte y, byte r, byte g, byte b);
   void copyBuffer(RGB *source);
 
-  // в разработке
-public:
-  void symbol(const byte *font, byte symbol, byte x, byte y, byte dx, byte dy);
-
   // Скринсейвер
 public:
   void demo(byte d);
@@ -24,6 +20,7 @@ public:
   inline void rectFill(uint8_t x, uint8_t y, uint8_t x1, uint8_t y1) { rect(x, y, x1, y1, _color); }
   inline void clear(RGB color) { rect(0, 0, MAX_X, MAX_Y, color); };
   void copyBitmap(uint8_t x, uint8_t y, uint8_t width, uint8_t height, RGB *source);
+  void symbol(byte *source, byte x, byte y, byte dx, byte dy);
 };
 
 #endif
