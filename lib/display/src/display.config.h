@@ -3,7 +3,7 @@
 // Цветовая модель
 // RGB_12 4x4x4 bit / RGB_16 5x6x5 bit / RGB_18 6x6x6 bit
 
-#define RGB_FORMAT RGB_18
+#define RGB_FORMAT RGB_16
 
 // Таблица поворотов дисплея
 //    \   |   FLIP_X  |   FLIP_Y  |   EX_X_Y  |
@@ -26,10 +26,10 @@
 
 #ifdef __AVR_ATmega128__
 #define LCD_PORT PORTE
-#define LCD_CS _BV(PE5)
-#define LCD_RS _BV(PE4)
-#define LCD_SDA _BV(PE3)
+#define LCD_CS _BV(PE0)
+#define LCD_RS _BV(PE1)
 #define LCD_SCK _BV(PE2)
+#define LCD_SDA _BV(PE3)
 
 #define INIT_LCD_PORT                          \
   DDRE |= LCD_RS | LCD_SDA | LCD_SCK | LCD_CS; \
