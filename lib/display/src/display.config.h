@@ -1,16 +1,21 @@
 #include "Arduino.h"
 
+// Цветовая модель
+// RGB_12 4x4x4 bit / RGB_16 5x6x5 bit / RGB_18 6x6x6 bit
+
 #define RGB_FORMAT RGB_18
 
-#define RGB_12 0x03 // 4x4x4 bit
-#define RGB_16 0x05 // 5x6x5 bit
-#define RGB_18 0x06 // 6x6x6 bit (24 bit transfer)
+// Таблица поворотов дисплея
+//    \   |   FLIP_X  |   FLIP_Y  |   EX_X_Y  |
+// ============================================
+//   0°   |   false   |   false   |   false   |
+//  90°   |   false   |   true    |   true    |
+// 180°   |   true    |   true    |   false   |
+// 270°   |   true    |   false   |   true    |
 
-#define WEIGHT 128
-#define HEIGHT 160
-
-#define MAX_X WEIGHT - 1
-#define MAX_Y HEIGHT - 1
+#define FLIP_X    true
+#define FLIP_Y    true
+#define EX_X_Y    false
 
 // LCD_PORT   Порт управления дисплеем
 // LCD_CS     0 = Выбор дисплея / 1 = Снять выбор дисплея
@@ -43,3 +48,19 @@
   DDRC |= LCD_RS | LCD_SDA | LCD_SCK | LCD_CS | LCD_RESET; \
   PORTC |= LCD_RS | LCD_SDA | LCD_SCK | LCD_CS | LCD_RESET;
 #endif
+
+#define LCD_MAX_X 127
+#define LCD_MAX_Y 159
+
+#if EX_X_Y
+#define MAX_X     LCD_MAX_Y
+#define MAX_Y     LCD_MAX_X
+#else
+#define MAX_X     LCD_MAX_X
+#define MAX_Y     LCD_MAX_Y
+#endif
+
+// Interface pixel format
+#define RGB_12 0x03 // 4x4x4 bit
+#define RGB_16 0x05 // 5x6x5 bit
+#define RGB_18 0x06 // 6x6x6 bit (24 bit transfer)

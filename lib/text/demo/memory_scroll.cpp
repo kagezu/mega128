@@ -8,15 +8,15 @@ Text micro(&lcd);
 
 int main(void)
 {
-  XMCRB = 0;
-  bitSet(MCUCR, SRE);
+  // XMCRB = 0;
+  // bitSet(MCUCR, SRE);
 
   lcd.clear(0U);
   lcd.color(RGB(0x80E0FFu));
 
   micro.font(number_8x16);
 
-  byte *ptr = (byte *)0x1000;
+  byte *ptr = (byte *)0x100;
 
   while (true) {
     // for (char k = 7; k >= 0; k--) {

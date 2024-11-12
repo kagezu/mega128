@@ -52,8 +52,6 @@ public:
 
 public:
   virtual void clear(RGB color);
-  virtual void copyBitmap(uint8_t x, uint8_t y, uint8_t width, uint8_t height, RGB *source);
-
   virtual void symbol(byte *source, byte x, byte y, byte dx, byte dy);
 };
 #endif
