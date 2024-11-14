@@ -36,12 +36,22 @@ public:
     byte *source = (byte *)(_font + symbol * dx - ds);
 
     _display->symbol(source, cursorX, cursorY, dx, dy);
-    cursorX += dx + 2;
+    cursorX += dx + 1;
     if (cursorX > MAX_X - dx) {
-      cursorY += dy + 3;
+      cursorY += dy + 1;
       cursorX = 0;
       if (cursorY > MAX_Y - dy)
         cursorY = 0;
+    }
+  }
+
+  void printR(const char *string)
+  {
+    word *str = (word *)++string;
+    while (*str & 0xff00) {
+      char ch = *str++;
+      symbol(ch);
+      // string++;
     }
   }
 

@@ -78,8 +78,8 @@ void Display::scanBitmap(RGB *source)
 
 void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
 {
-  // setAddr(x, y, x + dx - 1, y + dy - 1);
-  setAddr(x, y, x + dx - 1, y + dy);
+  setAddr(x, y, x + dx - 1, y + dy - 1);
+  // setAddr(x, y, x + dx - 1, y + dy);
 
   for (byte j = 0; j < dy; j++) {
     for (byte i = 0; i < dx; i++) {
@@ -90,7 +90,7 @@ void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
         sendRGB(_background);
     }
   }
-  for (byte i = 0; i < dx; i++) sendRGB(_background);
+  // for (byte i = 0; i < dx; i++) sendRGB(_background);
 
   DISPLAY_DISCONNECT
 }
