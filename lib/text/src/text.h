@@ -33,7 +33,7 @@ public:
     byte dx = FONT_WEIGHT;
     byte dy = FONT_HEIGHT;
 
-    byte *source = (byte *)(_font + symbol * dy - ds);
+    byte *source = (byte *)(_font + symbol * dx - ds);
 
     _display->symbol(source, cursorX, cursorY, dx, dy);
     cursorX += dx + 2;
@@ -83,7 +83,7 @@ public:
   {
     char string[11];
     string[0] = '0';
-    string[1] = ':';
+    string[1] = 'x';
     string[10] = 0;
 
     string[9] = hexToChar(number);
@@ -109,7 +109,7 @@ public:
   {
     char string[7];
     string[0] = '0';
-    string[1] = ':';
+    string[1] = 'x';
     string[6] = 0;
 
     string[5] = hexToChar(number);
@@ -130,7 +130,7 @@ public:
     string[2] = hexToChar(number);
     number >>= 4;
     string[1] = hexToChar(number);
-    string[0] = '.';
+    string[0] = ' ';
     print(string);
   }
 };

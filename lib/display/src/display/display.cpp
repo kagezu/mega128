@@ -81,16 +81,16 @@ void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
   // setAddr(x, y, x + dx - 1, y + dy - 1);
   setAddr(x, y, x + dx - 1, y + dy);
 
-  for (byte j = 0; j <= dy; j++) {
+  for (byte j = 0; j < dy; j++) {
     for (byte i = 0; i < dx; i++) {
-      byte data = pgm_read_byte(source + j);
-      if (dy == j) data = 0;
-      if (data & (1u << i))
+      byte data = pgm_read_byte(source + i);
+      if (data & (1u << j))
         sendRGB(_color);
       else
         sendRGB(_background);
     }
   }
+  for (byte i = 0; i < dx; i++) sendRGB(_background);
 
   DISPLAY_DISCONNECT
 }

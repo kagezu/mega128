@@ -5,7 +5,7 @@
 
 static const uint8_t system_5x7[] PROGMEM = {
 155,0,  // offset
-7,5,    // weight * height
+5,7,    // weight * height
 0,      // format
 
 // font data

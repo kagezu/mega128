@@ -1,7 +1,8 @@
 ﻿#include "display/display.h"
 #include "text.h"
 #include "font/system_5x7.h"
-#include "font/font_6x5.h"
+#include "font/micro_5x6.h"
+#include "font/standard_5x7.h"
 
 Display lcd;
 Text micro(&lcd);
@@ -11,7 +12,7 @@ int main(void)
   lcd.clear(0U);
   lcd.color(RGB(0x80E0FFu));
 
-  micro.font(system_5x7);
+  micro.font(standard_5x7);
 
   byte *ptr = (byte *)0x100;
 
