@@ -4,6 +4,11 @@
 #include <Arduino.h>
 #include "display/display.h"
 
+#define FONT_OFFSET pgm_read_byte(_font);
+#define FONT_WEIGHT pgm_read_byte(_font+2);
+#define FONT_HEIGHT pgm_read_byte(_font+3);
+#define FONT_FORMAT pgm_read_byte(_font+4);
+
 class Text {
 private:
   Draw *_display;
@@ -24,38 +29,22 @@ public:
 
   void symbol(byte symbol)
   {
-    byte dx = pgm_read_byte(_font);
-    byte dy = pgm_read_byte(_font + 1);
-    byte ds = pgm_read_byte(_font + 2);
-    byte *source = (byte *)(_font + (symbol - ds) * dy + 3);
+    uint16_t ds = FONT_OFFSET;
+    byte dx = FONT_WEIGHT;
+    byte dy = FONT_HEIGHT;
+
+    byte *source = (byte *)(_font + symbol * dy - ds);
 
     _display->symbol(source, cursorX, cursorY, dx, dy);
-    cursorX += dx + 1;
+    cursorX += dx + 2;
     if (cursorX > MAX_X - dx) {
-      cursorY += dy + 2;
+      cursorY += dy + 3;
       cursorX = 0;
       if (cursorY > MAX_Y - dy)
         cursorY = 0;
     }
   }
-  /*
-  void symbol(byte symbol)
-  {
-    byte dx = pgm_read_byte(_font);
-    byte dy = pgm_read_byte(_font + 1);
-    byte ds = pgm_read_byte(_font + 2);
-    byte *source = (byte *)(_font + (symbol - ds) * dy + 3);
 
-    _display->symbol(source, cursorX, cursorY, dx, dy);
-    cursorX += dx + 1;
-    if (cursorX > MAX_X - dx) {
-      cursorY += dy + 2;
-      cursorX = 0;
-      if (cursorY > MAX_Y - dy)
-        cursorY = 0;
-    }
-  }
-*/
   void print(const char *string)
   {
     while (char ch = *string++)

@@ -78,21 +78,13 @@ void Display::scanBitmap(RGB *source)
 
 void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
 {
-  setAddr(x, y, x + dx - 1, y + dy - 1);
+  // setAddr(x, y, x + dx - 1, y + dy - 1);
+  setAddr(x, y, x + dx - 1, y + dy);
 
-  for (char i = 0; i < 8; i++) {
-    for (byte j = 0; j < dx; j++) {
-      word data = pgm_read_word(source + j);
-      if (data & (1u << i))
-        sendRGB(_color);
-      else
-        sendRGB(_background);
-    }
-  }
-
-  for (char i = 0; i < 8; i++) {
-    for (byte j = 0; j < dx; j++) {
-      word data = pgm_read_word(source + j + 8);
+  for (byte j = 0; j <= dy; j++) {
+    for (byte i = 0; i < dx; i++) {
+      byte data = pgm_read_byte(source + j);
+      if (dy == j) data = 0;
       if (data & (1u << i))
         sendRGB(_color);
       else

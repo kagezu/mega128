@@ -4,11 +4,11 @@
 // Прямоугольники
 // #include "../lib/display/demo/rect.cpp"
 // Скринсейвер
-#include "../lib/display/demo/screensaver.cpp"
+// #include "../lib/display/demo/screensaver.cpp"
 
 // -------------  class Text  --------------
 // Вывод памяти на экран
-// #include "../lib/text/demo/memory_scroll.cpp"
+#include "../lib/text/demo/memory_scroll.cpp"
 
 // -------------  class XPage  --------------
 // Выделение памяти
