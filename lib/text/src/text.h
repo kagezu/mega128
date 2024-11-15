@@ -4,8 +4,6 @@
 #include <Arduino.h>
 #include "display/display.h"
 
-#define DYNAMIC_SIZE  1
-
 #define FONT_COUNT  pgm_read_byte(_font)
 #define FONT_FIRST  pgm_read_byte(_font+1)
 #define FONT_WEIGHT pgm_read_byte(_font+2)
@@ -17,6 +15,7 @@ private:
   byte *_font;
   word  _offset;
   byte  _charSize;
+  byte  _line;
 
 public:
   byte cursorX = 0;
@@ -26,11 +25,11 @@ public:
   void font(const byte *font)
   {
     _font = (byte *)font;
-    _charSize = FONT_WEIGHT * ((FONT_HEIGHT + 1) >> 3);
+    _line = (1 + ((FONT_HEIGHT - 1) >> 3));
+    _charSize = FONT_WEIGHT * _line;
 
-    if (FONT_WEIGHT)
-      _offset = (word)_font + 4;
-    else
+    _offset = (word)_font + 4;
+    if (!FONT_WEIGHT)
       _offset += (FONT_COUNT + 1) * 2;
   }
 
@@ -53,7 +52,7 @@ public:
       source = _offset + symbol * _charSize;
     else {
       source = pgm_read_word(_font + symbol * 2 + 4);
-      dx = pgm_read_word(_font + symbol * 2 + 6) - source;
+      dx = (pgm_read_word(_font + symbol * 2 + 6) - source) / _line;
       source += _offset;
     }
 
@@ -169,7 +168,7 @@ public:
     string[2] = hexToChar(number);
     number >>= 4;
     string[1] = hexToChar(number);
-    string[0] = '.';
+    string[0] = ' ';
     print(string);
   }
 };

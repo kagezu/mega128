@@ -69,28 +69,27 @@ void Display::scanBitmap(RGB *source)
   setAddr(0, 0, LCD_MAX_X, LCD_MAX_Y);
   while (length--) sendRGB(*source++);
 
-  // #if !(FLIP_X || FLIP_Y || EX_X_Y)
-  //   while (length--) sendRGB(*source++);
-  // #endif
 
   DISPLAY_DISCONNECT;
 }
 
 void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
 {
-  // setAddr(x, y, x + dx - 1, y + dy - 1);
-  setAddr(x, y, x + dx - 1, y + dy);
+  setAddr(x, y, x + dx - 1, y + dy - 1);
+  // setAddr(x, y, x + dx - 1, y + dy);
 
   for (byte j = 0; j < dy; j++) {
+    word offset = (word)source + (j >> 3) * dx;
+    byte bit = 1 << (j & 7);
     for (byte i = 0; i < dx; i++) {
-      byte data = pgm_read_byte(source + i + (j >> 3) * dx);
-      if (data & (1u << (j % 8)))
+      byte data = pgm_read_byte(offset + i);
+      if (data & bit)
         sendRGB(_color);
       else
         sendRGB(_background);
     }
   }
-  for (byte i = 0; i < dx; i++) sendRGB(_background);
+  // for (byte i = 0; i < dx; i++) sendRGB(_background);
 
   DISPLAY_DISCONNECT
 }
