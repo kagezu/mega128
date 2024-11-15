@@ -4,10 +4,12 @@
 #include <Arduino.h>
 #include "display/display.h"
 
-#define FONT_OFFSET pgm_read_byte(_font);
-#define FONT_WEIGHT pgm_read_byte(_font+2);
-#define FONT_HEIGHT pgm_read_byte(_font+3);
-#define FONT_FORMAT pgm_read_byte(_font+4);
+#define DYNAMIC_SIZE  1
+
+#define FONT_OFFSET pgm_read_byte(_font)
+#define FONT_FIRST   pgm_read_byte(_font+1)
+#define FONT_WEIGHT pgm_read_byte(_font+2)
+#define FONT_HEIGHT pgm_read_byte(_font+3)
 
 class Text {
 private:
@@ -29,11 +31,14 @@ public:
 
   void symbol(byte symbol)
   {
-    uint16_t ds = FONT_OFFSET;
+    byte df = FONT_OFFSET;
     byte dx = FONT_WEIGHT;
     byte dy = FONT_HEIGHT;
 
-    byte *source = (byte *)(_font + symbol * dx - ds);
+    symbol -= FONT_FIRST;
+
+    byte *source = (byte *)(_font + symbol * dx + df);
+    if (df > 4) dx = pgm_read_byte(_font + symbol + 4);
 
     _display->symbol(source, cursorX, cursorY, dx, dy);
     cursorX += dx + 1;
@@ -47,11 +52,9 @@ public:
 
   void printR(const char *string)
   {
-    word *str = (word *)++string;
-    while (*str & 0xff00) {
-      char ch = *str++;
-      symbol(ch);
-      // string++;
+    while (byte ch = *string++) {
+      if (ch < 0xd0)
+        symbol(ch);
     }
   }
 
@@ -59,6 +62,15 @@ public:
   {
     while (char ch = *string++)
       symbol(ch);
+  }
+
+  void printPstrR(const char *string)
+  {
+    word *str = (word *)++string;
+    while (*str & 0xff00) {
+      char ch = pgm_read_byte(str++);
+      symbol(ch);
+    }
   }
 
   void printPstr(const char *string)

@@ -6,7 +6,6 @@
 static const uint8_t standard_5x7[] PROGMEM = {
 0,0,  // offset
 5,8,    // weight * height
-0,      // format
 
 // font data
   0x3E, 0x5B, 0x4F, 0x5B, 0x3E,

@@ -95,24 +95,6 @@ void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
   DISPLAY_DISCONNECT
 }
 
-/*
-void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
-{
-  setAddr(x, y, x + dx - 1, y + dy - 1);
-  for (char j = 0; j < dy; j++) {
-    byte data = pgm_read_byte(source + j);
-    for (byte i = 0; i < dx; i++) {
-      if (data & 1)
-        sendRGB(_color);
-      else
-        sendRGB(_background);
-      data >>= 1;
-    }
-  }
-
-  DISPLAY_DISCONNECT
-}
-*/
 
 // тестирование дисплея
 
