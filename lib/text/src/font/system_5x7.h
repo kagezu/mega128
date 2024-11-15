@@ -4,7 +4,8 @@
 #define SYSTEM5x7_H
 
 static const uint8_t system_5x7[] PROGMEM = {
-155,0,  // offset
+96,    // count char
+32,     // first char
 5,7,    // weight * height
 
 // font data

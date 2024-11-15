@@ -6,8 +6,8 @@
 
 #define DYNAMIC_SIZE  1
 
-#define FONT_OFFSET pgm_read_byte(_font)
-#define FONT_FIRST   pgm_read_byte(_font+1)
+#define FONT_COUNT  pgm_read_byte(_font)
+#define FONT_FIRST  pgm_read_byte(_font+1)
 #define FONT_WEIGHT pgm_read_byte(_font+2)
 #define FONT_HEIGHT pgm_read_byte(_font+3)
 
@@ -15,13 +15,24 @@ class Text {
 private:
   Draw *_display;
   byte *_font;
+  word  _offset;
+  byte  _charSize;
 
 public:
-  Text(Draw *lcd) :_display(lcd) {};
-  void font(const byte *font) { _font = (byte *)font; }
-
   byte cursorX = 0;
   byte cursorY = 0;
+
+  Text(Draw *lcd) :_display(lcd) {};
+  void font(const byte *font)
+  {
+    _font = (byte *)font;
+    _charSize = FONT_WEIGHT * ((FONT_HEIGHT + 1) >> 3);
+
+    if (FONT_WEIGHT)
+      _offset = (word)_font + 4;
+    else
+      _offset += (FONT_COUNT + 1) * 2;
+  }
 
   void at(byte x, byte y)
   {
@@ -31,16 +42,22 @@ public:
 
   void symbol(byte symbol)
   {
-    byte df = FONT_OFFSET;
+    symbol -= FONT_FIRST;
+    if (FONT_COUNT <= symbol) return;
+
     byte dx = FONT_WEIGHT;
     byte dy = FONT_HEIGHT;
+    word source;
 
-    symbol -= FONT_FIRST;
+    if (dx)
+      source = _offset + symbol * _charSize;
+    else {
+      source = pgm_read_word(_font + symbol * 2 + 4);
+      dx = pgm_read_word(_font + symbol * 2 + 6) - source;
+      source += _offset;
+    }
 
-    byte *source = (byte *)(_font + symbol * dx + df);
-    if (df > 4) dx = pgm_read_byte(_font + symbol + 4);
-
-    _display->symbol(source, cursorX, cursorY, dx, dy);
+    _display->symbol((byte *)source, cursorX, cursorY, dx, dy);
     cursorX += dx + 1;
     if (cursorX > MAX_X - dx) {
       cursorY += dy + 1;
@@ -130,17 +147,17 @@ public:
   void printHex(word number)
   {
     char string[7];
-    string[0] = '0';
-    string[1] = 'x';
-    string[6] = 0;
+    // string[0] = '0';
+    // string[1] = 'x';
+    string[4] = 0;
 
-    string[5] = hexToChar(number);
-    number >>= 4;
-    string[4] = hexToChar(number);
-    number >>= 4;
     string[3] = hexToChar(number);
     number >>= 4;
     string[2] = hexToChar(number);
+    number >>= 4;
+    string[1] = hexToChar(number);
+    number >>= 4;
+    string[0] = hexToChar(number);
 
     print(string);
   }
@@ -152,7 +169,7 @@ public:
     string[2] = hexToChar(number);
     number >>= 4;
     string[1] = hexToChar(number);
-    string[0] = ' ';
+    string[0] = '.';
     print(string);
   }
 };

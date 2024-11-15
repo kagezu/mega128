@@ -4,7 +4,8 @@
 #define STANDARD_5x7_H
 
 static const uint8_t standard_5x7[] PROGMEM = {
-0,0,  // offset
+255,    // count char
+1,     // first char
 5,8,    // weight * height
 
 // font data
