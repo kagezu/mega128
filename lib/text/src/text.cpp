@@ -16,7 +16,7 @@ void Text::font(const uint8_t *font)
 void Text::symbol(uint8_t symbol)
 {
   symbol -= FONT_FIRST;
-  if (FONT_COUNT <= symbol) symbol = ' ' - FONT_FIRST;
+  if (FONT_COUNT <= symbol) return;//symbol = ' ' - FONT_FIRST;
 
   uint8_t dx = FONT_WEIGHT;
   uint8_t dy = FONT_HEIGHT;
@@ -37,7 +37,8 @@ void Text::symbol(uint8_t symbol)
     if (cursorY > MAX_Y - dy) cursorY = 0;
   }
 
-  _display->symbol((uint8_t *)source, cursorX, cursorY, dx, dy);
+  // _display->symbol((uint8_t *)source, cursorX, cursorY, dx, dy);
+  _display->symbol((uint8_t *)source, cursorX, cursorY, dx, dy + 1);
 
   cursorX += dx + 1;
 }

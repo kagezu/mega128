@@ -3,7 +3,7 @@
 // Цветовая модель
 // RGB_12 4x4x4 bit / RGB_16 5x6x5 bit / RGB_18 6x6x6 bit
 
-#define RGB_FORMAT RGB_16
+#define RGB_FORMAT RGB_12
 
 // Таблица поворотов дисплея
 //    \   |   FLIP_X  |   FLIP_Y  |   EX_X_Y  |
@@ -13,9 +13,9 @@
 // 180°   |   true    |   true    |   false   |
 // 270°   |   true    |   false   |   true    |
 
-#define FLIP_X    true
+#define FLIP_X    false
 #define FLIP_Y    true
-#define EX_X_Y    false
+#define EX_X_Y    true
 
 // LCD_PORT   Порт управления дисплеем
 // LCD_CS     0 = Выбор дисплея / 1 = Снять выбор дисплея

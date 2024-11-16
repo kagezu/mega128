@@ -40,6 +40,12 @@ public:
   void printHex(uint32_t number);
   void printHex(uint16_t number);
   void printHex(uint8_t number);
+
+  uint8_t getRow() { return MAX_Y / (FONT_HEIGHT + 1); }
+  uint8_t getCol() { return MAX_X / (FONT_WEIGHT + 1); }
+
+  uint8_t getHeight() { return FONT_HEIGHT + 1; }
+
 };
 
 #endif
