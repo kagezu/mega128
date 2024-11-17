@@ -352,13 +352,13 @@ void ST7735S::sendRGB(byte r, byte g, byte b)
 void ST7735S::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
 {
 #if RGB_FORMAT == RGB_12
-  byte r = (uint16_t)color >> 4;
+  byte r = (uint16_t)color << 4;
   byte g = (uint16_t)color;
-  byte b = (uint16_t)color << 4;
+  byte b = (uint16_t)color >> 4;
 #elif RGB_FORMAT == RGB_16
-  byte r = (uint16_t)color >> 8;
+  byte r = (uint16_t)color << 3;
   byte g = (uint16_t)color >> 3;
-  byte b = (uint16_t)color << 3;
+  byte b = (uint16_t)color >> 8;
 #elif RGB_FORMAT == RGB_18
   byte r = color.r;
   byte g = color.g;

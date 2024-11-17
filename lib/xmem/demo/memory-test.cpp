@@ -46,8 +46,8 @@ void volatile testPage(XPage *page, const char *msg1, const char *msg2)
 
 int main()
 {
-  lcd.clear(RGB(0x0000b0u));
-  lcd.background(RGB(0x0000b0u));
+  lcd.clear(RGB(0x40u));
+  lcd.background(RGB(0x40u));
   lcd.color(RGB(0xffff00u));
   text.font(micro_5x6);
   text.printR(PSTR("Тестирование памяти"));
