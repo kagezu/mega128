@@ -45,7 +45,7 @@ public:
 
 public:
   inline void reset() { _offset = _start; }
-  inline word free() { return _end - _offset; }
+  inline word free() { return _end - _offset + 1; }
 
 public:
   void use();

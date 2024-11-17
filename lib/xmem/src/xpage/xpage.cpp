@@ -8,7 +8,7 @@ XPage::XPage(word physicalAddress, byte bitMask, word start)
   _start = start;
   // Размер страницы 512 байт не поддерживается аппаратно
   _end = bitMask ?
-    start + _BV(bitMask == XMEM_0K ? 0 : 8 - bitMask) * XMEM_MIN_SIZE :
+    start + _BV(bitMask == XMEM_0K ? 0 : 8 - bitMask) * XMEM_MIN_SIZE - 1 :
     XMEM_END;
   reset();
   init();
@@ -16,7 +16,7 @@ XPage::XPage(word physicalAddress, byte bitMask, word start)
 
 byte *XPage::malloc(word memorySize)
 {
-  // if (free() < memorySize) return 0;
+  if (free() < memorySize) return 0;
   word result = _offset;
   _offset += memorySize;
   return (byte *)result;

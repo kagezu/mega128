@@ -8,11 +8,11 @@
 
 // -------------  class Text  --------------
 // Вывод памяти на экран
-#include "../lib/text/demo/memory_scroll.cpp"
+// #include "../lib/text/demo/memory_scroll.cpp"
 
 // -------------  class XPage  --------------
 // Выделение памяти
-// #include "../lib/xmem/demo/pages.cpp"
+#include "../lib/xmem/demo/memory-test.cpp"
 
 // -------------  class Screen  --------------
 // Выделение памяти

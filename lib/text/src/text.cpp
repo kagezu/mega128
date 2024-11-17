@@ -59,6 +59,13 @@ void Text::printPstr(const char *string)
 void Text::printR(const char *string)
 {
   while (uint8_t ch = pgm_read_byte(string++)) if (ch < 0xd0) symbol(ch);
+
+
+  //test
+  if (cursorX) {
+    cursorY += FONT_HEIGHT + 2;
+    cursorX = 0;
+  }
 }
 
 void Text::print(uint32_t number)
