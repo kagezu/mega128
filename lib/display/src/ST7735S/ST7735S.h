@@ -91,7 +91,7 @@ protected:
   void sendRGB(byte r, byte g, byte b);
   void sendRGB(uint16_t data); // формат 0x0rgb / RGB_16
   void sendRGB(uint32_t color);
-  void sendRGB(RGB color);
+  inline void sendRGB(RGB color);
 
   void rect(byte x0, byte y0, byte x1, byte y1, RGB color);
 };

@@ -69,10 +69,46 @@ void Display::scanBitmap(uint8_t x, uint8_t y, uint8_t width, uint8_t height, RG
 
 void Display::scanBitmap(RGB *source)
 {
-  uint16_t length = (LCD_MAX_X + 1) * (LCD_MAX_Y + 1);
   setAddr(0, 0, LCD_MAX_X, LCD_MAX_Y);
-  while (length--) sendRGB(*source++);
 
+  // 0°
+#if !FLIP_X && !FLIP_Y && !EX_X_Y
+  uint16_t length = (LCD_MAX_X + 1) * (LCD_MAX_Y + 1);
+  while (length--) sendRGB(*source++);
+#endif
+
+  // 180°
+#if FLIP_X && FLIP_Y && !EX_X_Y
+  uint16_t length = (LCD_MAX_X + 1) * (LCD_MAX_Y + 1);
+  source += length - 1;
+  while (length--) sendRGB(*source--);
+#endif
+
+  // 90°
+#if !FLIP_X && FLIP_Y && EX_X_Y
+  RGB *ptr;
+  source += LCD_MAX_X * (LCD_MAX_Y + 1);
+  for (byte j = 0; j < LCD_MAX_Y + 1; j++) {
+    ptr = source + j;
+    for (byte i = 0; i < LCD_MAX_X + 1; i++) {
+      sendRGB(*source);
+      ptr -= LCD_MAX_Y + 1;
+    }
+  }
+#endif
+
+  // 270°
+#if FLIP_X && !FLIP_Y && EX_X_Y
+  RGB *ptr;
+  source += LCD_MAX_Y;
+  for (byte j = 0; j < LCD_MAX_Y + 1; j++) {
+    ptr = source - j;
+    for (byte i = 0; i < LCD_MAX_X + 1; i++) {
+      sendRGB(*source);
+      ptr += LCD_MAX_Y + 1;
+    }
+  }
+#endif
 
   DISPLAY_DISCONNECT;
 }

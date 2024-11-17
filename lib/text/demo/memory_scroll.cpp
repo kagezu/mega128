@@ -18,9 +18,9 @@ int main(void)
   // micro.font(micro_5x6);
   // micro.font(system_5x7);
   // micro.font(standard_5x7);
-  micro.font(number_8x16);
+  // micro.font(number_8x16);
   // micro.font(number_15x31);
-  // micro.font(arial_14);
+  micro.font(arial_14);
 
 
   // for (byte i = 32; i < 200; i++) {
