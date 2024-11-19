@@ -4,6 +4,8 @@
 
 void Draw::wLine(uint8_t x, uint8_t y, uint8_t x1)
 {
+  if(x>x1) swap(x,x1);
+
   if (x > MAX_X) x = 0;
   if (x1 > MAX_X) x1 = MAX_X;
   if (x == x1) pixel(x, y, _color);
@@ -12,6 +14,8 @@ void Draw::wLine(uint8_t x, uint8_t y, uint8_t x1)
 
 void Draw::hLine(uint8_t x, uint8_t y, uint8_t y1)
 {
+  if(y>y1) swap(y,y1);
+
   if (y > MAX_Y) y = 0;
   if (y1 > MAX_Y) y1 = MAX_Y;
   if (y == y1) pixel(x, y, _color);

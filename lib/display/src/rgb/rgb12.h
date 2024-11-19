@@ -12,7 +12,7 @@ public:
     : r(red >> 4), g(green >> 4), b(blue >> 4)
   {}
   RGB(uint32_t rgb) // формат 0x00rrggbb
-    :r((rgb >> 20)), g((rgb >> 12)), b((rgb >> 4))
+    : r((rgb >> 20)), g((rgb >> 12)), b((rgb >> 4))
   {}
 
   operator uint16_t() { return *(uint16_t *)this; }

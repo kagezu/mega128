@@ -24,6 +24,8 @@ byte *XPage::malloc(word memorySize)
 
 void XPage::use()
 {
+#ifdef __AVR_ATmega128__
+
   XMCRB = _xmm;
   if (_xmm) PORTC = _lowAddress;
 #ifdef XMEM_A16
@@ -35,10 +37,14 @@ void XPage::use()
 #ifdef XMEM_A18
   bitWrite(XMEM_A18_PORT, XMEM_A18, _highAddress & _BV(2));
 #endif
+
+#endif
 }
 
 void XPage::init()
 {
+#ifdef __AVR_ATmega128__
+
   if (bitRead(MCUCR, SRE)) return;
   PORTC = 0;
   DDRC = 0xff;
@@ -51,6 +57,8 @@ void XPage::init()
 #endif
 #if XMEM_A18
   XMEM_A18_INIT;
+#endif
+
 #endif
 }
 

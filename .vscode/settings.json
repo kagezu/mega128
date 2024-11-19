@@ -3,7 +3,8 @@
     "*.php": "php",
     "*.js": "javascript",
     "*.html": "html",
-    "wiring_private.h": "c"
+    "wiring_private.h": "c",
+    "new": "cpp"
   },
   "cSpell.caseSensitive": true,
   "cSpell.words": [

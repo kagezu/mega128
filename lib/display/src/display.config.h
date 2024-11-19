@@ -14,8 +14,8 @@
 // 270°   |   true    |   false   |   true    |
 
 #define FLIP_X    false
-#define FLIP_Y    true
-#define EX_X_Y    true
+#define FLIP_Y    false
+#define EX_X_Y    false
 
 // LCD_PORT   Порт управления дисплеем
 // LCD_CS     0 = Выбор дисплея / 1 = Снять выбор дисплея

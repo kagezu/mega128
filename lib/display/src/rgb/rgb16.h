@@ -2,14 +2,14 @@
 
 class RGB {
 public:
-  byte r : 5;
-  byte g : 6;
-  byte b : 5;
+  uint8_t r : 5;
+  uint8_t g : 6;
+  uint8_t b : 5;
 
 public:
   RGB() {}
-  RGB(byte red, byte green, byte blue)
-    :r(red >> 3), g(green >> 2), b(blue >> 3)
+  RGB(uint8_t red, uint8_t green, uint8_t blue)
+    : r(red >> 3), g(green >> 2), b(blue >> 3)
   {}
   RGB(uint32_t rgb) // формат 0x00rrggbb
     : r(rgb >> 19), g(rgb >> 10), b(rgb >> 3)

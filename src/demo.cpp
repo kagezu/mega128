@@ -1,19 +1,26 @@
-﻿// -------------  class Display  --------------
+﻿// -------------  libray Display  --------------
+// ---------
+#include "../lib/display/demo/sample.cpp"
+
+// ---------
+// #include "../lib/display/demo/drawing.cpp"
+
 // Линии и окружности
 // #include "../lib/display/demo/line.cpp"
+
 // Прямоугольники
 // #include "../lib/display/demo/rect.cpp"
+
 // Скринсейвер
 // #include "../lib/display/demo/screensaver.cpp"
 
-// -------------  class Text  --------------
+
+// -------------  libray Text  --------------
 // Вывод памяти на экран
 // #include "../lib/text/demo/memory_scroll.cpp"
 
-// -------------  class XPage  --------------
-// Выделение памяти
-#include "../lib/xmem/demo/memory-test.cpp"
 
-// -------------  class Screen  --------------
+// -------------  libray XPage  --------------
 // Выделение памяти
-// #include "../lib/screen/demo/drawing.cpp"
+// #include "../lib/xmem/demo/memory-test.cpp"
+

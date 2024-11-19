@@ -9,10 +9,10 @@ public:
 public:
   RGB() {}
   RGB(uint8_t red, uint8_t green, uint8_t blue)
-    :b(blue), g(green), r(red)
+    : b(blue), g(green), r(red)
   {}
   RGB(uint32_t rgb) // формат 0x00rrggbb
-    :b(rgb), g(rgb >> 8), r(rgb >> 16)
+    : b(rgb), g(rgb >> 8), r(rgb >> 16)
   {}
 
   operator uint32_t() { return *(uint32_t *)this; }
