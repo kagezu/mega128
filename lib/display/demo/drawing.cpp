@@ -1,4 +1,4 @@
-#include "screen.h"
+#include "screen/screen.h"
 #include "display/display.h"
 
 XPage page0(0, XMEM_60K, 0x1000);
@@ -55,7 +55,7 @@ ISR(TIMER1_COMPA_vect)
   // cli();
   // if ((byte)random() > 127)  page0.use();
   // else page1.use();
-  lcd.copyBuffer(scr.getSource());
+  lcd.scanBitmap(scr.getSource());
   TIFR |= _BV(OCF1A);
   // sei();
 }

@@ -3,7 +3,7 @@
 
 ST7735S::ST7735S()
 {
-  INIT_LCD_PORT
+  INIT_LCD
     delayMicroseconds(15000); // Ждать стабилизации напряжений
   DISPLAY_CONNECT;          // CS Выбор дисплея
 

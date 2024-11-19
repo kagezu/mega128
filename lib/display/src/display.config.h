@@ -1,3 +1,5 @@
+#ifndef DISPLAY_CONFIG_H
+#define DISPLAY_CONFIG_H
 #include "Arduino.h"
 
 // Цветовая модель
@@ -17,6 +19,9 @@
 #define FLIP_Y    false
 #define EX_X_Y    false
 
+// Связь через SPI
+#define LCD_SPI   true
+
 // LCD_PORT   Порт управления дисплеем
 // LCD_CS     0 = Выбор дисплея / 1 = Снять выбор дисплея
 // LCD_RS     0 = Запись команды / 1 = Запись данных
@@ -31,12 +36,30 @@
 #define LCD_SCK _BV(PE2)
 #define LCD_SDA _BV(PE3)
 
-#define INIT_LCD_PORT                          \
+#define INIT_LCD                         \
   DDRE |= LCD_RS | LCD_SDA | LCD_SCK | LCD_CS; \
   PORTE |= LCD_RS | LCD_SDA | LCD_SCK | LCD_CS;
 #endif
 
 #ifdef __AVR_ATmega328P__
+#ifdef LCD_SPI
+#define LCD_PORT PORTC
+#define LCD_CS _BV(PC5)
+#define LCD_RESET _BV(PC4)
+#define LCD_RS _BV(PC3)
+#define LCD_SDA 0
+#define LCD_SCK 0
+
+#define INIT_LCD                                        \
+  DDRC |= LCD_RS | LCD_CS | LCD_RESET;                  \
+  PORTC |= LCD_RS | LCD_CS | LCD_RESET;                 \
+  DDRB |= _BV(PB2)  | _BV(PB4) | _BV(PB5);              \
+  PORTB =_BV(PB2) | (PORTB & ~(_BV(PB4) | _BV(PB5)));   \
+  SPCR = _BV(SPE) | _BV(MSTR) | _BV(2);                 \
+  SPSR = _BV(SPI2X);                                    \
+  SPDR = 0;
+
+#else
 #define LCD_PORT PORTC
 #define LCD_CS _BV(PC4)
 #define LCD_RESET _BV(PC3)
@@ -44,9 +67,11 @@
 #define LCD_SDA _BV(PC1)
 #define LCD_SCK _BV(PC0)
 
-#define INIT_LCD_PORT                                      \
+
+#define INIT_LCD                                     \
   DDRC |= LCD_RS | LCD_SDA | LCD_SCK | LCD_CS | LCD_RESET; \
   PORTC |= LCD_RS | LCD_SDA | LCD_SCK | LCD_CS | LCD_RESET;
+#endif
 #endif
 
 #define LCD_MAX_X 127
@@ -64,3 +89,5 @@
 #define RGB_12 0x03 // 4x4x4 bit
 #define RGB_16 0x05 // 5x6x5 bit
 #define RGB_18 0x06 // 6x6x6 bit (24 bit transfer)
+
+#endif

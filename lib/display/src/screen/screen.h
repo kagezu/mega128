@@ -1,8 +1,9 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
-#include "config.h"
-#include "xpage/xpage.h"
+#include "display.config.h"
+#include "draw/draw.h"
+#include "../../../xmem/src/xpage/xpage.h"
 
 // Обход ограничения 0x8000 байт на массив
 typedef RGB(&rgb_bitmap)[1][MAX_X + 1];

@@ -24,19 +24,19 @@ void Display::pixel(byte x, byte y, RGB color)
   sendRGB((word)0);
   sendRGB(color);
 #elif RGB_FORMAT == RGB_16
-  sendZero();
-  sendZero();
+  sendByte(0);
+  sendByte(0);
   sendRGB(color);
 #elif RGB_FORMAT == RGB_18
-  sendZero();
-  sendZero();
-  sendZero();
+  sendByte(0);
+  sendByte(0);
+  sendByte(0);
   sendRGB(color);
 #endif
   DISPLAY_DISCONNECT;
 }
 
-inline void Display::rectFill(uint8_t x, uint8_t y, uint8_t x1, uint8_t y1)
+void Display::rectFill(uint8_t x, uint8_t y, uint8_t x1, uint8_t y1)
 {
 #if FLIP_X
   uint8_t t = x;
@@ -55,6 +55,11 @@ inline void Display::rectFill(uint8_t x, uint8_t y, uint8_t x1, uint8_t y1)
 #else
   rect(x, y, x1, y1, _color);
 #endif
+}
+
+void Display::clear(RGB color)
+{
+  rect(0, 0, LCD_MAX_X, LCD_MAX_Y, color);
 }
 
 void Display::scanBitmap(uint8_t x, uint8_t y, uint8_t width, uint8_t height, RGB *source)
@@ -166,7 +171,7 @@ void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
     #endif
 
     }
-  }
+    }
 
 #else
 
@@ -189,7 +194,7 @@ void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
       if (data & bit) sendRGB(_color);
       else sendRGB(_background);
     }
-    }
+  }
 
 #endif
 

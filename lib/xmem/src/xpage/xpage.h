@@ -1,7 +1,7 @@
 #ifndef XPAGE_H
 #define XPAGE_H
 
-#include "xmem.config.h"
+#include "../xmem.config.h"
 
 #define XMEM_START      RAMEND+1
 #define XMEM_END        XRAMEND

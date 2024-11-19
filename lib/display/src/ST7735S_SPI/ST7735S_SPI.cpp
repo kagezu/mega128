@@ -1,14 +1,10 @@
 #include <avr/pgmspace.h>
 #include "ST7735S_SPI.h"
 
-ST7735S::ST7735S()
+_ST7735S::_ST7735S()
 {
 
-  SPCR = _BV(SPE)     // SPI on
-    | _BV(MSTR);      // Master mode
-  SPSR = _BV(SPI2X);  // x2 Speed on
-
-  INIT_LCD_PORT
+  INIT_LCD
     delayMicroseconds(15000); // Ждать стабилизации напряжений
   DISPLAY_CONNECT;          // CS Выбор дисплея
 
@@ -106,16 +102,17 @@ ST7735S::ST7735S()
 
   sendCommand(DISPON); // Display On
   DISPLAY_DISCONNECT
+
 }
 
-void ST7735S::sendCommand(byte command)
+void _ST7735S::sendCommand(byte command)
 {
   COMMAND_MODE; // Запись команды
   SPDR = command;
   DATA_MODE // Запись данных
 };
 
-void ST7735S::setAddr(byte x0, byte y0, byte x1, byte y1)
+void _ST7735S::setAddr(byte x0, byte y0, byte x1, byte y1)
 {
   DISPLAY_CONNECT; // CS Выбор дисплея
 
@@ -136,14 +133,14 @@ void ST7735S::setAddr(byte x0, byte y0, byte x1, byte y1)
   sendCommand(RAMWR); // Memory Write
 };
 
-void ST7735S::sendByte(byte data)
+void _ST7735S::sendByte(byte data)
 {
   SPI_WAIT;
   SPDR = data;
 };
 
 #if RGB_FORMAT == RGB_12
-void ST7735S::sendRGB(uint16_t color)
+void _ST7735S::sendRGB(uint16_t color)
 {
   static half, flag = 0;
   byte data;
@@ -166,7 +163,7 @@ void ST7735S::sendRGB(uint16_t color)
 };
 
 #elif RGB_FORMAT == RGB_16
-void ST7735S::sendRGB(uint16_t data)
+void _ST7735S::sendRGB(uint16_t data)
 {
   SPI_WAIT;
   SPDR = data >> 8;
@@ -176,18 +173,18 @@ void ST7735S::sendRGB(uint16_t data)
 };
 
 #elif RGB_FORMAT == RGB_18
-void ST7735S::sendRGB(uint16_t data) // формат 0x0rgb
+void _ST7735S::sendRGB(uint16_t data) // формат 0x0rgb
 {
   sendRGB((data >> 4) & 0xf0, data & 0xf0, data << 4);
 }
 #endif
 
-void ST7735S::sendRGB(uint32_t color)
+void _ST7735S::sendRGB(uint32_t color)
 {
   sendRGB(color >> 16, color >> 8, color);
 }
 
-void ST7735S::sendRGB(RGB color)
+void _ST7735S::sendRGB(RGB color)
 {
 #if RGB_FORMAT == RGB_12 || RGB_FORMAT == RGB_16
   sendRGB((uint16_t)color);
@@ -196,7 +193,7 @@ void ST7735S::sendRGB(RGB color)
 #endif
 }
 
-void ST7735S::sendRGB(byte r, byte g, byte b)
+void _ST7735S::sendRGB(byte r, byte g, byte b)
 {
   byte data;
 
@@ -246,7 +243,7 @@ void ST7735S::sendRGB(byte r, byte g, byte b)
 
 };
 
-void ST7735S::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
+void _ST7735S::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
 {
   word len = (x1 - x0 + 1) * (y1 - y0 + 1);
   setAddr(x0, y0, x1, y1);

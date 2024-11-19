@@ -79,9 +79,9 @@
 #define EXTCTRL 0xf0  // Extension Command Control
 #define VCOM4L 0xff   // Vcom 4 Level control
 
-class ST7735S {
+class _ST7735S {
 public:
-  ST7735S();
+  _ST7735S();
 
 private:
   void sendCommand(byte data);
