@@ -2,17 +2,19 @@
 
 class MemoryBlock {
 protected:
-  uint16_t _linkToIndex;
+  void *_linkToIndex;
   uint16_t _start;
-  uint16_t _length;
+  uint16_t _size;
 
 public:
-  MemoryBlock() {}
+  MemoryBlock(uint16_t start, uint16_t length = 0, void *linkToIndex = 0)
+    :_linkToIndex(linkToIndex), _start(start), _size(length)
+  {}
 
 public:
-  void init(uint16_t start, uint16_t length)
-  {
-    _linkToIndex = 0; _start = start; _length = length;
-  }
+  void setLink(void *linkToIndex) { _linkToIndex = linkToIndex; *(uint16_t *)linkToIndex = _start; }
+  void newSize(uint16_t size) { _size = size; }
 
+  void *getLink() { return _linkToIndex; }
+  uint16_t getSize() { return _size; }
 };

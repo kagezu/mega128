@@ -1,6 +1,6 @@
 ﻿// -------------  libray Display  --------------
 // ---------
-#include "../lib/display/demo/sample.cpp"
+// #include "../lib/display/demo/sample.cpp"
 
 // ATmega128 only
 // #include "../lib/display/demo/drawing.cpp"
@@ -17,7 +17,7 @@
 
 // -------------  libray Text  --------------
 // Вывод памяти на экран
-// #include "../lib/text/demo/memory_scroll.cpp"
+#include "../lib/text/demo/memory_scroll.cpp"
 
 
 // -------------  libray XPage  --------------

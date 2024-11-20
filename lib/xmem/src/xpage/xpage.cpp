@@ -1,25 +1,11 @@
 #include "xpage.h"
 
-XPage::XPage(word physicalAddress, byte bitMask, word start)
-{
-  _highAddress = highByte(physicalAddress);
-  _lowAddress = lowByte(physicalAddress);
-  _xmm = bitMask;
-  _start = start;
-  // Размер страницы 512 байт не поддерживается аппаратно
-  _over = bitMask ?
-    start + _BV(bitMask == XMEM_0K ? 0 : 8 - bitMask) * XMEM_MIN_SIZE - 1 :
-    XMEM_END + 1;
-  reset();
-  init();
-}
-
 byte *XPage::malloc(word memorySize)
 {
-  if (free() < memorySize) return 0;
-  word result = _offset;
-  _offset += memorySize;
-  return (byte *)result;
+  // if (free() < memorySize) return 0;
+  // word result = _offset;
+  // _offset += memorySize;
+  // return (byte *)result;
 }
 
 void XPage::use()

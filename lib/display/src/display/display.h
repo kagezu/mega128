@@ -11,7 +11,7 @@
 #endif
 
 
-class Display : public _ST7735S, public Draw {
+class Display : public ST7735S, public Draw {
 public:
   // Специфические для данного класса
   void scanBitmap(uint8_t x, uint8_t y, uint8_t width, uint8_t height, RGB *source);

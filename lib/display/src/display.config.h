@@ -20,7 +20,7 @@
 #define EX_X_Y    false
 
 // Связь через SPI
-#define LCD_SPI   true
+// #define LCD_SPI   true
 
 // LCD_PORT   Порт управления дисплеем
 // LCD_CS     0 = Выбор дисплея / 1 = Снять выбор дисплея
