@@ -1,5 +1,5 @@
-#ifndef ST7735S_H
-#define ST7735S_H
+#ifndef ST7735S_SPI_H
+#define ST7735S_SPI_H
 
 #include "display.config.h"
 #include "rgb/rgb.h"
@@ -79,9 +79,9 @@
 #define EXTCTRL 0xf0  // Extension Command Control
 #define VCOM4L 0xff   // Vcom 4 Level control
 
-class _ST7735S {
+class ST7735S_SPI {
 public:
-  _ST7735S();
+  ST7735S_SPI();
 
 private:
   void sendCommand(byte data);

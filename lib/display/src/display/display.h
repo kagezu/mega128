@@ -6,12 +6,12 @@
 
 #ifdef LCD_SPI
 #include "ST7735S_SPI/ST7735S_SPI.h"
+class Display : public ST7735S_SPI, public Draw {
 #else
 #include "ST7735S/ST7735S.h"
+class Display : public ST7735S, public Draw {
 #endif
 
-
-class Display : public ST7735S, public Draw {
 public:
   // Специфические для данного класса
   void scanBitmap(uint8_t x, uint8_t y, uint8_t width, uint8_t height, RGB *source);

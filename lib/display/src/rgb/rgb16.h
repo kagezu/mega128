@@ -15,6 +15,6 @@ public:
     : r(rgb >> 19), g(rgb >> 10), b(rgb >> 3)
   {}
 
-  operator uint16_t() { return *(uint16_t *)this; }
+  // operator uint16_t() { return *(uint16_t*)this; }
   operator uint32_t() { return (uint32_t)r << 19 | (uint32_t)g << 10 | (uint32_t)b << 3; }
 };

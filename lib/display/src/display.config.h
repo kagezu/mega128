@@ -53,10 +53,10 @@
 #define INIT_LCD                                        \
   DDRC |= LCD_RS | LCD_CS | LCD_RESET;                  \
   PORTC |= LCD_RS | LCD_CS | LCD_RESET;                 \
-  DDRB |= _BV(PB2)  | _BV(PB4) | _BV(PB5);              \
-  PORTB =_BV(PB2) | (PORTB & ~(_BV(PB4) | _BV(PB5)));   \
-  SPCR = _BV(SPE) | _BV(MSTR) | _BV(2);                 \
+  DDRB |= _BV(PB2)  | _BV(PB3) | _BV(PB5);              \
+  SPCR = _BV(SPE) | _BV(MSTR);                          \
   SPSR = _BV(SPI2X);                                    \
+  TCCR0B |= _BV(CS00);                                  \
   SPDR = 0;
 
 #else
