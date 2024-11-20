@@ -7,9 +7,9 @@ XPage::XPage(word physicalAddress, byte bitMask, word start)
   _xmm = bitMask;
   _start = start;
   // Размер страницы 512 байт не поддерживается аппаратно
-  _end = bitMask ?
+  _over = bitMask ?
     start + _BV(bitMask == XMEM_0K ? 0 : 8 - bitMask) * XMEM_MIN_SIZE - 1 :
-    XMEM_END;
+    XMEM_END + 1;
   reset();
   init();
 }

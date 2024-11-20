@@ -11,13 +11,13 @@ void Lcd_Writ_Bus(unsigned char d)
 
 void Lcd_Write_Com(unsigned char VH)
 {
-  PORTC &= ~8;
+  PORTC &= _BV(A3);
   Lcd_Writ_Bus(VH);
 }
 
 void Lcd_Write_Data(unsigned char VH)
 {
-  PORTC |= 8;
+  PORTC |= _BV(A3);
   Lcd_Writ_Bus(VH);
 }
 
@@ -46,16 +46,16 @@ void Address_set(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int
 void Lcd_Init(void)
 {
   digitalWrite(A4, HIGH);
-    delayMicroseconds(15000); // Ждать стабилизации напряжений
+  delayMicroseconds(15000); // Ждать стабилизации напряжений
   digitalWrite(A4, LOW);
-    delayMicroseconds(15000); // Ждать стабилизации напряжений
+  delayMicroseconds(15000); // Ждать стабилизации напряжений
   digitalWrite(A4, HIGH);
-    delayMicroseconds(15000); // Ждать стабилизации напряжений
+  delayMicroseconds(15000); // Ждать стабилизации напряжений
 
   digitalWrite(A5, LOW);  //CS
 
   Lcd_Write_Com(0x11);
-    delayMicroseconds(15000); // Ждать стабилизации напряжений
+  delayMicroseconds(15000); // Ждать стабилизации напряжений
   Lcd_Write_Com(0xB1);
   Lcd_Write_Data(0x05);
   Lcd_Write_Data(0x3C);
@@ -158,17 +158,19 @@ void LCD_Clear(unsigned int j)
 
 int main(void)
 {
-  DDRB |= _BV(PB2)  | _BV(PB4) | _BV(PB5);              
-  PORTB =_BV(PB2) | (PORTB & ~(_BV(PB4) | _BV(PB5)));   
-  SPCR = _BV(SPE) | _BV(MSTR) | _BV(2);                 
-  SPSR = _BV(SPI2X);                                    
+  DDRC |= LCD_RS | LCD_CS | LCD_RESET;
+  PORTC |= LCD_RS | LCD_CS | LCD_RESET;
+  DDRB |= _BV(PB2) | _BV(PB4) | _BV(PB5);
+  PORTB = _BV(PB2) | (PORTB & ~(_BV(PB4) | _BV(PB5)));
+  SPCR = _BV(SPE) | _BV(MSTR) | _BV(2);// | _BV(3);
+  SPSR = _BV(SPI2X);
   SPDR = 0;
-
 
 
   Lcd_Init();
   for (;;) {
     LCD_Clear(0);
+    LCD_Clear(500);
 
 
     // SPDR = 0;

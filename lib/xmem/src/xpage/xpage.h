@@ -2,15 +2,18 @@
 #define XPAGE_H
 
 #include "../xmem.config.h"
+#include "dmem/dyn-memory.h"
+
+#if __AVR_ATmega128__
 
 #define XMEM_START      RAMEND+1
-#define XMEM_END        XRAMEND
+#define XMEM_OVER        XRAMEND
 
-// #elif __AVR_ATmega328P__
-// // Профиль используется для тестирования и совместимости
-// #define XMEM_START      0x400
-// #define XMEM_END        RAMEND
-// #endif
+#elif __AVR_ATmega328P__
+// Профиль используется для тестирования и совместимости
+#define XMEM_START      0x400
+#define XMEM_END        RAMEND+1
+#endif
 
 // Физически возможный минимальный размер страницы
 // Соответствует XMM[0-2] = 7 в регистре XMCRB
@@ -25,12 +28,9 @@
 #define XMEM_1K   6
 #define XMEM_0K   7   // 256 байт
 
-class XPage {
+class XPage : public DynMemory {
 private:
   byte _xmm; // Значение битов XMM[0-2] в регистре XMCRB
-  word _start;
-  word _end;
-  word _offset;
   byte _highAddress;
   byte _lowAddress;
 
@@ -44,8 +44,6 @@ public:
   byte *malloc(word memorySize);
 
 public:
-  inline void reset() { _offset = _start; }
-  inline word free() { return _end - _offset + 1; }
 
 public:
   void use();
