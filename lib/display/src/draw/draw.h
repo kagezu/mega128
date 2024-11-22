@@ -9,8 +9,8 @@ protected:
   uint8_t _pointX = 0;
   uint8_t _pointY = 0;
   uint8_t _fat = 2;
-  RGB _color = 0xffffffU;
-  RGB _background = 0U;
+  RGB _color = RGB(255, 255, 255);
+  RGB _background = RGB(0, 0, 0);
   uint8_t _transparent = 0;
 
 public:

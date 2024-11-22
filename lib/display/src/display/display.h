@@ -20,6 +20,7 @@ public:
   // Скринсейвер
 public:
   void demo(byte d);
+  void test(byte k);
 
   // Реализация интерфейса Draw
 public:

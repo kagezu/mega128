@@ -218,11 +218,11 @@ void ST7735S_SPI::sendRGB(byte r, byte g, byte b)
 
 #elif RGB_FORMAT == RGB_16
 
-  byte data = (b & 0xf8) | (g >> 5);
+  byte data = (g >> 5) | (b & 0xf8);
   SPI_WAIT;
   SPDR = data;
 
-  data = ((g << 3) & 0xe0) | g >> 3;
+  data = ((g & 0x1c) << 3) | (r >> 3);
   SPI_WAIT;
   SPDR = data;
 
@@ -249,15 +249,15 @@ void ST7735S_SPI::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
 
 #if RGB_FORMAT == RGB_12
 
-  byte hByte = (color.b & 0xf0) | (color.g >> 4);
-  byte mByte = (color.r & 0xf0) | (color.b >> 4);
-  byte lByte = (color.g & 0xf0) | (color.r >> 4);
+  byte hByte = color >> 4;
+  byte mByte = (color << 4) | ((color & 0xf00) >> 8);
+  byte lByte = color;
   len >>= 1;
 
 #elif RGB_FORMAT == RGB_16
 
-  byte hByte = (word)color >> 8;//(color.b & 0xf8) | (color.g >> 5);//
-  byte lByte = (word)color;//((color.g << 3) & 0xe0) | color.g >> 3;//
+  byte hByte = (word)color >> 8;
+  byte lByte = (word)color;
 
 #endif
 

@@ -223,3 +223,19 @@ void Display::demo(byte d)
   }
   DISPLAY_DISCONNECT
 }
+
+void Display::test(byte k)
+{
+  setAddr(0, 0, LCD_MAX_X, LCD_MAX_X);
+  for (byte y = 0; y < LCD_MAX_Y + 1; y++)
+    for (byte x = 0; x < LCD_MAX_X + 1; x++) {
+
+      word r = x << 1;
+      word g = y << 1;
+      word b = k;
+
+      sendRGB(RGB(r, g, b));
+      // sendRGB(((uint32_t)r << 16) | (g << 8) | b);
+    }
+  DISPLAY_DISCONNECT
+}

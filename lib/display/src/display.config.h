@@ -5,7 +5,7 @@
 // Цветовая модель
 // RGB_12 4x4x4 bit / RGB_16 5x6x5 bit / RGB_18 6x6x6 bit
 
-#define RGB_FORMAT RGB_16
+#define RGB_FORMAT RGB_12
 
 // Таблица поворотов дисплея
 //    \   |   FLIP_X  |   FLIP_Y  |   EX_X_Y  |
@@ -20,7 +20,7 @@
 #define EX_X_Y    false
 
 // Связь через SPI
-// #define LCD_SPI   true
+#define LCD_SPI   true
 
 // LCD_PORT   Порт управления дисплеем
 // LCD_CS     0 = Выбор дисплея / 1 = Снять выбор дисплея
@@ -45,14 +45,13 @@
 #ifdef LCD_SPI
 #define LCD_PORT PORTC
 #define LCD_CS _BV(PC5)
-#define LCD_RESET _BV(PC4)
-#define LCD_RS _BV(PC3)
+#define LCD_RS _BV(PC4)
 #define LCD_SDA 0
 #define LCD_SCK 0
 
 #define INIT_LCD                                        \
-  DDRC |= LCD_RS | LCD_CS | LCD_RESET;                  \
-  PORTC |= LCD_RS | LCD_CS | LCD_RESET;                 \
+  DDRC |= LCD_RS | LCD_CS;                              \
+  PORTC |= LCD_RS | LCD_CS;                             \
   DDRB |= _BV(PB2)  | _BV(PB3) | _BV(PB5);              \
   SPCR = _BV(SPE) | _BV(MSTR);                          \
   SPSR = _BV(SPI2X);                                    \
