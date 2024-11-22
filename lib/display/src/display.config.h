@@ -20,7 +20,7 @@
 #define EX_X_Y    false
 
 // Связь через SPI
-#define LCD_SPI   true
+// #define LCD_SPI   true
 
 // LCD_PORT     Порт для SDA, SCK
 // LCD_CONTROL  Порт для CS, RS
@@ -30,47 +30,49 @@
 
 #ifdef __AVR_ATmega128__
 #define LCD_PORT PORTE
-#define LCD_CS _BV(PE0)
-#define LCD_RS _BV(PE1)
-#define LCD_SCK _BV(PE2)
-#define LCD_SDA _BV(PE3)
+#define LCD_SCK     _BV(PE2)
+#define LCD_SDA     _BV(PE3)
 
-#define INIT_LCD                         \
-  DDRE |= LCD_RS | LCD_SDA | LCD_SCK | LCD_CS; \
-  PORTE |= LCD_RS | LCD_SDA | LCD_SCK | LCD_CS;
+#define LCD_CONTROL PORTE
+#define LCD_CS      PE0
+#define LCD_RS      PE1
+
+#define INIT_LCD                                            \
+  DDRE  |=  LCD_SDA | LCD_SCK | _BV(LCD_CS) | _BV(LCD_RS);  \
+  PORTE |=  LCD_SDA | LCD_SCK | _BV(LCD_CS) | _BV(LCD_RS);
 #endif
 
 #ifdef __AVR_ATmega328P__
-#ifdef LCD_SPI
+#if LCD_SPI
 
 #define LCD_CONTROL PORTC
-#define LCD_CS  PC5
-#define LCD_RS  PC4
+#define LCD_CS      PC5
+#define LCD_RS      PC4
 
-#define INIT_LCD                                        \
-  DDRC |= _BV(LCD_RS) | _BV(LCD_CS);                    \
-  PORTC |= _BV(LCD_RS) | _BV(LCD_CS);                   \
-  DDRB |= _BV(PB2)  | _BV(PB3) | _BV(PB5);              \
-  SPCR = _BV(SPE) | _BV(MSTR);                          \
-  SPSR = _BV(SPI2X);                                    \
-  TCCR0B |= _BV(CS00);                                  \
-  SPDR = 0;
+#define INIT_LCD                                \
+  DDRC   |= _BV(LCD_RS) | _BV(LCD_CS);          \
+  PORTC  |= _BV(LCD_RS) | _BV(LCD_CS);          \
+  DDRB   |= _BV(PB2)    | _BV(PB3) | _BV(PB5);  \
+  SPCR    = _BV(SPE)    | _BV(MSTR);            \
+  SPSR    = _BV(SPI2X);                         \
+  TCCR0B |= _BV(CS00);                          \
+  SPDR    = 0;
 
 #else
 // SDA, SCK должны быть на одном порту !
-#define LCD_PORT PORTB
-#define LCD_SDA _BV(PB3)
-#define LCD_SCK _BV(PB5)
+#define LCD_PORT    PORTB
+#define LCD_SDA     _BV(PB3)
+#define LCD_SCK     _BV(PB5)
 
 #define LCD_CONTROL PORTC
-#define LCD_CS  PC5
-#define LCD_RS  PC4
+#define LCD_CS      PC5
+#define LCD_RS      PC4
 
 #define INIT_LCD                          \
-  DDRC |= _BV(LCD_RS) | _BV(LCD_CS) ;     \
+  DDRC  |= _BV(LCD_RS) | _BV(LCD_CS) ;    \
   PORTC |= _BV(LCD_RS) | _BV(LCD_CS);     \
-  DDRB |=  LCD_SDA | LCD_SCK ;            \
-  PORTB |= LCD_SDA | LCD_SCK ;
+  DDRB  |=  LCD_SDA    |  LCD_SCK ;       \
+  PORTB |=  LCD_SDA    |  LCD_SCK ;
 #endif
 
 #endif

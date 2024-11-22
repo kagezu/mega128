@@ -1,7 +1,7 @@
 #include <avr/pgmspace.h>
 #include "ST7735S.h"
 
-#ifndef LCD_SPI
+#if !LCD_SPI
 
 ST7735S::ST7735S()
 {
