@@ -6,19 +6,6 @@
 
 #define SPI_WAIT  while (!(SPSR & _BV(SPIF)));
 
-#define SET_BITS(target, mask) target |= mask;
-#define RES_BITS(target, mask) target &= ~mask;
-
-#define DISPLAY_DISCONNECT SPI_WAIT SET_BITS(LCD_PORT, LCD_CS)  // Снять выбор дисплея
-#define DATA_MODE SPI_WAIT SET_BITS(LCD_PORT, LCD_RS)           // Запись данных
-#define SET_SDA SET_BITS(LCD_PORT, LCD_SDA)                     // Данные
-#define SET_SCK SET_BITS(LCD_PORT, LCD_SCK)                     // Тактирование
-
-#define DISPLAY_CONNECT RES_BITS(LCD_PORT, LCD_CS)              // Выбор дисплея
-#define COMMAND_MODE SPI_WAIT RES_BITS(LCD_PORT, LCD_RS)        // Запись команды
-#define RES_SDA RES_BITS(LCD_PORT, LCD_SDA)                     // Данные
-#define RES_SCK RES_BITS(LCD_PORT, LCD_SCK)                     // Тактирование
-
 // Команды дисплея
 
 #define NOP 0x00       // No Operation

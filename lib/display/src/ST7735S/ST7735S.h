@@ -4,19 +4,6 @@
 #include "display.config.h"
 #include "rgb/rgb.h"
 
-#define SET_BITS(target, mask) target |= mask;
-#define RES_BITS(target, mask) target &= ~mask;
-
-#define DISPLAY_DISCONNECT SET_BITS(LCD_PORT, LCD_CS) // Снять выбор дисплея
-#define DATA_MODE SET_BITS(LCD_PORT, LCD_RS)          // Запись данных
-#define SET_SDA SET_BITS(LCD_PORT, LCD_SDA)           // Данные
-#define SET_SCK SET_BITS(LCD_PORT, LCD_SCK)           // Тактирование
-
-#define DISPLAY_CONNECT RES_BITS(LCD_PORT, LCD_CS) // Выбор дисплея
-#define COMMAND_MODE RES_BITS(LCD_PORT, LCD_RS)    // Запись команды
-#define RES_SDA RES_BITS(LCD_PORT, LCD_SDA)        // Данные
-#define RES_SCK RES_BITS(LCD_PORT, LCD_SCK)        // Тактирование
-
 // Команды дисплея
 
 #define NOP 0x00       // No Operation

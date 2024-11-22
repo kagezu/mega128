@@ -5,7 +5,7 @@
 // Цветовая модель
 // RGB_12 4x4x4 bit / RGB_16 5x6x5 bit / RGB_18 6x6x6 bit
 
-#define RGB_FORMAT RGB_16
+#define RGB_FORMAT RGB_18
 
 // Таблица поворотов дисплея
 //    \   |   FLIP_X  |   FLIP_Y  |   EX_X_Y  |
@@ -22,12 +22,11 @@
 // Связь через SPI
 #define LCD_SPI   true
 
-// LCD_PORT   Порт управления дисплеем
-// LCD_CS     0 = Выбор дисплея / 1 = Снять выбор дисплея
-// LCD_RS     0 = Запись команды / 1 = Запись данных
-// LCD_SDA    0/1 Данные
-// LCD_SCK    Тактирование
-// INIT_LCD_PORT Инициализация порта
+// LCD_PORT     Порт для SDA, SCK
+// LCD_CONTROL  Порт для CS, RS
+// LCD_CS       Выбор дисплея
+// LCD_RS       0 = Запись команды / 1 = Запись данных
+// INIT_LCD     Инициализация порта
 
 #ifdef __AVR_ATmega128__
 #define LCD_PORT PORTE
@@ -43,15 +42,14 @@
 
 #ifdef __AVR_ATmega328P__
 #ifdef LCD_SPI
-#define LCD_PORT PORTC
-#define LCD_CS _BV(PC5)
-#define LCD_RS _BV(PC4)
-#define LCD_SDA 0
-#define LCD_SCK 0
+
+#define LCD_CONTROL PORTC
+#define LCD_CS  PC5
+#define LCD_RS  PC4
 
 #define INIT_LCD                                        \
-  DDRC |= LCD_RS | LCD_CS;                              \
-  PORTC |= LCD_RS | LCD_CS;                             \
+  DDRC |= _BV(LCD_RS) | _BV(LCD_CS);                    \
+  PORTC |= _BV(LCD_RS) | _BV(LCD_CS);                   \
   DDRB |= _BV(PB2)  | _BV(PB3) | _BV(PB5);              \
   SPCR = _BV(SPE) | _BV(MSTR);                          \
   SPSR = _BV(SPI2X);                                    \
@@ -59,22 +57,33 @@
   SPDR = 0;
 
 #else
-#define LCD_PORT PORTC
-#define LCD_CS _BV(PC4)
-#define LCD_RESET _BV(PC3)
-#define LCD_RS _BV(PC2)
-#define LCD_SDA _BV(PC1)
-#define LCD_SCK _BV(PC0)
+// SDA, SCK должны быть на одном порту !
+#define LCD_PORT PORTB
+#define LCD_SDA _BV(PB3)
+#define LCD_SCK _BV(PB5)
 
+#define LCD_CONTROL PORTC
+#define LCD_CS  PC5
+#define LCD_RS  PC4
 
-#define INIT_LCD                                     \
-  DDRC |= LCD_RS | LCD_SDA | LCD_SCK | LCD_CS | LCD_RESET; \
-  PORTC |= LCD_RS | LCD_SDA | LCD_SCK | LCD_CS | LCD_RESET;
+#define INIT_LCD                          \
+  DDRC |= _BV(LCD_RS) | _BV(LCD_CS) ;     \
+  PORTC |= _BV(LCD_RS) | _BV(LCD_CS);     \
+  DDRB |=  LCD_SDA | LCD_SCK ;            \
+  PORTB |= LCD_SDA | LCD_SCK ;
 #endif
+
 #endif
 
+// размер дисплея
 #define LCD_MAX_X 127
 #define LCD_MAX_Y 159
+
+// Команды управления вывода на дисплей
+#define DISPLAY_DISCONNECT  bitSet(LCD_CONTROL, LCD_CS);      // Снять выбор дисплея
+#define DATA_MODE           bitSet(LCD_CONTROL, LCD_RS);      // Запись данных
+#define DISPLAY_CONNECT     bitClear(LCD_CONTROL, LCD_CS);    // Выбор дисплея
+#define COMMAND_MODE        bitClear(LCD_CONTROL, LCD_RS) ;   // Запись команды
 
 #if EX_X_Y
 #define MAX_X     LCD_MAX_Y

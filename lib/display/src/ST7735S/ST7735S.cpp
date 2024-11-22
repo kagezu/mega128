@@ -1,6 +1,8 @@
 #include <avr/pgmspace.h>
 #include "ST7735S.h"
 
+#ifndef LCD_SPI
+
 ST7735S::ST7735S()
 {
   INIT_LCD
@@ -438,3 +440,5 @@ void ST7735S::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
 
   DISPLAY_DISCONNECT
 };
+
+#endif

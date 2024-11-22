@@ -106,8 +106,10 @@ ST7735S_SPI::ST7735S_SPI()
 
 void ST7735S_SPI::sendCommand(byte command)
 {
+  SPI_WAIT;
   COMMAND_MODE; // Запись команды
   SPDR = command;
+  SPI_WAIT;
   DATA_MODE // Запись данных
 };
 

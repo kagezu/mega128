@@ -1,12 +1,12 @@
 ﻿// -------------  libray Display  --------------
 // ---------
-// #include "../lib/display/demo/sample.cpp"
+#include "../lib/display/demo/sample.cpp"
 
 // ATmega128 only
 // #include "../lib/display/demo/drawing.cpp"
 
 // Линии и окружности
-#include "../lib/display/demo/line.cpp"
+// #include "../lib/display/demo/line.cpp"
 
 // Прямоугольники
 // #include "../lib/display/demo/rect.cpp"
