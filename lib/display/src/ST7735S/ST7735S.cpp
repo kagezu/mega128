@@ -275,7 +275,7 @@ void ST7735S::sendRGB(RGB color)
 #if RGB_FORMAT == RGB_12 || RGB_FORMAT == RGB_16
   sendRGB((uint16_t)color);
 #elif RGB_FORMAT == RGB_18
-  sendRGB(color.r, color.g, color.b);
+  sendRGB(color.red, color.green, color.blue);
 #endif
 }
 
@@ -360,9 +360,9 @@ void ST7735S::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
   byte g = (uint16_t)color >> 3;
   byte b = (uint16_t)color >> 8;
 #elif RGB_FORMAT == RGB_18
-  byte r = color.r;
-  byte g = color.g;
-  byte b = color.b;
+  byte r = color.red;
+  byte g = color.green;
+  byte b = color.blue;
 #endif
 
   setAddr(x0, y0, x1, y1);

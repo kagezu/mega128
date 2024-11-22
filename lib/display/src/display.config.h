@@ -5,7 +5,7 @@
 // Цветовая модель
 // RGB_12 4x4x4 bit / RGB_16 5x6x5 bit / RGB_18 6x6x6 bit
 
-#define RGB_FORMAT RGB_12
+#define RGB_FORMAT RGB_16
 
 // Таблица поворотов дисплея
 //    \   |   FLIP_X  |   FLIP_Y  |   EX_X_Y  |

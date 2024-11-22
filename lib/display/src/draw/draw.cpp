@@ -4,7 +4,7 @@
 
 void Draw::wLine(uint8_t x, uint8_t y, uint8_t x1)
 {
-  if(x>x1) swap(x,x1);
+  // if (x > x1) swap(x, x1);
 
   if (x > MAX_X) x = 0;
   if (x1 > MAX_X) x1 = MAX_X;
@@ -14,7 +14,7 @@ void Draw::wLine(uint8_t x, uint8_t y, uint8_t x1)
 
 void Draw::hLine(uint8_t x, uint8_t y, uint8_t y1)
 {
-  if(y>y1) swap(y,y1);
+  // if (y > y1) swap(y, y1);
 
   if (y > MAX_Y) y = 0;
   if (y1 > MAX_Y) y1 = MAX_Y;
@@ -191,7 +191,7 @@ void Draw::roundRectFill(uint8_t x, uint8_t y, uint8_t width, uint8_t height, ui
   uint8_t x2 = x + width - radius - 1;
   uint8_t y2 = y + height - radius - 1;
 
-  rectFill(x, y1, width, height + ddF_y);
+  rectFill(x, y1, x+width, y2);
 
   while (dx < dy) {
     if (f >= 0) {

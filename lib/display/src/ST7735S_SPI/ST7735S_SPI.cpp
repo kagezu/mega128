@@ -188,7 +188,7 @@ void ST7735S_SPI::sendRGB(RGB color)
 #if RGB_FORMAT == RGB_12 || RGB_FORMAT == RGB_16
   sendRGB((uint16_t)color);
 #elif RGB_FORMAT == RGB_18
-  sendRGB(color.r, color.g, color.b);
+  sendRGB(color.red, color.green, color.blue);
 #endif
 }
 
@@ -285,13 +285,13 @@ void ST7735S_SPI::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
   #elif RGB_FORMAT == RGB_18
 
     SPI_WAIT;
-    SPDR = color.b;
+    SPDR = color.blue;
     asm volatile("nop");
     SPI_WAIT;
-    SPDR = color.g;
+    SPDR = color.green;
     asm volatile("nop");
     SPI_WAIT;
-    SPDR = color.r;
+    SPDR = color.red;
 
   #endif
 

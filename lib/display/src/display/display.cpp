@@ -235,7 +235,7 @@ void Display::test(byte k)
       word b = k;
 
       sendRGB(RGB(r, g, b));
-      // sendRGB(((uint32_t)r << 16) | (g << 8) | b);
+      // sendRGB(RGB(r & 0xf0, g & 0xf0, b & 0xf0));
     }
   DISPLAY_DISCONNECT
 }
