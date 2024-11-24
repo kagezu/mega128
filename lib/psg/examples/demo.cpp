@@ -40,7 +40,7 @@ int main()
 {
   T0_DIV_1024;
   T0_CTC;
-  OCR0A = 155;
+  OCR0A = F_CPU / 1024 / 100 - 1; // 100 Hz
   T0_COMPA_ON;
 
   T1_DIV_1;
