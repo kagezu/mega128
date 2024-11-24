@@ -101,6 +101,7 @@
 
 /*функции прерываний по таймеру*/
 
+// Использовать: ISR(TIMER0_COMPA_vect)
 #define T0_COMPA_ON   TIMSK0 |= _BV(OCIE0A);
 #define T0_COMPB_ON   TIMSK0 |= _BV(OCIE0B);
 #define T0_OVF_ON     TIMSK0 |= _BV(TOIE);
@@ -136,12 +137,12 @@
 // CTC top = OCR1A
 // OC1A/OC1B: f = clk / 2*N*(1+OCR1A)             toggle
 #define T1_CTC                                                    \
-                      TCCR1A &= ~(_BV(WGM11) | _BV(WGM10));\
+                      TCCR1A &= ~(_BV(WGM11) | _BV(WGM10));       \
                       TCCR1B &= ~_BV(WGM13);\
                       TCCR1B |= _BV(WGM12);
 
 // аппаратный шим 8 бит, top = 0xFF
-// OC1A/OC1B: f = clk / N*256     ширина OCR1A/OCR1B  direct/invert
+// OC1A/OC1B: f = clk / N*256     ширина OCR1A/OCR1B      direct/invert
 #define T1_FAST_PWM_8                                             \
                       TCCR1A &= ~_BV(WGM11);                      \
                       TCCR1B &= ~_BV(WGM13);                      \

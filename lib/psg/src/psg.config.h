@@ -12,11 +12,7 @@
 #define  AY_INIT                          \
   DDRB |= AY_CLOCK | AY_BDIR | AY_BC1;    \
   PORTB &= ~(AY_BDIR | AY_BC1);           \
-  DDRD = 0xFF;                            \
-  TCCR1A = 64;                            \
-  TCCR1B = 9;                             \
-  OCR1A =4;\
-  TCNT1 = 0;
+  DDRD = 0xFF;
 
 //2 ~ 2,6(6) MHz
 //3 ~ 2 MHz

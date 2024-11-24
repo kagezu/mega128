@@ -1,10 +1,15 @@
 #include "data.h"
 #include "timer.h"
 #include "AY-3-8910/AY-3-8910.h"
+#include "display/display.h"
 
+Display lcd;
 AY_3_8910 psg;
 
 unsigned int cb = 0;
+unsigned char counter = 0;
+#define DIV 2
+
 
 void pseudoInterrupt()
 {
@@ -24,36 +29,37 @@ void pseudoInterrupt()
     d = pgm_read_word(&raw[adr++]);
   }
 
-  if (cb > 4454) {
+  if (cb > 4454 - 725) {
     cb = 0;
     for (int i = 0; i < 14; i++) psg.load(i, 0);
     psg.load(7, 255);
-    delay(1000);
   }
 }
 
-void setup()
-{
-  TCCR1A = 64;
-  TCCR1B = 9;
-  TCNT1 = 0;
-  OCR1A = 4;
-  DDRB |= B1;
-}
-
-void loop()
-{
-  delay(20);
-  pseudoInterrupt();
-}
-
-/*
 int main()
 {
-  init();
+  T0_DIV_1024;
+  T0_CTC;
+  OCR0A = 155;
+  T0_COMPA_ON;
+
+  T1_DIV_1;
+  T1_CTC;
+  T1_OC1A_TOGGLE;
+  OCR1A = 4;
+
+  sei();
+
+  byte x = 0;
   while (true) {
-    delay(20);
-    pseudoInterrupt();
+    lcd.demo(x++);
   }
 }
-*/
+
+ISR(TIMER0_COMPA_vect)
+{
+  if (counter++ == DIV) {
+    pseudoInterrupt();
+    counter = 1;
+  }
+}
