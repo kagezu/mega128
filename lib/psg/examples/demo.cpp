@@ -45,7 +45,7 @@ int main()
 
   T1_DIV_1;
   T1_CTC;
-  T1_OC1A_TOGGLE;
+  T1_OC1A_ON;
   OCR1A = 4;
 
   sei();

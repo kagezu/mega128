@@ -19,10 +19,10 @@ public:
   void load(byte address, byte data)
   {
     PORTD = address;
-    PORTB |= AY_BDIR | AY_BC1; // fix address
-    PORTB ^= AY_BDIR | AY_BC1; // inactive
+    AY_LATCH_ADR;
+    AY_INACTIVE;
     PORTD = data;
-    PORTB |= AY_BDIR; // write data
-    PORTB ^= AY_BDIR; // inactive
+    AY_WRITE;
+    AY_INACTIVE;
   }
 };
