@@ -141,7 +141,7 @@
                       TCCR1B |= _BV(WGM12);
 
 // аппаратный шим 8 бит, top = 0xFF
-// OC1A/OC1B: f = clk / N*256     ширина OCR1A/OCR1B    direct/invert
+// OC1A/OC1B: f = clk / N*256     ширина OCR1A/OCR1B  direct/invert
 #define T1_FAST_PWM_8                                             \
                       TCCR1A &= ~_BV(WGM11);                      \
                       TCCR1B &= ~_BV(WGM13);                      \
@@ -149,7 +149,7 @@
                       TCCR1B |= _BV(WGM12);
 
 // аппаратный шим 9 бит, top = 0x1FF
-// OC1A/OC1B:: f = clk / N*512    ширина OCR1A/OCR1B    direct/invert
+// OC1A/OC1B:: f = clk / N*512    ширина OCR1A/OCR1B      direct/invert
 #define T1_FAST_PWM_9                                             \
                       TCCR1A &= ~_BV(WGM10);                      \
                       TCCR1B &= ~_BV(WGM13);                      \
@@ -157,41 +157,41 @@
                       TCCR1B |= _BV(WGM12);
 
 // аппаратный шим 9 бит, top = 0x3FF
-// OC1A/OC1B: f = clk / N*1024     ширина OCR1A/OCR1B    direct/invert
+// OC1A/OC1B: f = clk / N*1024     ширина OCR1A/OCR1B     direct/invert
 #define T1_FAST_PWM_10                                            \
                       TCCR1A |= _BV(WGM10) | _BV(WGM11);          \
                       TCCR1B &= ~_BV(WGM13);                      \
                       TCCR1B |= _BV(WGM12);
 
 // аппаратный шим настраиваемый, top = ICR1 [ ICR1H:ICR1L ]
-// OC1A/OC1B: f = clk / (1+ICR1)    ширина OCR1A/OCR1B direct/invert
+// OC1A/OC1B: f = clk / (1+ICR1)   ширина OCR1A/OCR1B     direct/invert
 #define T1_FAST_PWM_CUSTOM                                        \
                       TCCR1B |= (_BV(WGM13) | _BV(WGM12));        \
                       TCCR1A &= ~_BV(WGM10);                      \
                       TCCR1A |= _BV(WGM11);
 
 // симметричный шим 8 бит, top = 0xFF
-// OC1A/OC1B:: f = clk / N*512       ширина = OCR1A/OCR1B  direct/invert
+// OC1A/OC1B:: f = clk / N*512      ширина OCR1A/OCR1B    direct/invert
 #define T1_PHASE_PWM_8                                            \
                       TCCR1B &= ~(_BV(WGM13) | _BV(WGM12));       \
                       TCCR1A &= ~_BV(WGM11);                      \
                       TCCR1A |= _BV(WGM10);
 
 // симметричный шим 9 бит, top = 0x1FF
-// OC1A/OC1B: f = clk / N*1024        ширина = OCR1A/OCR1B  direct/invert
+// OC1A/OC1B: f = clk / N*1024       ширина OCR1A/OCR1B   direct/invert
 #define T1_PHASE_PWM_9                                            \
                       TCCR1B &= ~(_BV(WGM13) | _BV(WGM12));       \
                       TCCR1A &= ~_BV(WGM10);                      \
                       TCCR1A |= _BV(WGM11);
 
 // симметричный шим 10 бит, top = 0x3FF
-// OC1A/OC1B: f = clk / N*2048        ширина = OCR1A/OCR1B  direct/invert
+// OC1A/OC1B: f = clk / N*2048        ширина OCR1A/OCR1B  direct/invert
 #define T1_PHASE_PWM_10                                           \
                       TCCR1A |= (_BV(WGM11) | _BV(WGM10));        \
                       TCCR1B &= ~(_BV(WGM13) | _BV(WGM12));
 
 // симметричный настраиваемый, top = ICR1 [ ICR1H:ICR1L ]
-// OC1A/OC1B:: f = clk / 2*N*(ICR1)   ширина OCR1A/OCR1B    direct/invert
+// OC1A/OC1B:: f = clk / 2*N*(ICR1)   ширина OCR1A/OCR1B  direct/invert
 #define T1_PHASE_PWM_CUSTOM                                       \
                       TCCR1B &= ~_BV(WGM12);                      \
                       TCCR1A &= ~_BV(WGM10);                      \

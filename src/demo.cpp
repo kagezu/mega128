@@ -1,6 +1,6 @@
 ﻿// -------------  libray Display  --------------
 // ---------
-#include "../lib/display/examples/sample.cpp"
+// #include "../lib/display/examples/sample.cpp"
 
 // ATmega128 only
 // #include "../lib/display/examples/drawing.cpp"
@@ -23,4 +23,9 @@
 // -------------  libray XPage  --------------
 // Выделение памяти
 // #include "../lib/xmem/examples/memory-test.cpp"
+
+
+// -------------  libray PSG  ----------------
+// Выделение памяти
+#include "../lib/psg/examples/demo.cpp"
 
