@@ -4,7 +4,6 @@
 #define  AY_BDIR      _BV(PB2)
 #define  AY_PORT_CTRL PORTB
 
-
 #define AY_INACTIVE   AY_PORT_CTRL &= ~(AY_BC1 | AY_BDIR);
 #define AY_READ       AY_PORT_CTRL |= AY_BC1;
 #define AY_WRITE      AY_PORT_CTRL |= AY_BDIR;

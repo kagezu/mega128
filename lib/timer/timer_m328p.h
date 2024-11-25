@@ -154,12 +154,12 @@
 
 // Использовать: ISR(TIMER0_COMPA_vect)
 #define T0_COMPA_ON   TIMSK0 |= _BV(OCIE0A);
+#define T0_COMPA_OFF  TIMSK0 &=~_BV(OCIE0A);
 // Использовать: ISR(TIMER0_COMPB_vect)
 #define T0_COMPB_ON   TIMSK0 |= _BV(OCIE0B);
+#define T0_COMPB_OFF  TIMSK0 &=~_BV(OCIE0B);
 // Использовать: ISR(TIMER0_OVF_vect)
 #define T0_OVF_ON     TIMSK0 |= _BV(TOIE);
-#define T0_COMPA_OFF  TIMSK0 &=~_BV(OCIE0A);
-#define T0_COMPB_OFF  TIMSK0 &=~_BV(OCIE0B);
 #define T0_OVF_OFF    TIMSK0 &=~_BV(TOIE);
 
 
@@ -314,12 +314,12 @@ TCCR1A &= ~(_BV(COM1B1) | _BV(COM1B0));\
 
 // Использовать: ISR(TIMER1_COMPA_vect)
 #define T1_COMPA_ON   TIMSK1 |= _BV(OCIE1A);
+#define T1_COMPA_OFF  TIMSK1 &=~ _BV(OCIE1A);
 // Использовать: ISR(TIMER1_COMPB_vect)
 #define T1_COMPB_ON   TIMSK1 |= _BV(OCIE1B);
+#define T1_COMPB_OFF  TIMSK1 &=~ _BV(OCIE1B);
 // Использовать: ISR(TIMER1_OVF_vect)
 #define T1_OVF_ON     TIMSK1 |= _BV(TOIE1);
-#define T1_COMPA_OFF  TIMSK1 &=~ _BV(OCIE1A);
-#define T1_COMPB_OFF  TIMSK1 &=~ _BV(OCIE1B);
 #define T1_OVF_OFF    TIMSK1 &=~ _BV(TOIE1);
 
 
@@ -438,10 +438,10 @@ TCCR1A &= ~(_BV(COM1B1) | _BV(COM1B0));\
 
 // Использовать: ISR(TIMER2_COMPA_vect)
 #define T2_COMPA_ON   TIMSK2 |= _BV(OCIE2A);
+#define T2_COMPA_OFF  TIMSK2 &=~ _BV(OCIE2A);
 // Использовать: ISR(TIMER2_COMPB_vect)
 #define T2_COMPB_ON   TIMSK2 |= _BV(OCIE2B);
+#define T2_COMPB_OFF  TIMSK2 &=~ _BV(OCIE2B);
 // Использовать: ISR(TIMER2_OVF_vect)
 #define T2_OVF_ON     TIMSK2 |= _BV(TOIE2);
-#define T2_COMPA_OFF  TIMSK2 &=~ _BV(OCIE2A);
-#define T2_COMPB_OFF  TIMSK2 &=~ _BV(OCIE2B);
 #define T2_OVF_OFF    TIMSK2 &=~ _BV(TOIE2);

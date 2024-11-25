@@ -38,6 +38,7 @@ void pseudoInterrupt()
 
 int main()
 {
+#ifdef __AVR_ATmega328P__
   T0_DIV_1024;
   T0_CTC;
   OCR0A = F_CPU / 1024 / 100 - 1; // 100 Hz
@@ -47,6 +48,17 @@ int main()
   T1_CTC;
   T1_OC1A_ON;
   OCR1A = 4;
+#elif __AVR_ATmega128__
+  T0_DIV_1024;
+  T0_CTC;
+  OCR0 = F_CPU / 1024 / 100 - 1; // 100 Hz
+  T0_COMP_ON;
+
+  T1_DIV_1;
+  T1_CTC;
+  T1_OC1A_ON;
+  OCR1A = 4;
+#endif
 
   sei();
 
@@ -56,7 +68,11 @@ int main()
   }
 }
 
+#ifdef __AVR_ATmega328P__
 ISR(TIMER0_COMPA_vect)
+#elif __AVR_ATmega128__
+ISR(TIMER0_COMP_vect)
+#endif
 {
   if (counter++ == DIV) {
     pseudoInterrupt();
