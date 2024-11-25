@@ -1,7 +1,7 @@
 ## e**X**tended **MEM**ory
 
 Схема подключения внешней SDRAM.
-Подключения выводов A16 и выше заносятся в файл [display.config.h](../src/xmem.config.h)
+Подключения выводов A16 и выше заносятся в файл [xmem.config.h](../src/xmem.config.h)
 
 |ATmega 128|K6X1008C2D|HC573|
 |:---:|:---:|:---:|

@@ -55,3 +55,11 @@ CS,RS,MOSI,SCK
   void circleFill(uint8_t x, uint8_t y, uint8_t  radius);
   void roundRectFill(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t  radius);
   ```
+---
+### class Text
+
+Виртуальный класс, для вывода текста.
+
+#### Список функций
+
+В разработке.

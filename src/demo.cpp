@@ -14,10 +14,8 @@
 // Скринсейвер
 // #include "../lib/display/examples/screensaver.cpp"
 
-
-// -------------  libray Text  --------------
 // Вывод памяти на экран
-// #include "../lib/text/examples/memory_scroll.cpp"
+// #include "../lib/display/examples/memory_scroll.cpp"
 
 
 // -------------  libray XPage  --------------

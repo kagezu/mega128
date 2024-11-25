@@ -20,19 +20,19 @@
   + T1_[ NORMAL, CTC, FAST_PWM_[8, 9, 10, CUSTOM], PHASE_PWM_[8, 9, 10, CUSTOM] ] Режимы таймера: счётчик, шим
   + T1_OC1[A, B]_[ OFF, ON, PVM[ _INV ] ] Режимы выводов: вкл, выкл, шим
   + OCR1[A, B, C] = 0...65535; Регистры управлением делителем / заполненностью шим
-  + T1_[ OVF, COMPA, COMPB, COMPC ]_[ ON, OFF ] Установка прерываний
+  + T1_[ OVF, CAPT, COMPA, COMPB, COMPC ]_[ ON, OFF ] Установка прерываний
 */
 #define T1
 
 /*
-  Настройка таймера 1:
+  Настройка таймера 3:
 --
   + T3_[STOP, EXT_FALL, EXT_RISE] Отключение таймера, внешние тактирование
   + T3_DIV_[1, 8, 64, 256, 1024] Предварительный делитель
   + T3_[ NORMAL, CTC, FAST_PWM_[8, 9, 10, CUSTOM], PHASE_PWM_[8, 9, 10, CUSTOM] ] Режимы таймера: счётчик, шим
   + T3_OC1[A, B]_[ OFF, ON, PVM[ _INV ] ] Режимы выводов: вкл, выкл, шим
   + OCR1[A, B, C] = 0...65535; Регистры управлением делителем / заполненностью шим
-  + T3_[ OVF, COMPA, COMPB, COMPC]_[ ON, OFF ] Установка прерываний
+  + T3_[ OVF, CAPT, COMPA, COMPB, COMPC]_[ ON, OFF ] Установка прерываний
 */
 #define T3
 
@@ -286,8 +286,8 @@ TCCR1A &= ~(_BV(COM1C1) | _BV(COM1C0));\
 #define T1_COMPB_ON   TIMSK |= _BV(OCIE1B);
 #define T1_COMPB_OFF  TIMSK &=~ _BV(OCIE1B);
 // Использовать: ISR(TIMER1_COMPC_vect)
-#define T1_COMPB_ON   ETIMSK |= _BV(OCIE1C);
-#define T1_COMPB_OFF  ETIMSK &=~ _BV(OCIE1C);
+#define T1_COMPC_ON   ETIMSK |= _BV(OCIE1C);
+#define T1_COMPC_OFF  ETIMSK &=~ _BV(OCIE1C);
 // Использовать: ISR(TIMER1_OVF_vect)
 #define T1_OVF_ON     TIMSK |= _BV(TOIE1);
 #define T1_OVF_OFF    TIMSK &=~ _BV(TOIE1);
