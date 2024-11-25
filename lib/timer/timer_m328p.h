@@ -2,35 +2,37 @@
 
 /*
   Настройка таймера 0:
-
-  T0_DIV_[1, 8, 64, 256, 1024]
-  T0_[ NORMAL, CTC, FAST_PWM[_CUSTOM], PHASE_PWM[_CUSTOM] ]
-  T0_OC0[A, B]_[ OFF, ON, PVM[ _INV ] ]
-  OCR0[A, B] = 0...255; делитель / заполнение шим
-  T0_[ OVF, COMPA, COMPB ]_[ ON, OFF ] установка прерываний
+--
+  + T0_[STOP, EXT_FALL, EXT_RISE] Отключение таймера, внешние тактирование
+  + T0_DIV_[1, 8, 64, 256, 1024] Предварительный делитель
+  + T0_[NORMAL, CTC, FAST_PWM[_CUSTOM], PHASE_PWM[_CUSTOM] ] Режимы таймера: счётчик, шим
+  + T0_OC0[A, B]_[ OFF, ON, PVM[ _INV ] ] Режимы выводов: вкл, выкл, шим
+  + OCR0[A, B] = 0...255; Регистры управлением делителем / заполненностью шим
+  + T0_[ OVF, COMPA, COMPB ]_[ ON, OFF ] Установка прерываний
 */
 #define T0
 
 /*
   Настройка таймера 1:
-
-  T1_DIV_[1, 8, 64, 256, 1024]
-  T1_[ NORMAL, CTC, FAST_PWM_[8, 9, 10, CUSTOM], PHASE_PWM_[8, 9, 10, CUSTOM] ]
-  T1_OC1[A, B]_[ OFF, ON, PVM[ _INV ] ]
-  OCR1[A, B] = 0...65535; делитель / заполнение шим
-  ICR1 = 1...65535; делитель
-  T1_[ OVF, COMPA, COMPB ]_[ ON, OFF ] установка прерываний
+--
+  + T1_[STOP, EXT_FALL, EXT_RISE] Отключение таймера, внешние тактирование
+  + T1_DIV_[1, 8, 64, 256, 1024] Предварительный делитель
+  + T1_[ NORMAL, CTC, FAST_PWM_[8, 9, 10, CUSTOM], PHASE_PWM_[8, 9, 10, CUSTOM] ] Режимы таймера: счётчик, шим
+  + T1_OC1[A, B]_[ OFF, ON, PVM[ _INV ] ] Режимы выводов: вкл, выкл, шим
+  + OCR1[A, B] = 0...65535; Регистры управлением делителем / заполненностью шим
+  + T1_[ OVF, COMPA, COMPB ]_[ ON, OFF ] Установка прерываний
 */
 #define T1
 
 /*
   Настройка таймера 2:
-
-  T2_DIV_[1, 8, 32, 64, 128, 256, 1024]
-  T2_[ NORMAL, CTC, FAST_PWM[_CUSTOM], PHASE_PWM[_CUSTOM] ]
-  T2_OC2[A, B]_[ OFF, ON, PVM[ _INV ] ]
-  OCR2[A, B] = 0...255; делитель / заполнение шим
-  T2_[ OVF, COMPA, COMPB ]_[ ON, OFF ] установка прерываний
+--
+  + T2_[STOP, EXT_FALL, EXT_RISE] Отключение таймера, внешние тактирование
+  + T2_DIV_[1, 8, 32, 64, 128, 256, 1024] Предварительный делитель
+  + T2_[ NORMAL, CTC, FAST_PWM[_CUSTOM], PHASE_PWM[_CUSTOM] ] Режимы таймера: счётчик, шим
+  + T2_OC2[A, B]_[ OFF, ON, PVM[ _INV ] ] Режимы выводов: вкл, выкл, шим
+  + OCR2[A, B] = 0...255; Регистры управлением делителем / заполненностью шим
+  + T2_[ OVF, COMPA, COMPB ]_[ ON, OFF ] Установка прерываний
 */
 #define T2
 
@@ -55,14 +57,14 @@
 
 // циклично 8 бит, top = 0xFF
 // f = clk / N*256
-// OC0A/OC0B: toggle (f/2)
+// Выводы OC0A/OC0B: toggle (f/2)
 #define T0_NORMAL \
   TCCR0B &= ~_BV(WGM02);\
   TCCR0A &= ~(_BV(WGM01) | _BV(WGM00));
 
 // CTC, top = OCR0A
 // f = clk / N*(1+OCR0A)
-// OC0A/OC0B: toggle (f/2)
+// Выводы OC0A/OC0B: toggle (f/2)
 #define T0_CTC \
   TCCR0B &= ~_BV(WGM02);\
   TCCR0A &= ~_BV(WGM00);\
@@ -70,22 +72,22 @@
 
 // шим 8 бит, top = 0xFF
 // f = clk / N*256
-// OC0A/OC0B: заполнение шим: OCR0A/OCR0B
+// Выводы OC0A/OC0B: заполнение шим: OCR0A/OCR0B
 #define T0_FAST_PWM \
   TCCR0B &= ~_BV(WGM02);\
   TCCR0A |= (_BV(WGM01) | _BV(WGM00));
 
 // настраиваемый шим, top = OCR0A
 // f = clk / N*(1+OCR0A)
-// OC0A: заполнение 50%  toggle (f/2)
-// OC0B: заполнение шим: OCR0B
+// Вывод OC0A: заполнение 50%  toggle (f/2)
+// Вывод OC0B: заполнение шим: OCR0B
 #define T0_FAST_PWM_CUSTOM \
   TCCR0B |= _BV(WGM02);\
   TCCR0A |= (_BV(WGM01) | _BV(WGM00));
 
 // симметричный шим 8 бит, top = 0xFF
 // f = clk / N*512
-// OC0A/OC0B: заполнение шим: OCR0A/OCR0B
+// Выводы OC0A/OC0B: заполнение шим: OCR0A/OCR0B
 #define T0_PHASE_PWM \
   TCCR0B &= ~_BV(WGM02);\
   TCCR0A &= ~_BV(WGM01);\
@@ -93,8 +95,8 @@
 
 // симметричный настраиваемый, top = OCR0A
 // f = clk / 2*N*(OCR0A)
-// OC0A: заполнение 50%  toggle (f/2)
-// OC0B: заполнение шим: OCR0B
+// Вывод OC0A: заполнение 50%  toggle (f/2)
+// Вывод OC0B: заполнение шим: OCR0B
 #define T0_PHASE_PWM_CUSTOM \
   TCCR0B |= _BV(WGM02);\
   TCCR0A &= ~_BV(WGM01);\
@@ -102,23 +104,23 @@
 
 /* Режим работы OC0A */
 
-// OC0A: off
+// Вывод OC0A: off
 #define T0_OC0A_OFF\
   TCCR0A &= ~(_BV(COM0A1) | _BV(COM0A0));\
   DDRD &= ~_BV(PD6);
-// OC0A: toggle (f/2)
+// Вывод OC0A: toggle (f/2)
 #define T0_OC0A_ON \
   TCCR0A &= ~_BV(COM0A1);\
   TCCR0A |= _BV(COM0A0);\
   TCCR0B |= _BV(FOC0A);\
   DDRD |= _BV(PD6);
-// OC0A: шим
+// Вывод OC0A: шим
 #define T0_OC0A_PWM \
   TCCR0A &= ~_BV(COM0A0);\
   TCCR0A |= _BV(COM0A1);\
   TCCR0B &= ~_BV(FOC0A);\
   DDRD |= _BV(PD6);
-// OC0A: инвертированный шим
+// Вывод OC0A: инвертированный шим
 #define T0_OC0A_PWM_INV \
   TCCR0A |= (_BV(COM0A1) | _BV(COM0A0));\
   TCCR0B &= ~_BV(FOC0A);\
@@ -126,23 +128,23 @@
 
 /* Режим работы OC0B */
 
-// OC0B: off
+// Вывод OC0B: off
 #define T0_OC0B_OFF\
   TCCR0A &= ~(_BV(COM0B1) | _BV(COM0B0));\
   DDRD &= ~_BV(PD5);
-// OC0B: toggle (f/2)
+// Вывод OC0B: toggle (f/2)
 #define T0_OC0B_ON \
   TCCR0A &= ~_BV(COM0B1);\
   TCCR0A |= _BV(COM0B0);\
   TCCR0B |= _BV(FOC0B);\
   DDRD |= _BV(PD5);
-// OC0B: шим
+// Вывод OC0B: шим
 #define T0_OC0B_PWM \
   TCCR0A &= ~_BV(COM0B0);\
   TCCR0A |= _BV(COM0B1);\
   TCCR0B &= ~_BV(FOC0B);\
   DDRD |= _BV(PD5);
-// OC0B: инвертированный шим
+// Вывод OC0B: инвертированный шим
 #define T0_OC0B_PWM_INV \
   TCCR0A |= (_BV(COM0B1) | _BV(COM0B0));\
   TCCR0B &= ~_BV(FOC0B);\
@@ -166,9 +168,9 @@
 
 // отключить тактирование
 #define T1_STOP       TCCR1B &= ~(_BV(CS02) | _BV(CS01) | _BV(CS00));
-// внешний источник - T0, по спаду
+// внешний источник - T1, по спаду
 #define T1_EXT_FALL   TCCR1B = (TCCR1B & ~_BV(CS00)) | _BV(CS02) | _BV(CS01);
-// внешний источник - T0, по фронту
+// внешний источник - T1, по фронту
 #define T1_EXT_RISE   TCCR1B |= _BV(CS02) | _BV(CS01) | _BV(CS00);
 
 // пред делитель N = [1, 8, 64, 256, 1024]
@@ -181,14 +183,14 @@
 
 // циклично 8 бит, top = 0xFFFF
 // f = clk / N*65536
-// OC1A/OC1B: toggle (f/2)
+// Выводы OC1A/OC1B: toggle (f/2)
 #define T1_NORMAL \
   TCCR1A &= ~(_BV( WGM11) | _BV( WGM10));\
   TCCR1B &= ~(_BV( WGM13) | _BV( WGM12));
 
 // CTC top = OCR1A [ OCR1AH:OCR1AL ]
 // f = clk / N*(1+OCR1A)
-// OC1A/OC1B: toggle (f/2)
+// Выводы OC1A/OC1B: toggle (f/2)
 #define T1_CTC \
   TCCR1A &= ~(_BV(WGM11) | _BV(WGM10));\
   TCCR1B &= ~_BV(WGM13);\
@@ -196,7 +198,7 @@
 
 // шим 8 бит, top = 0xFF
 // f = clk / N*256
-// OC1A/OC1B: заполнение шим: OCR1A/OCR1B
+// Выводы OC1A/OC1B: заполнение шим: OCR1A/OCR1B
 #define T1_FAST_PWM_8 \
   TCCR1A &= ~_BV(WGM11);\
   TCCR1B &= ~_BV(WGM13);\
@@ -205,7 +207,7 @@
 
 // шим 9 бит, top = 0x1FF
 // f = clk / N*512
-// OC1A/OC1B: заполнение шим: OCR1A/OCR1B
+// Выводы OC1A/OC1B: заполнение шим: OCR1A/OCR1B
 #define T1_FAST_PWM_9 \
   TCCR1A &= ~_BV(WGM10);\
   TCCR1B &= ~_BV(WGM13);\
@@ -214,7 +216,7 @@
 
 // шим 10 бит, top = 0x3FF
 // f = clk / N*1024
-// OC1A/OC1B: заполнение шим: OCR1A/OCR1B
+// Выводы OC1A/OC1B: заполнение шим: OCR1A/OCR1B
 #define T1_FAST_PWM_10 \
   TCCR1A |= _BV(WGM10) | _BV(WGM11);\
   TCCR1B &= ~_BV(WGM13);\
@@ -222,7 +224,7 @@
 
 // настраиваемый шим, top = ICR1 [ ICR1H:ICR1L ]
 // f = clk / (1+ICR1)
-// OC1A/OC1B: заполнение шим: OCR1A/OCR1B
+// Выводы OC1A/OC1B: заполнение шим: OCR1A/OCR1B
 #define T1_FAST_PWM_CUSTOM \
   TCCR1B |= (_BV(WGM13) | _BV(WGM12));\
   TCCR1A &= ~_BV(WGM10);\
@@ -230,7 +232,7 @@
 
 // симметричный шим 8 бит, top = 0xFF
 // f = clk / N*512
-// OC1A/OC1B: заполнение шим: OCR1A/OCR1B
+// Выводы OC1A/OC1B: заполнение шим: OCR1A/OCR1B
 #define T1_PHASE_PWM_8 \
   TCCR1B &= ~(_BV(WGM13) | _BV(WGM12));\
   TCCR1A &= ~_BV(WGM11);\
@@ -238,7 +240,7 @@
 
 // симметричный шим 9 бит, top = 0x1FF
 // f = clk / N*1024
-// OC1A/OC1B: заполнение шим: OCR1A/OCR1B
+// Выводы OC1A/OC1B: заполнение шим: OCR1A/OCR1B
 #define T1_PHASE_PWM_9 \
   TCCR1B &= ~(_BV(WGM13) | _BV(WGM12));\
   TCCR1A &= ~_BV(WGM10);\
@@ -246,14 +248,14 @@
 
 // симметричный шим 10 бит, top = 0x3FF
 // f = clk / N*2048
-// OC1A/OC1B: заполнение шим: OCR1A/OCR1B
+// Выводы OC1A/OC1B: заполнение шим: OCR1A/OCR1B
 #define T1_PHASE_PWM_10 \
   TCCR1A |= (_BV(WGM11) | _BV(WGM10));\
   TCCR1B &= ~(_BV(WGM13) | _BV(WGM12));
 
 // симметричный настраиваемый, top = ICR1 [ ICR1H:ICR1L ]
 // f = clk / 2*N*(1+ICR1)
-// OC1A/OC1B: заполнение шим: OCR1A/OCR1B
+// Выводы OC1A/OC1B: заполнение шим: OCR1A/OCR1B
 #define T1_PHASE_PWM_CUSTOM \
   TCCR1B &= ~_BV(WGM12);\
   TCCR1A &= ~_BV(WGM10);\
@@ -262,23 +264,23 @@
 
 /* Режим работы OC1A */
 
-// OC1A: off
+// Вывод OC1A: off
 #define T1_OC1A_OFF \
 TCCR1A &= ~(_BV(COM1A1) | _BV(COM1A0));\
   DDRB &= ~_BV(PB1);
-// OC1A: toggle (f/2)
+// Вывод OC1A: toggle (f/2)
 #define T1_OC1A_ON \
   TCCR1A &= ~_BV(COM1A1);\
   TCCR1A |= _BV(COM1A0);\
   TCCR1C |= _BV(FOC1A);\
   DDRB |= _BV(PB1);
-// OC1A: шим
+// Вывод OC1A: шим
 #define T1_OC1A_PWM \
   TCCR1A &= ~_BV(COM1A0);\
   TCCR1A |= _BV(COM1A1);\
   TCCR1C &= ~_BV(FOC1A);\
   DDRB |= _BV(PB1);
-// OC1A: инвертированный шим
+// Вывод OC1A: инвертированный шим
 #define T1_OC1A_PWM_INV \
   TCCR1A |= (_BV(COM1A1) | _BV(COM1A0));\
   TCCR1C &= ~_BV(FOC1A);\
@@ -286,23 +288,23 @@ TCCR1A &= ~(_BV(COM1A1) | _BV(COM1A0));\
 
 /* Режим работы OC1B */
 
-// OC1B: off
+// Вывод OC1B: off
 #define T1_OC1B_OFF \
 TCCR1A &= ~(_BV(COM1B1) | _BV(COM1B0));\
   DDRB &= ~_BV(PB2);
-// OC1B: toggle (f/2)
+// Вывод OC1B: toggle (f/2)
 #define T1_OC1B_ON \
   TCCR1A &= ~_BV(COM1B1);\
   TCCR1A |= _BV(COM1B0);\
   TCCR1C |= _BV(FOC1B);\
   DDRB |= _BV(PB2);
-// OC1B: шим
+// Вывод OC1B: шим
 #define T1_OC1B_PWM \
   TCCR1A &= ~_BV(COM1B0);\
   TCCR1A |= _BV(COM1B1);\
   TCCR1C &=~_BV(FOC1B);\
   DDRB |= _BV(PB2);
-// OC1B: инвертированный шим
+// Вывод OC1B: инвертированный шим
 #define T1_OC1B_PWM_INV \
   TCCR1A |= _BV(COM1B1) | _BV(COM1B0);\
   TCCR1C &=~_BV(FOC1B);\
@@ -339,14 +341,14 @@ TCCR1A &= ~(_BV(COM1B1) | _BV(COM1B0));\
 
 // циклично 8 бит, top = 0xFF
 // f = clk / N*256
-// OC2A/OC2B: toggle (f/2)
+// Выводы OC2A/OC2B: toggle (f/2)
 #define T2_NORMAL \
   TCCR2B &= ~_BV(WGM22);\
   TCCR2A &= ~(_BV(WGM21) | _BV(WGM20));
 
 // CTC, top = OCR2A
 // f = clk / N*(1+OCR2A)
-// OC2A/OC2B: toggle (f/2)
+// Выводы OC2A/OC2B: toggle (f/2)
 #define T2_CTC \
   TCCR2B &= ~_BV(WGM22);\
   TCCR2A &= ~_BV(WGM20);\
@@ -354,22 +356,22 @@ TCCR1A &= ~(_BV(COM1B1) | _BV(COM1B0));\
 
 // шим 8 бит, top = 0xFF
 // f = clk / N*256
-// OC2A/OC2B: заполнение шим: OCR2A/OCR2B
+// Выводы OC2A/OC2B: заполнение шим: OCR2A/OCR2B
 #define T2_FAST_PWM \
   TCCR2B &= ~_BV(WGM22);\
   TCCR2A |= (_BV(WGM21) | _BV(WGM20));
 
 // настраиваемый шим, top = OCR2A
 // f = clk / N*(1+OCR2A)
-// OC2A: заполнение 50%  toggle (f/2)
-// OC2B: заполнение шим: OCR2B
+// Вывод OC2A: заполнение 50%  toggle (f/2)
+// Вывод OC2B: заполнение шим: OCR2B
 #define T2_FAST_PWM_CUSTOM \
   TCCR2B |= _BV(WGM22);\
   TCCR2A |= (_BV(WGM21) | _BV(WGM20));
 
 // симметричный шим 8 бит, top = 0xFF
 // f = clk / N*512
-// OC2A/OC2B: заполнение шим: OCR2A/OCR2B
+// Выводы OC2A/OC2B: заполнение шим: OCR2A/OCR2B
 #define T2_PHASE_PWM \
   TCCR2B &= ~_BV(WGM22);\
   TCCR2A &= ~_BV(WGM21);\
@@ -377,8 +379,8 @@ TCCR1A &= ~(_BV(COM1B1) | _BV(COM1B0));\
 
 // симметричный настраиваемый, top = OCR2A
 // f = clk / 2*N*(OCR2A)
-// OC2A: заполнение 50%  toggle (f/2)
-// OC2B: заполнение шим: OCR2B
+// Вывод OC2A: заполнение 50%  toggle (f/2)
+// Вывод OC2B: заполнение шим: OCR2B
 #define T2_PHASE_PWM_CUSTOM \
   TCCR2B |= _BV(WGM22);\
   TCCR2A &= ~_BV(WGM21);\
@@ -386,23 +388,23 @@ TCCR1A &= ~(_BV(COM1B1) | _BV(COM1B0));\
 
 /* Режим работы OC2A */
 
-// OC2A: off
+// Вывод OC2A: off
 #define T2_OC2A_OFF \
   TCCR2A &= ~(_BV(COM2A1) | _BV(COM2A0));\
   DDRB &= ~_BV(PB3);
-// OC2A: toggle (f/2)
+// Вывод OC2A: toggle (f/2)
 #define T2_OC2A_ON \
   TCCR2A &= ~_BV(COM2A1);\
   TCCR2A |= _BV(COM2A0);\
   TCCR2B |= _BV(FOC2A);\
   DDRB |= _BV(PB3);
-// OC2A: шим
+// Вывод OC2A: шим
 #define T2_OC2A_PWM \
   TCCR2A &= ~_BV(COM2A0);\
   TCCR2A |= _BV(COM2A1);\
   TCCR2B &= ~_BV(FOC2A);\
   DDRB |= _BV(PB3);
-// OC2A: инвертированный шим
+// Вывод OC2A: инвертированный шим
 #define T2_OC2A_PWM_INV \
   TCCR2A |= (_BV(COM2A1) | _BV(COM2A0));\
   TCCR2B &= ~_BV(FOC2A);\
@@ -410,23 +412,23 @@ TCCR1A &= ~(_BV(COM1B1) | _BV(COM1B0));\
 
 /* Режим работы OC2B */
 
-// OC2B: off
+// Вывод OC2B: off
 #define T2_OC2B_OFF \
   TCCR2A &= ~(_BV(COM2B1) | _BV(COM2B0));\
   DDRD &= ~_BV(PD3);
-// OC2B: toggle (f/2)
+// Вывод OC2B: toggle (f/2)
 #define T2_OC2B_ON \
   TCCR2A &= ~_BV(COM2B1);\
   TCCR2A |= _BV(COM2B0);\
   TCCR2B |= _BV(FOC2B);\
   DDRD |= _BV(PD3);
-// OC2B: шим
+// Вывод OC2B: шим
 #define T2_OC2B_PWM \
   TCCR2A &= ~_BV(COM2B0);\
   TCCR2A |= _BV(COM2B1);\
   TCCR2B &= ~_BV(FOC2B);\
   DDRD |= _BV(PD3);
-// OC2B: инвертированный шим
+// Вывод OC2B: инвертированный шим
 #define T2_OC2B_PWM_INV \
   TCCR2A |= (_BV(COM2B1) | _BV(COM2B0));\
   TCCR2B &= ~_BV(FOC2B);\
