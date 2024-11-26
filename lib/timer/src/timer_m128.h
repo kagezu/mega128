@@ -49,7 +49,7 @@
 #define T0_DIV_64   TCCR0 = (TCCR0 & ~B111) | B100;
 #define T0_DIV_128  TCCR0 = (TCCR0 & ~B111) | B101;
 #define T0_DIV_256  TCCR0 = (TCCR0 & ~B111) | B110;
-#define T0_DIV_1024 TCCR0 = (TCCR0 & ~B111) | B111;
+#define T0_DIV_1024 TCCR0 |= B111;
 
 
 // циклично 8 бит, top = 0xFF
@@ -110,18 +110,18 @@
 
 
 // отключить тактирование
-#define T1_STOP       TCCR1B &= ~(_BV(CS02) | _BV(CS01) | _BV(CS00));
+#define T1_STOP       TCCR1B &= ~(_BV(CS12) | _BV(CS11) | _BV(CS10));
 // внешний источник - T1, по спаду
-#define T1_EXT_FALL   TCCR1B = (TCCR1B & ~_BV(CS00)) | _BV(CS02) | _BV(CS01);
+#define T1_EXT_FALL   TCCR1B = (TCCR1B & ~_BV(CS10)) | _BV(CS12) | _BV(CS11);
 // внешний источник - T1, по фронту
-#define T1_EXT_RISE   TCCR1B |= _BV(CS02) | _BV(CS01) | _BV(CS00);
+#define T1_EXT_RISE   TCCR1B |= _BV(CS12) | _BV(CS11) | _BV(CS10);
 
 // пред делитель N = [1, 8, 64, 256, 1024]
-#define T1_DIV_1      TCCR1B = (TCCR1B & ~(_BV(CS02) | _BV(CS01))) | _BV(CS00);
-#define T1_DIV_8      TCCR1B = (TCCR1B & ~(_BV(CS02) | _BV(CS00))) | _BV(CS01);
-#define T1_DIV_64     TCCR1B = (TCCR1B & ~_BV(CS02)) | _BV(CS01)   | _BV(CS00);
-#define T1_DIV_256    TCCR1B = (TCCR1B & ~(_BV(CS01) | _BV(CS00))) | _BV(CS02);
-#define T1_DIV_1024   TCCR1B = (TCCR1B & ~_BV(CS01)) | _BV(CS02)   | _BV(CS00);
+#define T1_DIV_1      TCCR1B = (TCCR1B & ~(_BV(CS12) | _BV(CS11))) | _BV(CS10);
+#define T1_DIV_8      TCCR1B = (TCCR1B & ~(_BV(CS12) | _BV(CS10))) | _BV(CS11);
+#define T1_DIV_64     TCCR1B = (TCCR1B & ~_BV(CS12)) | _BV(CS11)   | _BV(CS10);
+#define T1_DIV_256    TCCR1B = (TCCR1B & ~(_BV(CS11) | _BV(CS10))) | _BV(CS12);
+#define T1_DIV_1024   TCCR1B = (TCCR1B & ~_BV(CS11)) | _BV(CS12)   | _BV(CS10);
 
 
 // циклично 8 бит, top = 0xFFFF

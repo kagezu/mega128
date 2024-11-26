@@ -6,19 +6,20 @@
 #include "../../../xmem/src/xpage/xpage.h"
 
 // Обход ограничения 0x8000 байт на массив
-typedef RGB(&rgb_bitmap)[1][MAX_X + 1];
+// typedef RGB(&rgb_bitmap)[1][MAX_X + 1];
 #define BITMAP_SIZE (MAX_X + 1) * (MAX_Y + 1) * sizeof(RGB)
 
 class Screen :public Draw {
 protected:
-  rgb_bitmap _bitmap;
+  RGB _bitmap[1][MAX_X + 1];
   XPage *_page;
 
 public:
-  Screen(XPage *page) :
-    _bitmap((rgb_bitmap)*page->malloc(BITMAP_SIZE)),
-    _page(page)
-  {}
+  Screen(XPage *page)
+  {
+    _page->get((void **)&_bitmap, BITMAP_SIZE);
+    _page = page;
+  }
 
   // Специфические для данного класса
 public:

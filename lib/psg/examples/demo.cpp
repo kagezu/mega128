@@ -29,7 +29,7 @@ void pseudoInterrupt()
     d = pgm_read_word(&raw[adr++]);
   }
 
-  if (cb > 4454 - 725) {
+  if (cb > 4454) {// - 725) {
     cb = 0;
     for (int i = 0; i < 14; i++) psg.load(i, 0);
     psg.load(7, 255);
@@ -47,7 +47,7 @@ int main()
   T1_DIV_1;
   T1_CTC;
   T1_OC1A_ON;
-  OCR1A = 4;
+  OCR1A = F_CPU / 3579545;
 #elif __AVR_ATmega128__
   T0_DIV_1024;
   T0_CTC;
@@ -57,7 +57,8 @@ int main()
   T1_DIV_1;
   T1_CTC;
   T1_OC1A_ON;
-  OCR1A = 4;
+  OCR1AH = 0;
+  OCR1AL = F_CPU / 3579545 - 1;
 #endif
 
   sei();
