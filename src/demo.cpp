@@ -20,10 +20,13 @@
 
 // -------------  libray XPage  --------------
 // Выделение памяти
+#include "../lib/xmem/examples/dynamic-memory.cpp"
+
+// Проверка памяти
 // #include "../lib/xmem/examples/memory-test.cpp"
 
 
 // -------------  libray PSG  ----------------
 // Выделение памяти
-#include "../lib/psg/examples/demo.cpp"
+// #include "../lib/psg/examples/demo.cpp"
 

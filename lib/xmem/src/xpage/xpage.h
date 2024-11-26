@@ -60,9 +60,6 @@ public:
   {}
 
 public:
-  uint8_t *malloc(word memorySize);
-
-public:
   void use();
   static void init();
 };

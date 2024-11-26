@@ -1,11 +1,12 @@
 # Библиотека XMEM
 
----
-
-## class XPage
 Библиотека для **ATmega128 + eXternal MEMory (XMEM)**
 
-### Архитектура
+---
+
+## <span style="color:blue">class</span> **XPage**
+
+### Архитектура ATmega128
 |Адрес|Аппаратно|
 |----|----|
 | ***0x0000 - 0x00FF*** | **Регистры**|

@@ -1,13 +1,5 @@
 #include "xpage.h"
 
-byte *XPage::malloc(word memorySize)
-{
-  // if (free() < memorySize) return 0;
-  // word result = _offset;
-  // _offset += memorySize;
-  // return (byte *)result;
-}
-
 void XPage::use()
 {
 #ifdef __AVR_ATmega128__

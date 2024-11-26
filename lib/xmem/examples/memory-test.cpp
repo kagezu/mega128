@@ -1,6 +1,6 @@
 #include "xpage/xpage.h"
 #include "display/display.h"
-#include "text.h"
+#include "text/text.h"
 #include "font/micro_5x6.h"
 
 XPage page0(0x000, XMEM_60K, 0x1100);
@@ -33,14 +33,14 @@ void volatile testPage(XPage *page, const char *msg1, const char *msg2)
 {
   page->use();
 
-  fill(page->free(), 0xff);
-  uint16_t e = test(page->free(), 0xff);
+  fill(page->getSizeHeap(), 0xff);
+  uint16_t e = test(page->getSizeHeap(), 0xff);
   text.print(msg1);
   text.print(e);
   text.printR(PSTR(" "));
 
-  fill(page->free(), 0x00);
-  e = test(page->free(), 0x00);
+  fill(page->getSizeHeap(), 0x00);
+  e = test(page->getSizeHeap(), 0x00);
   text.print(msg2);
   text.print(e);
   text.printR(PSTR(" "));
