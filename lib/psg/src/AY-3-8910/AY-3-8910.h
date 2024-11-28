@@ -9,20 +9,38 @@ public:
   {
     AY_INIT;
 
-    load(6, 0); // шум
-    load(7, mix);
-    load(11, 0); //огибающая
-    load(12, 16); //огибающая
-    load(13, 0); //спад с удержанием
+    write(6, 0); // шум
+    write(7, mix);
+    write(11, 0); //огибающая
+    write(12, 16); //огибающая
+    write(13, 0); //спад с удержанием
   }
 
-  void load(byte address, byte data)
+  void write(byte address, byte data)
   {
+    DDRD = 0xff;
     PORTD = address;
     AY_LATCH_ADR;
     AY_INACTIVE;
     PORTD = data;
     AY_WRITE;
     AY_INACTIVE;
+  }
+
+  byte volatile read(byte address)
+  {
+    PORTD = address;
+    AY_LATCH_ADR;
+    AY_INACTIVE;
+    DDRD = 0;
+    AY_READ;
+    byte data = PIND;
+    AY_INACTIVE;
+    return data;
+  }
+
+  byte getKey()
+  {
+    return 0;
   }
 };

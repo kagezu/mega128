@@ -15,9 +15,9 @@
 // 180°   |   true    |   true    |   false   |
 // 270°   |   true    |   false   |   true    |
 
-#define FLIP_X    false
+#define FLIP_X    true
 #define FLIP_Y    false
-#define EX_X_Y    false
+#define EX_X_Y    true
 
 // Связь через SPI
 // #define LCD_SPI   true

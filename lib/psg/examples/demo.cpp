@@ -2,9 +2,12 @@
 #include "timer.h"
 #include "AY-3-8910/AY-3-8910.h"
 #include "display/display.h"
+#include "text/text.h"
+#include "font/system_5x7.h"
 
 Display lcd;
 AY_3_8910 psg;
+Text text(&lcd);
 
 unsigned int cb = 0;
 unsigned char counter = 0;
@@ -18,21 +21,21 @@ void pseudoInterrupt()
 
   while (d != 15) {
     if (d >= 240) {
-      psg.load(d & 15, pgm_read_byte(&raw[adr++]));
+      psg.write(d & 15, pgm_read_byte(&raw[adr++]));
       break;
     }
     else {
-      psg.load(d & 15, pgm_read_byte(&raw[adr++]));
-      psg.load(d >> 4, pgm_read_byte(&raw[adr++]));
+      psg.write(d & 15, pgm_read_byte(&raw[adr++]));
+      psg.write(d >> 4, pgm_read_byte(&raw[adr++]));
     }
 
     d = pgm_read_word(&raw[adr++]);
   }
 
-  if (cb > 4454) {// - 725) {
+  if (cb > 4454 - 1125) {
     cb = 0;
-    for (int i = 0; i < 14; i++) psg.load(i, 0);
-    psg.load(7, 255);
+    for (int i = 0; i < 14; i++) psg.write(i, 0);
+    psg.write(7, 255);
   }
 }
 
@@ -63,10 +66,36 @@ int main()
 
   sei();
 
-  byte x = 0;
+  text.font(system_5x7);
+  lcd.clear(RGB(0, 0, 64));
+  lcd.background(RGB(0, 0, 64));
+  lcd.color(RGB(255, 255, 0));
+
   while (true) {
-    lcd.demo(x++);
+    text.at(0, 0);
+    text.printR(PSTR("Регистры AY-3-8910"));
+    text.printPstr(PSTR("R0: ")); text.printHex(psg.read(0)); text.printPstr(PSTR("  R1: ")); text.printHex(psg.read(1)); text.printR(PSTR(" "));
+    text.printPstr(PSTR("R2: ")); text.printHex(psg.read(2)); text.printPstr(PSTR("  R3: ")); text.printHex(psg.read(3)); text.printR(PSTR(" "));
+    text.printPstr(PSTR("R4: ")); text.printHex(psg.read(4)); text.printPstr(PSTR("  R5: ")); text.printHex(psg.read(5)); text.printR(PSTR(" "));
+    text.printPstr(PSTR("R6: ")); text.printHex(psg.read(6)); text.printPstr(PSTR("  R7: ")); text.printHex(psg.read(7)); text.printR(PSTR(" "));
+    text.printPstr(PSTR("R8: ")); text.printHex(psg.read(8)); text.printPstr(PSTR("  R9: ")); text.printHex(psg.read(9));
+    text.printPstr(PSTR("  R10: ")); text.printHex(psg.read(10)); text.printR(PSTR(" "));
+    text.printPstr(PSTR("R11: ")); text.printHex(psg.read(11)); text.printR(PSTR(" "));
+    text.printPstr(PSTR("R12: ")); text.printHex(psg.read(12)); text.printR(PSTR(" "));
+    text.printPstr(PSTR("R13: ")); text.printHex(psg.read(13)); text.printR(PSTR(" "));
+    text.printPstr(PSTR("R14: ")); text.printHex(psg.read(14)); text.printR(PSTR(" "));
+    text.printPstr(PSTR("R15: ")); text.printHex(psg.read(15)); text.printR(PSTR(" "));
+
+
   }
+
+  /*
+    byte x = 0;
+    while (true) {
+      lcd.demo(x++);
+    }
+  */
+
 }
 
 #ifdef __AVR_ATmega328P__
