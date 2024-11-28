@@ -5,6 +5,8 @@
 #include "text/text.h"
 #include "font/system_5x7.h"
 
+#define COMP(a,b) (a & b) == b
+
 Display lcd;
 AY_3_8910 psg;
 Text text(&lcd);
@@ -71,6 +73,8 @@ int main()
   lcd.background(RGB(0, 0, 64));
   lcd.color(RGB(255, 255, 0));
 
+  byte oldKey = 0;
+
   while (true) {
     text.at(0, 0);
     text.printR(PSTR("Регистры AY-3-8910"));
@@ -85,7 +89,27 @@ int main()
     text.printPstr(PSTR("R13: ")); text.printHex(psg.read(13)); text.printR(PSTR(" "));
     text.printPstr(PSTR("R14: ")); text.printHex(psg.read(14)); text.printR(PSTR(" "));
     text.printPstr(PSTR("R15: ")); text.printHex(psg.read(15)); text.printR(PSTR(" "));
+    byte key = psg.getKey();
+    text.printPstr(PSTR("Key: "));
+    text.printHex(key);
+    text.printR(PSTR(" "));
 
+    if (COMP(key, 0x70) && !oldKey) {
+      oldKey = key;
+      cb -= 100;
+    }
+    if (COMP(key, 0x30) && !oldKey) {
+      oldKey = key;
+      cb += 100;
+    }
+    if (COMP(key, 0x08) && !oldKey) {
+      oldKey = key;
+      cb = 0;
+    }
+
+
+
+    if (key == 0) oldKey = 0;
 
   }
 

@@ -29,6 +29,7 @@ public:
 
   byte volatile read(byte address)
   {
+    DDRD = 0xff;
     PORTD = address;
     AY_LATCH_ADR;
     AY_INACTIVE;
@@ -41,6 +42,19 @@ public:
 
   byte getKey()
   {
+    cli();
+    write(7, 0xB8);
+    write(14, 0);
+    for (byte a = 0; a < 4; a++) {
+      write(15, (1 << a) ^ 0xff);
+      byte key = (read(14) ^ 0xff) >> 3;
+      if (key) {
+        sei();
+        return key | (a << 5);
+      }
+    }
+    write(14, 0);
+    sei();
     return 0;
   }
 };
