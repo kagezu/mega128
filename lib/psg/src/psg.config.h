@@ -1,51 +1,37 @@
 #include <Arduino.h>
+#include "timer.h"
 
+#define   AY_PORT    PORTD
+#define   AY_PIN     PIND
+#define   AY_IN      DDRD = 0x00;
+#define   AY_OUT     DDRD = 0xff;
+
+// Для BDIR и BC1 используется один порт
 #if __AVR_ATmega328P__
 
-#define  AY_BC1       _BV(PB0)
-#define  AY_BDIR      _BV(PB2)
-#define  AY_PORT_CTRL PORTB
+#define   AY_BC1    _BV(PB0)
+#define   AY_BDIR   _BV(PB2)
+#define   AY_FUN    PORTB
+#define   AY_ACT    DDRB |= _BV(PB0) | _BV(PB2);
 
-#define AY_INACTIVE   AY_PORT_CTRL &= ~(AY_BC1 | AY_BDIR);
-#define AY_READ_C     AY_PORT_CTRL |= AY_BC1;
-#define AY_WRITE      AY_PORT_CTRL |= AY_BDIR;
-#define AY_LATCH_ADR  AY_PORT_CTRL |= AY_BC1 | AY_BDIR;
-
-#define  AY_INIT \
-  DDRB |= AY_BDIR | AY_BC1;\
-  PORTB &= ~(AY_BDIR | AY_BC1);\
-  DDRD = 0xFF;
+#define   AY_CLOCK_ON \
+  T1_DIV_1;\
+  T1_CTC;\
+  T1_OC1A_ON;\
+  OCR1A = 4; // 1.6 MHz (f_cpu = 16 MHz)
 
 #elif __AVR_ATmega128__
 
-#define  AY_BC1       _BV(PB0)
-#define  AY_BDIR      _BV(PB2)
-#define  AY_PORT_CTRL PORTB
+#define   AY_BC1    _BV(PB0)
+#define   AY_BDIR   _BV(PB2)
+#define   AY_FUN    PORTB
+#define   AY_ACT   DDRB |= _BV(PB0) | _BV(PB2);
 
-#define AY_INACTIVE   AY_PORT_CTRL &= ~(AY_BC1 | AY_BDIR);
-#define AY_READ       AY_PORT_CTRL |= AY_BC1;
-#define AY_WRITE      AY_PORT_CTRL |= AY_BDIR;
-#define AY_LATCH_ADR  AY_PORT_CTRL |= AY_BC1 | AY_BDIR;
+#define   AY_CLOCK_ON \
+  T1_DIV_1;\
+  T1_CTC;\
+  T1_OC1A_ON;\
+  OCR1AH = 0;\
+  OCR1AL = 5; // 1.8432 MHz (f_cpu = 22 MHz)
 
-#define  AY_INIT \
-  DDRB |= AY_BDIR | AY_BC1;\
-  PORTB &= ~(AY_BDIR | AY_BC1);\
-  DDRD = 0xFF;
-
-#endif
-
-#if F_CPU <= 4000000
-#define AY_READ       AY_READ_C
-#elif F_CPU <= 8000000
-#define AY_READ       AY_READ_C asm volatile ("nop");asm volatile ("nop");
-#elif F_CPU <= 12000000
-#define AY_READ       AY_READ_C asm volatile ("nop");asm volatile ("nop");asm volatile ("nop");
-#elif F_CPU <= 16000000
-#define AY_READ       AY_READ_C \
-asm volatile ("nop");asm volatile ("nop");\
-asm volatile ("nop");asm volatile ("nop");
-#else
-#define AY_READ AY_READ_C \
-asm volatile ("nop"); asm volatile ("nop"); asm volatile ("nop");\
-asm volatile ("nop"); asm volatile ("nop");asm volatile ("nop");
 #endif

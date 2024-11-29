@@ -1,6 +1,6 @@
 #include "data.h"
 #include "timer.h"
-#include "AY-3-8910/AY-3-8910.h"
+#include "AY/AY.h"
 #include "display/display.h"
 #include "text/text.h"
 #include "font/system_5x7.h"
@@ -8,7 +8,7 @@
 #define COMP(a,b) (a & b) == b
 
 Display lcd;
-AY_3_8910 psg;
+AY psg;
 Text text(&lcd);
 
 unsigned int cb = 0;
@@ -48,22 +48,11 @@ int main()
   T0_CTC;
   OCR0A = F_CPU / 1024 / 100 - 1; // 100 Hz
   T0_COMPA_ON;
-
-  T1_DIV_1;
-  T1_CTC;
-  T1_OC1A_ON;
-  OCR1A = F_CPU / 3579545;
 #elif __AVR_ATmega128__
   T0_DIV_1024;
   T0_CTC;
   OCR0 = F_CPU / 1024 / 100 - 1; // 100 Hz
   T0_COMP_ON;
-
-  T1_DIV_1;
-  T1_CTC;
-  T1_OC1A_ON;
-  OCR1AH = 0;
-  OCR1AL = F_CPU / 3579545 - 1;
 #endif
 
   sei();
@@ -74,6 +63,7 @@ int main()
   lcd.color(RGB(255, 255, 0));
 
   byte oldKey = 0;
+  byte key;
 
   while (true) {
     text.at(0, 0);
@@ -89,20 +79,20 @@ int main()
     text.printPstr(PSTR("R13: ")); text.printHex(psg.read(13)); text.printR(PSTR(" "));
     text.printPstr(PSTR("R14: ")); text.printHex(psg.read(14)); text.printR(PSTR(" "));
     text.printPstr(PSTR("R15: ")); text.printHex(psg.read(15)); text.printR(PSTR(" "));
-    byte key = psg.getKey();
+    key = psg.getKey();
     text.printPstr(PSTR("Key: "));
     text.printHex(key);
     text.printR(PSTR(" "));
 
-    if (COMP(key, 0x70) && !oldKey) {
+    if (key == 0x04 && !oldKey) {
       oldKey = key;
       cb -= 100;
     }
-    if (COMP(key, 0x30) && !oldKey) {
+    if (key == 0x14 && !oldKey) {
       oldKey = key;
       cb += 100;
     }
-    if (COMP(key, 0x08) && !oldKey) {
+    if (key == 0x1b && !oldKey) {
       oldKey = key;
       cb = 0;
     }
