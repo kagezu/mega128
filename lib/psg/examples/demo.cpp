@@ -96,8 +96,9 @@ int main()
       oldKey = key;
       cb = 0;
     }
-
-
+    if (key == 0xff && !oldKey) {
+      return 0;
+    }
 
     if (key == 0) oldKey = 0;
 
