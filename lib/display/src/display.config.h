@@ -20,7 +20,7 @@
 #define EX_X_Y    true
 
 // Связь через SPI
-// #define LCD_SPI   true
+#define LCD_SPI   true
 
 // LCD_PORT     Порт для SDA, SCK
 // LCD_CONTROL  Порт для CS, RS

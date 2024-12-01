@@ -16,16 +16,11 @@ void Text::printf(const char *string, ...)
             ch = pgm_read_byte(string++);
           }
           switch (ch) {
-            case 'c':
-              symbol((char)va_arg(args, int)); break;
-              // case 'd': { print((uint16_t)va_arg(args, uint16_t)); break; } int
-              // case 'i': { print((uint16_t)va_arg(args, uint16_t)); break; } int
-              // case 'e': { print((uint16_t)va_arg(args, uint16_t)); break; }
-              // case 'E': { print((uint16_t)va_arg(args, uint16_t)); break; }
-              // case 'f': { print((uint16_t)va_arg(args, uint16_t)); break; } float
-              // case 'g': { print((uint16_t)va_arg(args, uint16_t)); break; } f/e
-              // case 'G': { print((uint16_t)va_arg(args, uint16_t)); break; } f/E
+            case 'c': symbol((char)va_arg(args, int)); break;
+            case 'd': print((int8_t)va_arg(args, int16_t)); break;
+            case 'i': print((int16_t)va_arg(args, int16_t)); break;
             case 's': print((char *)va_arg(args, char *)); break;
+            case 'S': printPstr((char *)va_arg(args, char *)); break;
             case 'u':
               switch (arg) {
                 case '0':
@@ -44,14 +39,15 @@ void Text::printf(const char *string, ...)
             case '%': symbol('%'); break;
           } break;
         }
-      case '\e': at(0, 0); break;
-      case '\n': printR(PSTR(" ")); break;
-      case '\r': printR(PSTR(" ")); break;
-      case '\a': print(" "); break;
-      case '\b': print(" "); break;
-      case '\f': print(" "); break;
-      case '\v': print(" "); break;
-      default: symbol(ch);
+      case '\f': cursorX = cursorY = 0; break;  // Новая страница
+      case '\n': printLF(); printCR(); break;   // Перевод строки с возвратом
+      case '\r': printCR(); break;
+      case '\b': printBS(); break;
+      case '\t': printTAB(); break;
+      case '\v': printLF(); break;
+      case '\e': escape(); break;
+      case '\a': bel(); break;
+      default: if ((uint8_t)ch < 0xd0) symbol(ch);
     }
   }
   va_end(args);
@@ -61,11 +57,13 @@ void Text::font(const uint8_t *font)
 {
   _font = (uint16_t)font;
   _line = (1 + ((FONT_HEIGHT - 1) >> 3));
-  _charSize = FONT_WEIGHT * _line;
+  _charSize = (FONT_WEIGHT & 0x7f) * _line;
+  _offset = (uint16_t)_font + FONT_OFFSET;
+  setInterline(2);
+  setInterval(1);
 
-  _offset = (uint16_t)_font + 4;
-  if (!FONT_WEIGHT)
-    _offset += (FONT_COUNT + 1) * 2;
+  if (FONT_WEIGHT & 0x80)
+    _offset += (FONT_COUNT + 1) * sizeof(uint16_t);
 }
 
 void Text::symbol(uint8_t symbol)
@@ -73,56 +71,55 @@ void Text::symbol(uint8_t symbol)
   symbol -= FONT_FIRST;
   if (FONT_COUNT <= symbol) symbol = 0;
 
-  uint8_t dx = FONT_WEIGHT;
+  uint8_t dx = FONT_WEIGHT & 0x7f;
   uint8_t dy = FONT_HEIGHT;
   uint16_t source;
 
-  if (dx)
-    source = _offset + symbol * _charSize;
-  else {
-    uint16_t  charIndex = (uint16_t)_font + symbol * 2 + 4;
+  if (FONT_WEIGHT & 0x80) {
+    uint16_t  charIndex = (uint16_t)_font + symbol * sizeof(uint16_t) + FONT_OFFSET;
     source = pgm_read_word(charIndex);
     dx = (pgm_read_word(charIndex + 2) - source) / _line;
     source += _offset;
   }
+  else
+    source = _offset + symbol * _charSize;
 
   if (cursorX + dx > MAX_X) {
-    cursorY += dy + 1;
+    cursorY += _interline;
     cursorX = 0;
-    if (cursorY > MAX_Y - dy) cursorY = 0;
   }
+  if (cursorY > MAX_Y - dy) cursorX = cursorY = 0;
 
   _display->symbol((uint8_t *)source, cursorX, cursorY, dx, dy);
-
   cursorX += dx + 1;
-}
-
-void Text::at(uint8_t x, uint8_t y)
-{
-  cursorX = x;
-  cursorY = y;
 }
 
 void Text::print(const char *string)
 {
-  while (char ch = *string++) symbol(ch);
+  while (char ch = *string++) if ((uint8_t)ch < 0xd0) symbol(ch);
 }
 
 void Text::printPstr(const char *string)
 {
-  while (char ch = pgm_read_byte(string++)) symbol(ch);
+  while (char ch = pgm_read_byte(string++)) if ((uint8_t)ch < 0xd0) symbol(ch);
 }
 
-void Text::printR(const char *string)
+void Text::print(int32_t number)
 {
-  while (uint8_t ch = pgm_read_byte(string++)) if (ch < 0xd0) symbol(ch);
+  if (number < 0) { symbol('-'); number = -number; }
+  print((uint32_t)number);
+}
 
+void Text::print(int16_t number)
+{
+  if (number < 0) { symbol('-'); number = -number; }
+  print((uint16_t)number);
+}
 
-  //test
-  if (cursorX) {
-    cursorY += FONT_HEIGHT + 2;
-    cursorX = 0;
-  }
+void Text::print(int8_t number)
+{
+  if (number < 0) { symbol('-'); number = -number; }
+  print((uint8_t)number);
 }
 
 void Text::print(uint32_t number)

@@ -3,7 +3,7 @@
 #include "AY/AY.h"
 #include "display/display.h"
 #include "text/text.h"
-#include "font/system_5x7.h"
+#include "font/micro_5x6.h"
 
 #define COMP(a,b) (a & b) == b
 
@@ -57,7 +57,8 @@ int main()
 
   sei();
 
-  text.font(system_5x7);
+  text.font(micro_5x6);
+  text.setInterline(3);
   lcd.clear(RGB(0, 0, 64));
   lcd.background(RGB(0, 0, 64));
   lcd.color(RGB(255, 255, 0));
@@ -66,17 +67,17 @@ int main()
   byte key;
 
   while (true) {
-    text.printR(PSTR("Регистры AY-3-8910"));
-    text.printf(PSTR("R0: %x  R1: %x\n"), psg.read(0), psg.read(1));
-    text.printf(PSTR("R2: %x  R3: %x\n"), psg.read(2), psg.read(3));
-    text.printf(PSTR("R4: %x  R5: %x\n"), psg.read(4), psg.read(5));
-    text.printf(PSTR("R6: %x  R7: %x\n"), psg.read(6), psg.read(7));
-    text.printf(PSTR("R10: %x  R11: %x  R12: %x\n"), psg.read(010), psg.read(011), psg.read(012));
-    text.printf(PSTR("R13: %x  R14: %x\n"), psg.read(013), psg.read(014));
-    text.printf(PSTR("R15: %x\n"), psg.read(015));
-    text.printf(PSTR("R16 %x  R17: %x\n"), psg.read(016), psg.read(017));
+    text.printf(PSTR("Регистры\tAY-3-8910\n"));
+    text.printf(PSTR("R0:\t%x\tR1:\t%x\n"), psg.read(0), psg.read(1));
+    text.printf(PSTR("R2:\t%x\tR3:\t%x\n"), psg.read(2), psg.read(3));
+    text.printf(PSTR("R4:\t%x\tR5:\t%x\n"), psg.read(4), psg.read(5));
+    text.printf(PSTR("R6:\t%x\tR7:\t%x\n"), psg.read(6), psg.read(7));
+    text.printf(PSTR("R10:\t%x\tR11:\t%x  R12:\t%x\n"), psg.read(010), psg.read(011), psg.read(012));
+    text.printf(PSTR("R13:\t%x\tR14:\t%x\n"), psg.read(013), psg.read(014));
+    text.printf(PSTR("R15:\t%x\n"), psg.read(015));
+    text.printf(PSTR("R16\t%x\tR17:\t%x\n"), psg.read(016), psg.read(017));
     key = psg.getKey();
-    text.printf(PSTR("Key: %x    %u    \e"), key, key);
+    text.printf(PSTR("Key:\t%x\t%u     \f"), key, key);
 
     if (key == 0x04 && !oldKey) {
       oldKey = key;
