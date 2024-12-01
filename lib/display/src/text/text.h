@@ -24,6 +24,7 @@ public:
 public:
   Text(Draw *lcd) :_display(lcd) {};
 
+  void printf(const char *string, ...);
   void font(const uint8_t *font);
   void symbol(uint8_t symbol);
   void at(uint8_t x, uint8_t y);

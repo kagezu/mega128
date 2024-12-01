@@ -1,5 +1,62 @@
 #include "text.h"
 
+void Text::printf(const char *string, ...)
+{
+  char ch;
+  va_list args;
+  va_start(args, string);
+
+  while ((ch = pgm_read_byte(string++))) {
+    switch (ch) {
+      case '%': {
+          char arg = '0';
+          ch = pgm_read_byte(string++);
+          if (ch > '/' && ch < ':') {
+            arg = ch - '0';
+            ch = pgm_read_byte(string++);
+          }
+          switch (ch) {
+            case 'c':
+              symbol((char)va_arg(args, int)); break;
+              // case 'd': { print((uint16_t)va_arg(args, uint16_t)); break; } int
+              // case 'i': { print((uint16_t)va_arg(args, uint16_t)); break; } int
+              // case 'e': { print((uint16_t)va_arg(args, uint16_t)); break; }
+              // case 'E': { print((uint16_t)va_arg(args, uint16_t)); break; }
+              // case 'f': { print((uint16_t)va_arg(args, uint16_t)); break; } float
+              // case 'g': { print((uint16_t)va_arg(args, uint16_t)); break; } f/e
+              // case 'G': { print((uint16_t)va_arg(args, uint16_t)); break; } f/E
+            case 's': print((char *)va_arg(args, char *)); break;
+            case 'u':
+              switch (arg) {
+                case '0':
+                case '1': print((uint8_t)va_arg(args, uint16_t)); break;
+                case '2': print((uint16_t)va_arg(args, uint16_t)); break;
+                case '4': print((uint32_t)va_arg(args, uint32_t)); break;
+              } break;
+            case 'x':
+              switch (arg) {
+                case '0':
+                case '1':  printHex((uint8_t)va_arg(args, uint16_t)); break;
+                case '2':  printHex((uint16_t)va_arg(args, uint16_t)); break;
+                case '4':  printHex((uint32_t)va_arg(args, uint32_t)); break;
+              } break;
+            case 'p': printHex((uint16_t)va_arg(args, uint16_t)); break;
+            case '%': symbol('%'); break;
+          } break;
+        }
+      case '\e': at(0, 0); break;
+      case '\n': printR(PSTR(" ")); break;
+      case '\r': printR(PSTR(" ")); break;
+      case '\a': print(" "); break;
+      case '\b': print(" "); break;
+      case '\f': print(" "); break;
+      case '\v': print(" "); break;
+      default: symbol(ch);
+    }
+  }
+  va_end(args);
+}
+
 void Text::font(const uint8_t *font)
 {
   _font = (uint16_t)font;
