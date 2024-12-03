@@ -1,35 +1,35 @@
 ﻿// -------------  libray Display  --------------
 // ---------
-// #include "../lib/display/examples/sample.cpp"
+// #include "../lib/display/test/sample.cpp"
 
 // ATmega128 only
-// #include "../lib/display/examples/drawing.cpp"
+// #include "../lib/display/test/drawing.cpp"
 
 // Линии и окружности
-// #include "../lib/display/examples/line.cpp"
+// #include "../lib/display/test/line.cpp"
 
 // Прямоугольники
-// #include "../lib/display/examples/rect.cpp"
+// #include "../lib/display/test/rect.cpp"
 
 // Скринсейвер
-// #include "../lib/display/examples/screensaver.cpp"
+// #include "../lib/display/test/screensaver.cpp"
 
 // Вывод памяти на экран
-// #include "../lib/display/examples/memory_scroll.cpp"
+// #include "../lib/display/test/memory_scroll.cpp"
 
 
 // -------------  libray XPage  --------------
 // Выделение памяти
-// #include "../lib/xmem/examples/dynamic-memory.cpp"
+// #include "../lib/xmem/test/dynamic-memory.cpp"
 
 // Проверка памяти
-// #include "../lib/xmem/examples/memory-test.cpp"
+// #include "../lib/xmem/test/memory-test.cpp"
 
 
 // -------------  libray PSG  ----------------
 // Выделение памяти
-// #include "../lib/psg/examples/demo.cpp"
+// #include "../lib/psg/test/demo.cpp"
 
 // Тест клавиатуры
-#include "../lib/psg/examples/keybord.cpp"
+#include "../lib/shift/test/keybord.cpp"
 
