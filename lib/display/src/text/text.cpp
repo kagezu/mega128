@@ -12,7 +12,7 @@ void Text::printf(const char *string, ...)
           char arg = '0';
           ch = pgm_read_byte(string++);
           if (ch > '/' && ch < ':') {
-            arg = ch - '0';
+            arg = ch;
             ch = pgm_read_byte(string++);
           }
           switch (ch) {

@@ -28,5 +28,8 @@
 
 // -------------  libray PSG  ----------------
 // Выделение памяти
-#include "../lib/psg/examples/demo.cpp"
+// #include "../lib/psg/examples/demo.cpp"
+
+// Тест клавиатуры
+#include "../lib/psg/examples/keybord.cpp"
 
