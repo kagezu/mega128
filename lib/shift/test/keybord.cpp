@@ -2,7 +2,7 @@
 #include "AY/AY.h"
 #include "display/display.h"
 #include "text/text.h"
-#include "font/micro_5x6.h"
+#include "font/arial_14.h"
 #include "shift.h"
 
 #define DIV 2
@@ -34,7 +34,7 @@ void inits()
 #endif
   sei();
 
-  text.font(micro_5x6);
+  text.font(arial_14);
   text.setInterline(3);
   lcd.clear(RGB(0, 0, 64));
   lcd.background(RGB(0, 0, 64));
@@ -58,29 +58,37 @@ int main()
     key.reset();
     key.readBytes((byte *)&in, sizeof(in));
 
-      if (in != old) {
-        uint16_t x = in ^ old;// разница
-        old = in;
-
-        if (x & active) // нота играла
-        {
-          active ^= x; // вычёркиваем
-          psg.note(0);
-        }
-        else
-          if (x & in) // новая нота
-          {
-            active = x; // заменяем
-            psg.note(x);
-          }
-
+    if (in != old) {
+      uint16_t x = in ^ old;// разница
+      old = in;
+      if (x & active) // нота играла
+      {
+        active ^= x; // вычёркиваем
       }
+      else
+        if (x & in) // новая нота
+        {
+          active = x; // заменяем
+          byte n = 0;
+          for (byte i = 16; i; i--)
+            if (x & 1) break;
+            else { x >>= 1; n++; }
+          psg.note(n);
+        }
+    }
 
     // lcd.clear(RGB(0, 0, 64));
-    text.printf(PSTR("\f\tКлавиатура 16-клавиш\n"));
+    text.printf(PSTR("\f  Keyboard  16-keys\n"));
     text.printf(PSTR("Key in: %2x    \n"), in);
-    text.printf(PSTR("Key old: %2x    \n"), old);
-    text.printf(PSTR("Key active: %2x   \n"), active);
+    text.printf(PSTR("Key active: %2x   \n\n"), active);
+    word x = active;
+    for (byte i = 16; i; i--) {
+      if (x & 0x8000)
+        text.printf(PSTR("#"));
+      else
+        text.printf(PSTR("_"));
+      x <<= 1;
+    }
   }
 
 }
