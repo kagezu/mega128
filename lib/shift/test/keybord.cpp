@@ -3,25 +3,24 @@
 #include "display/display.h"
 #include "text/text.h"
 #include "font/micro_5x6.h"
+#include "shift.h"
 
-#define KEY_HQ    _BV(0)
-#define KEY_CLK   _BV(1)
-#define KEY_LD    _BV(2)
-#define KEY_L0    _BV(3)
 #define DIV 2
 
 Display lcd;
 AY psg;
 Text text(&lcd);
+Shift key(
+  _SFR_MEM_ADDR(PORTC),
+  _SFR_MEM_ADDR(DDRC),
+  _SFR_MEM_ADDR(PINC),
+  PC0,
+  PC1,
+  PC2
+);
 
 void inits()
 {
-  DDRC |= KEY_LD | KEY_CLK | KEY_L0;
-  DDRC &= ~KEY_HQ;
-  PORTC &= ~KEY_CLK;
-  PORTC |= KEY_LD;
-
-
 #ifdef __AVR_ATmega328P__
   T0_DIV_1024;
   T0_CTC;
@@ -56,43 +55,26 @@ int main()
   uint16_t active = 0;
 
   while (true) {
-    PORTC ^= KEY_LD;
-      asm volatile ("nop");
-      asm volatile ("nop");
-      asm volatile ("nop");
-    PORTC ^= KEY_LD;
+    key.reset();
+    key.readBytes((byte *)&in, sizeof(in));
 
-    for (byte i = 16; i; i--) {
-      in = in << 1;
-      if (PINC & KEY_HQ) in++;
+      if (in != old) {
+        uint16_t x = in ^ old;// разница
+        old = in;
 
-      PORTC ^= KEY_CLK;
-      asm volatile ("nop");
-      asm volatile ("nop");
-      asm volatile ("nop");
-      PORTC ^= KEY_CLK;
-      asm volatile ("nop");
-      asm volatile ("nop");
-      asm volatile ("nop");
-    }
-
-    if (in != old) {
-      byte x = in ^ old;// разница
-      old = in;
-
-      if (x & active) // нота играла
-      {
-        active ^= x; // вычёркиваем
-        // psg.note(0);
-      }
-      else
-        if (x & in) // новая нота
+        if (x & active) // нота играла
         {
-          active = x; // заменяем
-          // psg.note(x);
+          active ^= x; // вычёркиваем
+          psg.note(0);
         }
+        else
+          if (x & in) // новая нота
+          {
+            active = x; // заменяем
+            psg.note(x);
+          }
 
-    }
+      }
 
     // lcd.clear(RGB(0, 0, 64));
     text.printf(PSTR("\f\tКлавиатура 16-клавиш\n"));

@@ -1,5 +1,25 @@
 #include "psg.config.h"
 
+#define AY_MAX_FQ   100000
+const uint16_t fq[] = {
+  AY_MAX_FQ / 247,
+  AY_MAX_FQ / 262,
+  AY_MAX_FQ / 294,
+  AY_MAX_FQ / 330,
+  AY_MAX_FQ / 349,
+  AY_MAX_FQ / 392,
+  AY_MAX_FQ / 440,
+  AY_MAX_FQ / 247 / 2,
+  AY_MAX_FQ / 262 / 2,
+  AY_MAX_FQ / 294 / 2,
+  AY_MAX_FQ / 330 / 2,
+  AY_MAX_FQ / 349 / 2,
+  AY_MAX_FQ / 392 / 2,
+  AY_MAX_FQ / 440 / 2,
+  AY_MAX_FQ / 247 / 4,
+  AY_MAX_FQ / 262 / 4
+};
+
 // Таблица функций ПГЗ
 //  FUNCTION  |  BDIR  |  BC1  |
 // ===============================
@@ -70,6 +90,15 @@ public:
     AY_ACT;
     AY_INACTIVE;
     AY_CLOCK_ON;
+
+    write(6, 0); // шум
+    write(7, mix);
+    write(11, 0); //огибающая
+    write(12, 24); //огибающая
+    write(13, 0); //спад с удержанием
+    write(8, 16);
+    write(9, 16);
+    write(10, 16);
   }
 
   byte read(byte reg)
@@ -121,4 +150,72 @@ public:
     sei();
     return key;
   }
+
+  void note(uint16_t arg)
+  {
+
+    int f = 0;
+    for (byte i = 0; i < 16; i++)
+      if (arg & 1) {
+        f = fq[i];
+        break;
+      }
+      else arg >>= 1;
+
+    chanelA(f * 3, 16);
+    chanelB(f, 16);
+    chanelC(f / 3, 16);
+    if (f) write(13, 0); //спад с удержанием
+  }
+  byte mix = 070;
+
+  void chanelA(int div, byte volume)
+  {
+    if (div) {
+      write(0, div);
+      write(1, highByte(div));
+      // write(8, volume);
+      // mix &= ~_BV(0);
+    }
+    else {
+      // mix |= _BV(0);
+      // write(8, 0);
+    }
+
+    //   load(7,mix);
+  };
+
+  void chanelB(int div, byte volume)
+  {
+    if (div) {
+      write(2, div);
+      write(3, highByte(div));
+      // write(9, volume);
+      // mix &= ~_BV(0);
+    }
+    else {
+      // mix |= _BV(0);
+      // write(9, 0);
+    }
+
+    //   load(7,mix);
+  };
+
+  void chanelC(int div, byte volume)
+  {
+    if (div) {
+      write(4, div);
+      write(5, highByte(div));
+      // write(6, div >> 2); // шум
+      // write(10, volume);
+      // mix &= ~_BV(2);
+    }
+    else {
+      // mix |= _BV(2);
+      // write(10, 0);
+    }
+
+    //  load(7,mix);
+  };
+
 };
