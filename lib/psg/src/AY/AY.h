@@ -1,9 +1,52 @@
 #include "psg.config.h"
 
 #define AY_MAX_FQ   100000
+
+// +15
 const uint16_t fq[] = {
+  AY_MAX_FQ / 27,
+  AY_MAX_FQ / 29,
+  AY_MAX_FQ / 31,
+  AY_MAX_FQ / 33,
+  AY_MAX_FQ / 35,
+  AY_MAX_FQ / 37,
+  AY_MAX_FQ / 39,
+  AY_MAX_FQ / 41,
+  AY_MAX_FQ / 44,
+  AY_MAX_FQ / 46,
+  AY_MAX_FQ / 49,
+  AY_MAX_FQ / 52,
+  AY_MAX_FQ / 55,
+  AY_MAX_FQ / 58,
+  AY_MAX_FQ / 62,
+  AY_MAX_FQ / 65, // C2
+  AY_MAX_FQ / 69,
+  AY_MAX_FQ / 73,
+  AY_MAX_FQ / 78,
+  AY_MAX_FQ / 82,
+  AY_MAX_FQ / 87,
+  AY_MAX_FQ / 92,
+  AY_MAX_FQ / 98,
+  AY_MAX_FQ / 104,
+  AY_MAX_FQ / 110,
+  AY_MAX_FQ / 117,
+  AY_MAX_FQ / 123,
+  AY_MAX_FQ / 131,
+  AY_MAX_FQ / 139,
+  AY_MAX_FQ / 147,
+  AY_MAX_FQ / 156,
+  AY_MAX_FQ / 165,
+  AY_MAX_FQ / 175,
+  AY_MAX_FQ / 185,
+  AY_MAX_FQ / 196,
+  AY_MAX_FQ / 208,
+  AY_MAX_FQ / 220,
+  AY_MAX_FQ / 233,
+  AY_MAX_FQ / 247,
+  AY_MAX_FQ / 262,
   AY_MAX_FQ / 277,
   AY_MAX_FQ / 294,
+  AY_MAX_FQ / 311,
   AY_MAX_FQ / 330,
   AY_MAX_FQ / 349,
   AY_MAX_FQ / 370,
@@ -11,13 +54,44 @@ const uint16_t fq[] = {
   AY_MAX_FQ / 415,
   AY_MAX_FQ / 440,
   AY_MAX_FQ / 466,
-  AY_MAX_FQ / 594,
+  AY_MAX_FQ / 494,
   AY_MAX_FQ / 523,
   AY_MAX_FQ / 554,
   AY_MAX_FQ / 587,
   AY_MAX_FQ / 622,
   AY_MAX_FQ / 659,
-  AY_MAX_FQ / 698
+  AY_MAX_FQ / 698,
+  AY_MAX_FQ / 740,
+  AY_MAX_FQ / 784,
+  AY_MAX_FQ / 831,
+  AY_MAX_FQ / 880,
+  AY_MAX_FQ / 932,
+  AY_MAX_FQ / 988,
+  AY_MAX_FQ / 1047,
+  AY_MAX_FQ / 1109,
+  AY_MAX_FQ / 1175,
+  AY_MAX_FQ / 1245,
+  AY_MAX_FQ / 1319,
+  AY_MAX_FQ / 1397,
+  AY_MAX_FQ / 1480,
+  AY_MAX_FQ / 1568,
+  AY_MAX_FQ / 1661,
+  AY_MAX_FQ / 1760,
+  AY_MAX_FQ / 1865,
+  AY_MAX_FQ / 1976,
+  AY_MAX_FQ / 2093,
+  AY_MAX_FQ / 2217,
+  AY_MAX_FQ / 2349,
+  AY_MAX_FQ / 2489,
+  AY_MAX_FQ / 2637,
+  AY_MAX_FQ / 2794,
+  AY_MAX_FQ / 2960,
+  AY_MAX_FQ / 3136,
+  AY_MAX_FQ / 3322,
+  AY_MAX_FQ / 3520,
+  AY_MAX_FQ / 3729,
+  AY_MAX_FQ / 3951,
+  AY_MAX_FQ / 4186
 };
 
 // Таблица функций ПГЗ
@@ -162,7 +236,7 @@ public:
 
   void note(uint8_t arg)
   {
-    uint16_t  f = fq[arg] << 3;
+    uint16_t  f = fq[arg + 15];
 
     writeW(_TGA, f + 2);
     writeW(_TGB, f);

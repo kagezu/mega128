@@ -50,27 +50,30 @@ int main()
 {
   inits();
 
-  uint16_t in = 0;
-  uint16_t old = 0;
-  uint16_t active = 0;
+  uint8_t in[8];
+  uint8_t old[8];
+  uint8_t active[0];
+  uint64_t &inX = (uint64_t &)in[0];
+  uint64_t &oldX = (uint64_t &)old[0];
+  uint64_t &activeX = (uint64_t &)active[0];
 
   while (true) {
     key.reset();
-    key.readBytes((byte *)&in, sizeof(in));
+    key.readBytes(in, sizeof(in));
 
-    if (in != old) {
-      uint16_t x = in ^ old;// разница
-      old = in;
-      if (x & active) // нота играла
+    if (inX != oldX) {
+      uint64_t x = inX ^ oldX;// разница
+      oldX = inX;
+      if (x & activeX) // нота играла
       {
-        active ^= x; // вычёркиваем
+        activeX ^= x; // вычёркиваем
       }
       else
-        if (x & in) // новая нота
+        if (x & inX) // новая нота
         {
-          active = x; // заменяем
+          activeX = x; // заменяем
           byte n = 0;
-          for (byte i = 16; i; i--)
+          for (byte i = 64; i; i--)
             if (x & 1) break;
             else { x >>= 1; n++; }
           psg.note(n);
@@ -79,15 +82,17 @@ int main()
 
     // lcd.clear(RGB(0, 0, 64));
     text.printf(PSTR("\f  Keyboard  16-keys\n"));
-    text.printf(PSTR("Key in: %2x    \n"), in);
-    text.printf(PSTR("Key active: %2x   \n\n"), active);
-    word x = active;
-    for (byte i = 16; i; i--) {
-      if (x & 0x8000)
-        text.printf(PSTR("#"));
+    text.printf(PSTR("i: %x%x%x%x%x%x%x%x \n"), in[0], in[1], in[2], in[3], in[4], in[5], in[6], in[7]);
+    text.printf(
+      PSTR("a: %x%x%x%x%x%x%x%x \n\n"),
+      active[0], active[1], active[2], active[3], active[4], active[5], active[6], active[7]);
+    uint64_t x = activeX;
+    for (byte i = 64; i; i--) {
+      if (x & 1)
+        text.printf(PSTR("!"));
       else
-        text.printf(PSTR("_"));
-      x <<= 1;
+        text.printf(PSTR("."));
+      x >>= 1;
     }
   }
 
