@@ -162,11 +162,11 @@ public:
 
   void note(uint8_t arg)
   {
-    uint16_t  f = fq[arg];
+    uint16_t  f = fq[arg] << 3;
 
-    writeW(_TGA, f + 10);
+    writeW(_TGA, f + 2);
     writeW(_TGB, f);
-    writeW(_TGC, f - 10);
+    writeW(_TGC, f - 1);
     if (f) write(_ENVC, _FALL_HOLD);
   }
 };
