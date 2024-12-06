@@ -50,15 +50,18 @@ int main()
       old[7], old[6], old[5], old[4], old[3], old[2], old[1], old[0]);
 
     uint64_t x = *(uint64_t *)keys;
+    char piano[66];
+    piano[0] = ' ';
+    piano[65] = 0;
     for (byte i = 64; i; i--) {
-      if (x & 1)
-        text.printf(PSTR("!"));
-      else
-        text.printf(PSTR("."));
+      if (x & 1) piano[i] = '!';
+      else if (i % 8) piano[i] = '.';
+      else piano[i] = ',';
       x >>= 1;
     }
 
-    text.printf(PSTR("\nKey number: %u    \n"), k);
+    text.printf(PSTR("%s\n"), piano);
+    text.printf(PSTR("Key number: %u    \n"), k);
   }
 
 }
