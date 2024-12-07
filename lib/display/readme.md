@@ -2,7 +2,10 @@
 ---
 ## Обёртки
 ### <span style="color:blue">class</span> **Display**
-Класс объеденующий драйвер дисплея и графическую надстройку
+Класс для вывода на дисплей
+
+### <span style="color:blue">class</span> **Screen**
+Класс для вывода в память
 
 ---
 ## Драйвера
@@ -21,9 +24,7 @@ CS,RS,MOSI,SCK
 ## Графические надстройки
 ### <span style="color:blue">class</span> **Draw**
 
-Виртуальный класс, содержащий набор графических функций
-#### <span style="color:green">Реализовано</span>
-
+Kласс, содержащий набор графических функций
 + Линии
 + Прямоугольные области
 + круги
@@ -31,9 +32,20 @@ CS,RS,MOSI,SCK
 
 ### <span style="color:blue">class</span> **Text**
 
-Виртуальный класс, для вывода текста.
-
-#### <span style="color:green">Реализовано</span>
-
+Класс, для вывода текста.
 + Вывод текста нескольких шрифтов
 + Вывод 10х и 16х целых чисел.
+
+---
+
+## Цветовые модели
+
+### <span style="color:blue">class</span> **RGB**
+
+#### <span style="color:green">file</span> **rgb12.h**
+12ти битный цветовой формат: Red 4 bit x Green 4 bit x Blue 4 bit
+#### <span style="color:green">file</span> **rgb16.h**
+16ти битный цветовой формат: Red 5 bit x Green 6 bit x Blue 5 bit
+#### <span style="color:green">file</span> **rgb18.h**
+18ти битный цветовой формат: Red 6 bit x Green 6 bit x Blue 6 bit
+

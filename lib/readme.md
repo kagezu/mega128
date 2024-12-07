@@ -4,6 +4,6 @@
 
 + #### **[xmem](/lib/xmem/readme.md)** - библиотека для *ATmega128 + eXternal MEMory (XMEM)*.
 
-+ #### **[timer](/lib/timer/readme.md)** - упрощение работы с таймерами
++ #### **[timer](/lib/easy-tmer/readme.md)** - упрощение работы с таймерами
 
 + #### **[psg](/lib/psg/readme.md)** - работа с Программным Генератором Звука (ПГЗ) AY-3-8910

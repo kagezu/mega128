@@ -1,9 +1,10 @@
 # Проект «mega128»
 
-### Проект по созданию библиотек для:
-+ **ATmega128  + eXternal MEMory (XMEM) / ATmega328** [Перейти](lib/xmem/readme.md)
+### Пул библиотек для совместного использования ATmega128 / ATmega328:
++ **eXternal MEMory (XMEM)** [Перейти](lib/xmem/readme.md)
 + **display ST7735S** [Перейти](lib/display/readme.md)
-+ **AU-3-8910** [Перейти](lib/psg/readme.md)
++ **Упрощение работы с таймерами** [Перейти](/lib/easy-timer/readme.md)
++ **Программный Генератор Звука (ПГЗ) AU-3-8910** [Перейти](lib/psg/readme.md)
 
 #### Среда разработки:
 + PlatformIO - https://platformio.org

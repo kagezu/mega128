@@ -2,6 +2,8 @@
 #define DISPLAY_CONFIG_H
 #include "Arduino.h"
 
+//===================== Config =============================
+
 // Цветовая модель
 // RGB_12 4x4x4 bit / RGB_16 5x6x5 bit / RGB_18 6x6x6 bit
 
@@ -21,6 +23,8 @@
 
 // Связь через SPI
 #define LCD_SPI   true
+
+//==========================================================
 
 // LCD_PORT     Порт для SDA, SCK
 // LCD_CONTROL  Порт для CS, RS

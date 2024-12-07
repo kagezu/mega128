@@ -38,22 +38,23 @@ int main()
     n = comp64(old, keys);
     copy64(old, keys);
     if (n > 0) {
-      psg.note(n);
+      psg.note(n - 5);
       k = n;
     }
 
     // lcd.clear(RGB(0, 0, 64));
-    text.printf(PSTR("\f  Keyboard  16-keys\n"));
+    text.printf(PSTR("\f  Keyboard  60-keys\n"));
     text.printf(PSTR("i: %x%x%x%x%x%x%x%x \n"), keys[7], keys[6], keys[5], keys[4], keys[3], keys[2], keys[1], keys[0]);
     text.printf(
       PSTR("a: %x%x%x%x%x%x%x%x \n\n"),
       old[7], old[6], old[5], old[4], old[3], old[2], old[1], old[0]);
 
     uint64_t x = *(uint64_t *)keys;
-    char piano[66];
+    char piano[62];
     piano[0] = ' ';
-    piano[65] = 0;
-    for (byte i = 64; i; i--) {
+    piano[61] = 0;
+    x >>= 4;
+    for (byte i = 60; i; i--) {
       if (x & 1) piano[i] = '!';
       else if (i % 8) piano[i] = '.';
       else piano[i] = ',';
@@ -61,7 +62,7 @@ int main()
     }
 
     text.printf(PSTR("%s\n"), piano);
-    text.printf(PSTR("Key number: %u    \n"), k);
+    text.printf(PSTR("Key number: %u    \n"), k - 4);
   }
 
 }

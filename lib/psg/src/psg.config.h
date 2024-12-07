@@ -12,7 +12,7 @@
 #define   AY_BC1    _BV(PB0)
 #define   AY_BDIR   _BV(PB2)
 #define   AY_FUN    PORTB
-#define   AY_ACT    DDRB |= _BV(PB0) | _BV(PB2);
+#define   AY_ACT    DDRB |= AY_BC1 |  AY_BDIR;
 
 #define   AY_CLOCK_ON \
   T1_DIV_1;\
@@ -25,7 +25,7 @@
 #define   AY_BC1    _BV(PB0)
 #define   AY_BDIR   _BV(PB2)
 #define   AY_FUN    PORTB
-#define   AY_ACT   DDRB |= _BV(PB0) | _BV(PB2);
+#define   AY_ACT   DDRB |= AY_BC1 | AY_BDIR ;
 
 #define   AY_CLOCK_ON \
   T1_DIV_1;\
