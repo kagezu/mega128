@@ -1,55 +1,53 @@
-#include "keybord.h"
+#include "timer.h"
+#include "AY/AY.h"
+#include "display/display.h"
+#include "text/text.h"
+#include "font/micro_5x6.h"
+#include "font/arial_14.h"
+#include "keyboard.h"
 
-char n = 0;
-char k;
-uint8_t keys[8];
-uint8_t old[8];
-
-void copy64(uint8_t *t, uint8_t *s)
-{
-  uint8_t i = 8;
-  while (i--) *t++ = *s++;
-}
-
-char comp64(uint8_t *t, uint8_t *s)
-{
-  for (uint8_t i = 0; i < 8; i++, t++, s++) {
-    uint8_t d = *t ^ *s;
-    if (d) {
-      char sign = -1;
-      if (d & *s) sign = 1;
-      for (uint8_t j = 1; j < 9; j++)
-        if (d & 1) return sign * ((i << 3) + j);
-        else d >>= 1;
-    }
-  }
-  return 0;
-}
+Display lcd;
+AY psg;
+Text text(&lcd);
+Keyboard key(
+  _SFR_MEM_ADDR(PORTC),
+  _SFR_MEM_ADDR(DDRC),
+  _SFR_MEM_ADDR(PINC),
+  PC0,
+  PC1,
+  PC2
+);
 
 int main()
 {
-  inits();
+  T0_DIV_1024;
+  T0_CTC;
+  OCR0A = F_CPU / 1024 / 77 - 1; // 78 Hz 
+  T0_COMPA_ON;
+  sei();
+
+  text.font(micro_5x6);
+  text.setInterline(3);
+  lcd.clear(RGB(0, 0, 64));
+  lcd.background(RGB(0, 0, 64));
+  lcd.color(RGB(255, 255, 0));
 
 
   while (true) {
-    key.reset();
-    key.readBytes(keys, sizeof(keys));
 
-    n = comp64(old, keys);
-    copy64(old, keys);
-    if (n > 0) {
-      psg.note(n - 5);
-      k = n;
-    }
+    char n;
+    key.scanKey();
+    do {
+      n = key.getKey();
+      if (n) psg.note(n - 1);
+    } while (n);
 
-    // lcd.clear(RGB(0, 0, 64));
-    text.printf(PSTR("\f  Keyboard  60-keys\n"));
-    text.printf(PSTR("i: %x%x%x%x%x%x%x%x \n"), keys[7], keys[6], keys[5], keys[4], keys[3], keys[2], keys[1], keys[0]);
-    text.printf(
-      PSTR("a: %x%x%x%x%x%x%x%x \n\n"),
-      old[7], old[6], old[5], old[4], old[3], old[2], old[1], old[0]);
+    text.font(arial_14);
+    text.printf(PSTR("\f \tKeyboard  60-keys\n\n"));
+    text.font(micro_5x6);
+    text.printf(PSTR("SCAN: %8x \n\n"), key._keys);
 
-    uint64_t x = *(uint64_t *)keys;
+    uint64_t x = key._keys;
     char piano[62];
     piano[0] = ' ';
     piano[61] = 0;
@@ -61,8 +59,21 @@ int main()
       x >>= 1;
     }
 
+    text.font(arial_14);
     text.printf(PSTR("%s\n"), piano);
-    text.printf(PSTR("Key number: %u    \n"), k - 4);
+    char v[] = "!!!!!!!!!!!!!!!!";
+    for (byte i = 0; i < 3; i++)
+      text.printf(PSTR("%s          \n"), &v[16 - psg.volume[i]]);
   }
+}
+// DIV = 1 ~ 1/8
+#define DIV 8
+byte counter = 0;
 
+ISR(TIMER0_COMPA_vect)
+{
+  if (counter++ == DIV) {
+    psg.tick();
+    counter = 1;
+  }
 }

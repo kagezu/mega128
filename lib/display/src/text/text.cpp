@@ -34,6 +34,7 @@ void Text::printf(const char *string, ...)
                 case '1':  printHex((uint8_t)va_arg(args, uint16_t)); break;
                 case '2':  printHex((uint16_t)va_arg(args, uint16_t)); break;
                 case '4':  printHex((uint32_t)va_arg(args, uint32_t)); break;
+                case '8':  printHex((uint64_t)va_arg(args, uint64_t)); break;
               } break;
             case 'p': printHex((uint16_t)va_arg(args, uint16_t)); break;
             case '%': symbol('%'); break;
@@ -192,6 +193,48 @@ uint8_t Text::hexToChar(uint8_t number)
 {
   number &= 0xf;
   return number > 9 ? number + '7' : number + '0';
+}
+
+void Text::printHex(uint64_t number)
+{
+  char string[19];
+  string[0] = '0';
+  string[1] = 'x';
+  string[18] = 0;
+
+  string[17] = hexToChar(number);
+  number >>= 4;
+  string[16] = hexToChar(number);
+  number >>= 4;
+  string[15] = hexToChar(number);
+  number >>= 4;
+  string[14] = hexToChar(number);
+  number >>= 4;
+  string[13] = hexToChar(number);
+  number >>= 4;
+  string[12] = hexToChar(number);
+  number >>= 4;
+  string[11] = hexToChar(number);
+  number >>= 4;
+  string[10] = hexToChar(number);
+  number >>= 4;
+  string[9] = hexToChar(number);
+  number >>= 4;
+  string[8] = hexToChar(number);
+  number >>= 4;
+  string[7] = hexToChar(number);
+  number >>= 4;
+  string[6] = hexToChar(number);
+  number >>= 4;
+  string[5] = hexToChar(number);
+  number >>= 4;
+  string[4] = hexToChar(number);
+  number >>= 4;
+  string[3] = hexToChar(number);
+  number >>= 4;
+  string[2] = hexToChar(number);
+
+  print(string);
 }
 
 void Text::printHex(uint32_t number)

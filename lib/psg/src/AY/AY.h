@@ -173,9 +173,9 @@ public:
     write(_ENVL, 0); //огибающая
     write(_ENVH, 24); //огибающая
     write(_ENVC, _FALL_HOLD); //спад с удержанием
-    write(_AA, 31);
-    write(_AB, 31);
-    write(_AC, 31);
+    write(_AA, 16);
+    write(_AB, 16);
+    write(_AC, 16);
   }
 
   byte read(byte reg)
@@ -234,13 +234,25 @@ public:
     return key;
   }
 
+  byte f = 0;
+  byte rg = 0;
+  byte volume[3];
+
   void note(uint8_t arg)
   {
     uint16_t  f = fq[60 - arg + 15];
+    if (rg == 3) rg = 0;
+    writeW(_TGA + (rg << 1), f);
+    write(_AA + rg, 15);
+    volume[rg++] = 15;
 
-    writeW(_TGA, f >> 1);
-    writeW(_TGB, f);
-    writeW(_TGC, f << 1);
-    if (f) write(_ENVC, _FALL_HOLD);
+    // if (f) write(_ENVC, _FALL_HOLD);
+  }
+
+  void tick()
+  {
+    if (volume[0]) write(_AA, --volume[0]);
+    if (volume[1]) write(_AB, --volume[1]);
+    if (volume[2]) write(_AC, --volume[2]);
   }
 };

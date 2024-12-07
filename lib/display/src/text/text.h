@@ -44,6 +44,7 @@ public:
   void print(int32_t number);
 
   uint8_t hexToChar(uint8_t number);
+  void printHex(uint64_t number);
   void printHex(uint32_t number);
   void printHex(uint16_t number);
   void printHex(uint8_t number);
