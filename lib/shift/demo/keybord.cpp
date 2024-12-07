@@ -22,7 +22,7 @@ int main()
 {
   T0_DIV_1024;
   T0_CTC;
-  OCR0A = F_CPU / 1024 / 77 - 1; // 78 Hz 
+  OCR0A = F_CPU / 1024 / 64 - 1; // 64 Hz 
   T0_COMPA_ON;
   sei();
 
@@ -63,11 +63,11 @@ int main()
     text.printf(PSTR("%s\n"), piano);
     char v[] = "!!!!!!!!!!!!!!!!";
     for (byte i = 0; i < 3; i++)
-      text.printf(PSTR("%s          \n"), &v[16 - psg.volume[i]]);
+      text.printf(PSTR("%x \t%s          \n"),psg.v[i], &v[16 - psg.volume[i]]);
   }
 }
 // DIV = 1 ~ 1/8
-#define DIV 8
+#define DIV 6
 byte counter = 0;
 
 ISR(TIMER0_COMPA_vect)

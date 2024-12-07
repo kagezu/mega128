@@ -3,7 +3,7 @@
 #define AY_MAX_FQ   100000
 
 // +15
-const uint16_t fq[] = {
+const uint16_t fdiv[] = {
   AY_MAX_FQ / 27,
   AY_MAX_FQ / 29,
   AY_MAX_FQ / 31,
@@ -234,19 +234,33 @@ public:
     return key;
   }
 
-  byte f = 0;
-  byte rg = 0;
   byte volume[3];
+
+  byte v[3] = { 12,15,12 };
 
   void note(uint8_t arg)
   {
-    uint16_t  f = fq[60 - arg + 15];
-    if (rg == 3) rg = 0;
-    writeW(_TGA + (rg << 1), f);
-    write(_AA + rg, 15);
-    volume[rg++] = 15;
+    if (arg == 0 && v[1] < 15) v[1]++;
+    if (arg == 1 && v[1]) v[1]--;
+    if (arg == 2 && v[2] < 15) v[2]++;
+    if (arg == 3 && v[2]) v[2]--;
+    if (arg == 4 && v[0] < 15) v[0]++;
+    if (arg == 5 && v[0]) v[0]--;
 
-    // if (f) write(_ENVC, _FALL_HOLD);
+    if (arg < 7) return;
+
+    uint16_t  f = fdiv[60 - arg + 15];
+
+    writeW(_TGA, f >> 2);
+    writeW(_TGB, f);
+    writeW(_TGC, f >> 1);
+    volume[0] = v[0];
+    volume[1] = v[1];
+    volume[2] = v[2];
+    write(_AA, volume[0]);
+    write(_AB, volume[1]);
+    write(_AC, volume[2]);
+
   }
 
   void tick()
