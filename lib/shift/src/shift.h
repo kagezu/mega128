@@ -23,6 +23,7 @@ public:
 
 public:
   inline void reset(boolean hold = false) { _MMIO_BYTE(_port) &= ~_rst; if (!hold)_MMIO_BYTE(_port) |= _rst; }
+  inline void load() { _MMIO_BYTE(_port) &= ~_rst; _MMIO_BYTE(_port) |= _rst; }
   inline void readBytes(uint8_t *buffer, uint8_t length) { while (length--) *buffer++ = read(); }
   inline void writeBytes(uint8_t *buffer, uint8_t length) { while (length--) write(*buffer++); }
 
