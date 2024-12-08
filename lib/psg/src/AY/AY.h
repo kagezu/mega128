@@ -158,7 +158,7 @@ const uint16_t fdiv[] = {
 
 class AY {
 public:
-  uint8_t _mixio = _BV(_MIOB);
+  byte _mixio = _BV(_MIOB);
 
 public:
   AY()
@@ -234,33 +234,23 @@ public:
     return key;
   }
 
-  byte volume[3];
+  char volume[3];
 
-  byte v[3] = { 12,15,12 };
-
-  void note(uint8_t arg)
+  void note(byte key, byte vol = 15)
   {
-    if (arg == 0 && v[1] < 15) v[1]++;
-    if (arg == 1 && v[1]) v[1]--;
-    if (arg == 2 && v[2] < 15) v[2]++;
-    if (arg == 3 && v[2]) v[2]--;
-    if (arg == 4 && v[0] < 15) v[0]++;
-    if (arg == 5 && v[0]) v[0]--;
+    uint16_t  f = fdiv[60 - key + 15];
 
-    if (arg < 7) return;
-
-    uint16_t  f = fdiv[60 - arg + 15];
-
-    writeW(_TGA, f >> 2);
+    writeW(_TGA, f / 3);
     writeW(_TGB, f);
     writeW(_TGC, f >> 1);
-    volume[0] = v[0];
-    volume[1] = v[1];
-    volume[2] = v[2];
+    volume[0] = vol - 6;
+    volume[1] = vol;
+    volume[2] = vol - 3;
+    if (volume[0] < 0)volume[0] = 0;
+    if (volume[2] < 0)volume[2] = 0;
     write(_AA, volume[0]);
     write(_AB, volume[1]);
     write(_AC, volume[2]);
-
   }
 
   void tick()

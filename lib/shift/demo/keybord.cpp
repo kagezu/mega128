@@ -22,7 +22,7 @@ int main()
 {
   T0_DIV_1024;
   T0_CTC;
-  OCR0A = F_CPU / 1024 / 64 - 1; // 64 Hz 
+  OCR0A = F_CPU / 1024 / 1000; // 16 Mhz -> 976 Hz 
   T0_COMPA_ON;
   sei();
 
@@ -37,17 +37,17 @@ int main()
 
     char n;
     key.scanKey();
-    do {
+    while (n >= 0) {
+      psg.note(n);
       n = key.getKey();
-      if (n) psg.note(n - 1);
-    } while (n);
+    }
 
     text.font(arial_14);
     text.printf(PSTR("\f \tKeyboard  60-keys\n\n"));
     text.font(micro_5x6);
-    text.printf(PSTR("SCAN: %8x \n\n"), key._keys);
+    text.printf(PSTR("SCAN: %8x \n\n"), *(uint64_t *)key._on);
 
-    uint64_t x = key._keys;
+    uint64_t x = *(uint64_t *)key._on;
     char piano[62];
     piano[0] = ' ';
     piano[61] = 0;
@@ -63,11 +63,11 @@ int main()
     text.printf(PSTR("%s\n"), piano);
     char v[] = "!!!!!!!!!!!!!!!!";
     for (byte i = 0; i < 3; i++)
-      text.printf(PSTR("%x \t%s          \n"),psg.v[i], &v[16 - psg.volume[i]]);
+      text.printf(PSTR("\t%s          \n"), &v[16 - psg.volume[i]]);
   }
 }
-// DIV = 1 ~ 1/8
-#define DIV 6
+// DIV = 12 ~ 1/8,  25 ~ 1/4,  50 ~ 1/2,  100 ~ 1 
+#define DIV 100
 byte counter = 0;
 
 ISR(TIMER0_COMPA_vect)
