@@ -6,6 +6,9 @@
 #define KEYS_COUNT  60
 
 class Keyboard : public Shift {
+private:
+  byte _line;
+
 public:
   byte _on[KEYS_SIZE];
   byte _off[KEYS_SIZE];
@@ -15,40 +18,62 @@ public:
   byte _old[KEYS_SIZE];
 
 public:
-  Keyboard(byte port, byte ddr, byte pin, byte dat, byte clk, byte ld) :
-    Shift(port, ddr, pin, dat, clk, ld)
-  {}
+  Keyboard(byte port, byte ddr, byte pin, byte dat, byte clk, byte ld, byte line) :
+    Shift(port, ddr, pin, dat, clk, ld), _line(_BV(line))
+  {
+    _MMIO_BYTE(port) |= _BV(line);
+    _MMIO_BYTE(ddr) |= _BV(line);
+  }
 
 public:
   void scanKey()
   {
     load();
-    readBytes((byte *)&_on, sizeof(_on));
+    readBytes(_on, sizeof(_on));
   }
 
   char tick()
   {
     byte mask = _BV(KEYS_OFFSET);
-    byte *on = (byte *)&_on;
-    byte *off = (byte *)&_off;
+    byte *on = _on;
+    byte *off = _off;
 
+    _MMIO_BYTE(_port) |= _line;
+    asm volatile("nop");
+    asm volatile("nop");
+    asm volatile("nop");
+    asm volatile("nop");
+    asm volatile("nop");
+    asm volatile("nop");
+    asm volatile("nop");
     load();
     readBytes(on, KEYS_SIZE);
+
+    _MMIO_BYTE(_port) &= ~_line;
+    asm volatile("nop");
+    asm volatile("nop");
+    asm volatile("nop");
+    asm volatile("nop");
+    asm volatile("nop");
+    asm volatile("nop");
+    asm volatile("nop");
     load();
     readBytes(off, KEYS_SIZE);
 
-    for (char i = 0; i < KEYS_COUNT; i++) {
-      if (*off & mask)
+    for (byte i = 0; i < KEYS_COUNT; i++) {
+      if (*off & mask) {
         if (_timer[i]) { _timer[i] = 0; _keys[i] = 0; }
-        else
-          if (*on & mask) {
-            if (_timer[i] < 255) {
-              _keys[i] = 16 - (_timer[i] >> 4);
-              _timer[i] = 255;
-            }
+      }
+      else
+        if (*on & mask) {
+          if (_timer[i] < 255) {
+            _keys[i] = 16 - (_timer[i] >> 4);
+            if (_keys[i] < 6) _keys[i] = 6;
+            _timer[i] = 255;
           }
-          else
-            if (_timer[i] < 254) _timer[i]++;
+        }
+        else
+          if (_timer[i] < 254) _timer[i]++;
 
       mask <<= 1;
       if (!mask) { mask = 1; on++; off++; }
@@ -57,9 +82,15 @@ public:
     return 0;
   }
 
-  byte getKeyVolume(byte key)
+  word getKeyVolume()
   {
-    return _keys[key];
+    for (byte i = 0; i < KEYS_COUNT; i++)
+      if (_keys[i]) {
+        byte t = _keys[i];
+        _keys[i] = 0;
+        return (t << 8) | i;
+      }
+    return 0;
   }
 
   char getKey()
@@ -82,22 +113,5 @@ public:
     }
     return -1;
   }
-
-  /*
-  char getKey()
-  {
-    uint64_t mask = 1;
-    uint64_t diff = _on ^ _old;
-
-    for (char i = 1; i < 65; i++) {
-      if (diff & mask) {
-        _old ^= mask;
-        if (_on & mask) return i - 4;
-      }
-      mask <<= 1;
-    }
-    return 0;
-  }
-  */
 
 };

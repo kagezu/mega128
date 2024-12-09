@@ -236,21 +236,18 @@ public:
 
   char volume[3];
 
-  void note(byte key, byte vol = 15)
+  void note(byte key, byte vol = 16)
   {
     uint16_t  f = fdiv[60 - key + 15];
 
     writeW(_TGA, f / 3);
     writeW(_TGB, f);
     writeW(_TGC, f >> 1);
-    volume[0] = vol - 6;
+    volume[0] = vol - 4;
     volume[1] = vol;
-    volume[2] = vol - 3;
+    volume[2] = vol - 2;
     if (volume[0] < 0)volume[0] = 0;
     if (volume[2] < 0)volume[2] = 0;
-    write(_AA, volume[0]);
-    write(_AB, volume[1]);
-    write(_AC, volume[2]);
   }
 
   void tick()

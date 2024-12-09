@@ -3,7 +3,7 @@
 // Регистры _SFR_MEM_ADDR(PORTx), _SFR_MEM_ADDR(DDRx), _SFR_MEM_ADDR(PINx)
 // Пины dat, clk ↑, rst (~LD / ~RESET)
 class Shift {
-private:
+protected:
   byte _port;
   byte _ddr;
   byte _pin;
