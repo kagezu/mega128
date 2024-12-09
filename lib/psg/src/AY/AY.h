@@ -171,7 +171,7 @@ public:
     write(_NOISE, 0); // шум
     write(_MIX, 070);
     write(_ENVL, 0); //огибающая
-    write(_ENVH, 0); //огибающая
+    write(_ENVH, 24); //огибающая
     write(_ENVC, 0);
     write(_AA, 0);
     write(_AB, 0);
@@ -246,37 +246,21 @@ public:
     volume[0] = vol - 4;
     volume[1] = vol;
     volume[2] = vol - 2;
-    if (volume[0] < 0)volume[0] = 0;
-    if (volume[2] < 0)volume[2] = 0;
+    // if (volume[0] < 0) volume[0] = 0;
+    // if (volume[2] < 0) volume[2] = 0;
   }
 
   // DIV = 12 ~ 1/8,  25 ~ 1/4,  50 ~ 1/2,  100 ~ 1 
-#define DIV 100
+#define DIV 64
   byte counter = 0;
 
   void tick()
   {
     if (counter++ == DIV) {
-      // if (volume[0]) write(_AA, --volume[0]);
-      // if (volume[1]) write(_AB, --volume[1]);
-      // if (volume[2]) write(_AC, --volume[2]);
-      if (volume[0]) volume[0]--;
-      if (volume[1]) volume[1]--;
-      if (volume[2]) volume[2]--;
+      if (volume[0]) write(_AA, --volume[0]);
+      if (volume[1]) write(_AB, --volume[1]);
+      if (volume[2]) write(_AC, --volume[2]);
       counter = 1;
-      // if (volume[1]) write(_MIX, 070);
-      // else write(_MIX, 077);
-    }
-
-    if (counter & 1) {
-      write(_AA, volume[0]);
-      write(_AB, volume[1]);
-      write(_AC, volume[2]);
-    }
-    else {
-      // write(_AA, volume[0] - 1);
-      write(_AB, volume[1] - 1);
-      // write(_AC, volume[2] - 1);
     }
   }
 };

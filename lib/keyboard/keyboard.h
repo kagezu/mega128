@@ -26,17 +26,13 @@ public:
   }
 
 public:
-  void scanKey()
-  {
-    load();
-    readBytes(_on, sizeof(_on));
-  }
 
   char tick()
   {
     byte mask = _BV(KEYS_OFFSET);
     byte *on = _on;
     byte *off = _off;
+    char key = -1;
 
     _MMIO_BYTE(_port) |= _line;
     byte t = F_CPU / 2000000; // 1 uc delay
@@ -58,8 +54,9 @@ public:
         if (*on & mask) {
           if (_timer[i] < 255) {
             _keys[i] = 16 - (_timer[i] >> 4);
-            if (_keys[i] < 6) _keys[i] = 6;
+            if (_keys[i] < 4) _keys[i] = 4;
             _timer[i] = 255;
+            key = i;
           }
         }
         else
@@ -69,7 +66,7 @@ public:
       if (!mask) { mask = 1; on++; off++; }
     }
 
-    return 0;
+    return key;
   }
 
   word getKeyVolume()

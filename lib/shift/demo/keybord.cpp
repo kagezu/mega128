@@ -50,36 +50,22 @@ int main()
   lcd.background(RGB(0, 0, 64));
   lcd.color(RGB(255, 255, 0));
 
-  word n, k;
-
   while (true) {
-
-    n = key.getKeyVolume();
-    while (n) {
-      psg.note((byte)n, n >> 8);
-      k = n;
-      n = key.getKeyVolume();
-    }
-
     text.font(arial_14);
-    text.printf(PSTR("\f \tKeyboard  60-keys\n\n"));
-    // text.font(micro_5x6);
-    // text.printf(PSTR("SCAN: %8x \n\n"), *(uint64_t *)key._on);
+    text.printf(PSTR("\f   Keyboard  60-keys\n\n"));
 
     printKey(*(uint64_t *)key._on);
     printKey(*(uint64_t *)key._off);
 
-    char v[] = "!!!!!!!!!!!!!!!!!!!!";
+    char v[] = "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
     for (byte i = 0; i < 3; i++)
-      text.printf(PSTR("\t%s          \n"), &v[20 - psg.volume[i]]);
-
-    text.font(standard_5x7);
-    text.printf(PSTR("Key: %u %u     "), (byte)k + 1, k >> 8);
+      text.printf(PSTR("   %s     \n"), &v[32 - (psg.volume[i] << 1)]);
   }
 }
 
 ISR(TIMER0_COMPA_vect)
 {
-  key.tick();
+  char k = key.tick();
+  if (k + 1) psg.note(k, key._keys[(byte)k]);
   psg.tick();
 }
