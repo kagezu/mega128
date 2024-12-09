@@ -69,23 +69,17 @@ int main()
     printKey(*(uint64_t *)key._on);
     printKey(*(uint64_t *)key._off);
 
-    char v[] = "!!!!!!!!!!!!!!!!";
+    char v[] = "!!!!!!!!!!!!!!!!!!!!";
     for (byte i = 0; i < 3; i++)
-      text.printf(PSTR("\t%s          \n"), &v[16 - psg.volume[i]]);
+      text.printf(PSTR("\t%s          \n"), &v[20 - psg.volume[i]]);
 
     text.font(standard_5x7);
     text.printf(PSTR("Key: %u %u     "), (byte)k + 1, k >> 8);
   }
 }
-// DIV = 12 ~ 1/8,  25 ~ 1/4,  50 ~ 1/2,  100 ~ 1 
-#define DIV 50
-byte counter = 0;
 
 ISR(TIMER0_COMPA_vect)
 {
   key.tick();
-  if (counter++ == DIV) {
-    psg.tick();
-    counter = 1;
-  }
+  psg.tick();
 }

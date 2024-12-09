@@ -171,24 +171,24 @@ public:
     write(_NOISE, 0); // шум
     write(_MIX, 070);
     write(_ENVL, 0); //огибающая
-    write(_ENVH, 24); //огибающая
-    write(_ENVC, _FALL_HOLD); //спад с удержанием
-    write(_AA, 16);
-    write(_AB, 16);
-    write(_AC, 16);
+    write(_ENVH, 0); //огибающая
+    write(_ENVC, 0);
+    write(_AA, 0);
+    write(_AB, 0);
+    write(_AC, 0);
   }
 
   byte read(byte reg)
   {
-    byte data, tick;
+    byte data, t;
     AY_OUT;
     AY_PORT = reg;
     AY_LATCH_ADR;
     AY_INACTIVE;
     AY_IN;
     AY_READ;
-    tick = (F_CPU / 2) / 2000000; // 2 МГц максимальная частота работы ПГЗ
-    while (tick--) asm volatile ("nop");
+    t = (F_CPU / 2) / 2000000; // 2 МГц максимальная частота работы ПГЗ
+    while (t--) asm volatile ("nop");
     data = AY_PIN;
     AY_INACTIVE;
     return data;
@@ -250,10 +250,33 @@ public:
     if (volume[2] < 0)volume[2] = 0;
   }
 
+  // DIV = 12 ~ 1/8,  25 ~ 1/4,  50 ~ 1/2,  100 ~ 1 
+#define DIV 100
+  byte counter = 0;
+
   void tick()
   {
-    if (volume[0]) write(_AA, --volume[0]);
-    if (volume[1]) write(_AB, --volume[1]);
-    if (volume[2]) write(_AC, --volume[2]);
+    if (counter++ == DIV) {
+      // if (volume[0]) write(_AA, --volume[0]);
+      // if (volume[1]) write(_AB, --volume[1]);
+      // if (volume[2]) write(_AC, --volume[2]);
+      if (volume[0]) volume[0]--;
+      if (volume[1]) volume[1]--;
+      if (volume[2]) volume[2]--;
+      counter = 1;
+      // if (volume[1]) write(_MIX, 070);
+      // else write(_MIX, 077);
+    }
+
+    if (counter & 1) {
+      write(_AA, volume[0]);
+      write(_AB, volume[1]);
+      write(_AC, volume[2]);
+    }
+    else {
+      // write(_AA, volume[0] - 1);
+      write(_AB, volume[1] - 1);
+      // write(_AC, volume[2] - 1);
+    }
   }
 };

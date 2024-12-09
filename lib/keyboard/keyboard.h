@@ -39,24 +39,14 @@ public:
     byte *off = _off;
 
     _MMIO_BYTE(_port) |= _line;
-    asm volatile("nop");
-    asm volatile("nop");
-    asm volatile("nop");
-    asm volatile("nop");
-    asm volatile("nop");
-    asm volatile("nop");
-    asm volatile("nop");
+    byte t = F_CPU / 2000000; // 1 uc delay
+    while (t--) asm volatile ("nop");
     load();
     readBytes(on, KEYS_SIZE);
 
     _MMIO_BYTE(_port) &= ~_line;
-    asm volatile("nop");
-    asm volatile("nop");
-    asm volatile("nop");
-    asm volatile("nop");
-    asm volatile("nop");
-    asm volatile("nop");
-    asm volatile("nop");
+    t = F_CPU / 2000000; // 1 uc delay
+    while (t--) asm volatile ("nop");
     load();
     readBytes(off, KEYS_SIZE);
 
