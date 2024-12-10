@@ -238,6 +238,7 @@ public:
   void note(byte key, byte vol = 16)
   {
     uint16_t  f = fdiv[60 - key + 15];
+    if (vol < 4) vol = 4;
 
     writeW(_TGA, f << 1);
     writeW(_TGB, f);

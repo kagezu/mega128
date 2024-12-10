@@ -5,10 +5,9 @@
 #define KEYS_SIZE           8
 #define KEYS_COUNT          60
 #define KEYS_LOAD_DELAY     2
-#define KEYS_MAX_DELAY      31
-#define KEYS_SPEED_FACTOR   1
-#define KEYS_MIN_SPEED      4
 #define KEYS_MAX_SPEED      16
+#define KEYS_SPEED_FACTOR   0
+#define KEYS_MAX_DELAY      ( KEYS_MAX_SPEED << KEYS_SPEED_FACTOR ) - 1
 
 class Keyboard : public Shift {
 private:
@@ -50,13 +49,12 @@ public:
 
     for (byte i = 0; i < KEYS_COUNT; i++) {
       if (*off & mask) {
-        if (_timer[i]) { _timer[i] = 0; _keys[i] = 0; }
+        if (_timer[i]) { _timer[i] = 0; _keys[i] = 0; key = 0x80; }
       }
       else
         if (*on & mask) {
           if (_timer[i] < 255) {
             _keys[i] = KEYS_MAX_SPEED - (_timer[i] >> KEYS_SPEED_FACTOR);
-            if (_keys[i] < KEYS_MIN_SPEED) _keys[i] = KEYS_MIN_SPEED;
             _timer[i] = 255;
             key = i;
           }

@@ -52,7 +52,7 @@ int main()
 {
   T0_DIV_1024;
   T0_CTC;
-  byte div = 100; // 16 Mhz -> 155 Hz 
+  byte div = 100; // 16 Mhz -> 155 Hz
   OCR0A = div;
   T0_COMPA_ON;
   sei();
@@ -62,8 +62,10 @@ int main()
   lcd.background(RGB(0, 0, 64));
   lcd.color(RGB(255, 255, 127));
 
+#define AVERAGE_FACTOR  2
+
   while (true) {
-    fps = (fps * 3 + 155 / time2) >> 2;
+    fps = ((fps >> AVERAGE_FACTOR) - fps + 155 / time2) >> AVERAGE_FACTOR;
     time2 = 0;
 
     text.font(standard_5x7);
@@ -85,7 +87,8 @@ int main()
 ISR(TIMER0_COMPA_vect)
 {
   char k = key.tick();
-  if (k + 1) psg.note(k, key._keys[(byte)k]);
+  if (k & 0x80) psg.note(k, 0);
+  else if (k + 1) psg.note(k, key._keys[(byte)k]);
   psg.tick();
   time = TCNT0;
   time2++;
