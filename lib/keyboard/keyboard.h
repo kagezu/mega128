@@ -49,7 +49,8 @@ public:
 
     for (byte i = 0; i < KEYS_COUNT; i++) {
       if (*off & mask) {
-        if (_timer[i]) { _timer[i] = 0; _keys[i] = 0; key = 0x80; }
+        _timer[i] = 0;
+        if (_keys[i]) { _keys[i] = 0; key = i; }
       }
       else
         if (*on & mask) {

@@ -252,12 +252,12 @@ public:
 
   // Для полной ноты, один шаг = 0.1 с
   // DIV = 2 ~ 1/8,  4 ~ 1/4,  8 ~ 1/2,  16 ~ 1 
-#define DIV 16
+  byte div = 16;
   byte counter = 0;
 
-  void tick()
+  void tick(boolean reset = false)
   {
-    if (counter++ == DIV) {
+    if (counter++ >= div) {
       if (volume[0]) volume[0]--;
       if (volume[1]) volume[1]--;
       if (volume[2]) volume[2]--;

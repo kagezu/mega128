@@ -65,7 +65,7 @@ int main()
 #define AVERAGE_FACTOR  2
 
   while (true) {
-    fps = ((fps >> AVERAGE_FACTOR) - fps + 155 / time2) >> AVERAGE_FACTOR;
+    fps = ((fps << AVERAGE_FACTOR) - fps + 155 / time2) >> AVERAGE_FACTOR;
     time2 = 0;
 
     text.font(standard_5x7);
@@ -87,8 +87,13 @@ int main()
 ISR(TIMER0_COMPA_vect)
 {
   char k = key.tick();
-  if (k & 0x80) psg.note(k, 0);
-  else if (k + 1) psg.note(k, key._keys[(byte)k]);
+  if (k + 1) {
+    if (key._keys[(byte)k]) {
+      psg.div = 16;
+      psg.note(k, key._keys[(byte)k]);
+    }
+    else psg.div = 8;
+  }
   psg.tick();
   time = TCNT0;
   time2++;
