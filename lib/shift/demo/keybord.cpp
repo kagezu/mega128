@@ -20,6 +20,16 @@ Keyboard key(
   PC3
 );
 
+
+// Функция, возвращающая количество свободного ОЗУ (RAM)
+byte memoryFree()
+{
+  extern int __bss_end;
+  word freeValue = ((word)&freeValue) - ((word)&__bss_end);
+  return  100 - ((25 * freeValue) >> 9);
+}
+
+
 void printKey(uint64_t x)
 {
   char piano[62];
@@ -33,26 +43,34 @@ void printKey(uint64_t x)
     x >>= 1;
   }
   text.font(arial_14);
-  text.printf(PSTR("%s\n"), piano);
+  text.printf(PSTR("  %s\n"), piano);
 }
+
+byte time, time2, fps;
 
 int main()
 {
   T0_DIV_1024;
   T0_CTC;
-  OCR0A = F_CPU / 1024 / 1000; // 16 Mhz -> 976 Hz 
+  byte div = 100; // 16 Mhz -> 155 Hz 
+  OCR0A = div;
   T0_COMPA_ON;
   sei();
 
-  text.font(micro_5x6);
   text.setInterline(3);
   lcd.clear(RGB(0, 0, 64));
   lcd.background(RGB(0, 0, 64));
-  lcd.color(RGB(255, 255, 0));
+  lcd.color(RGB(255, 255, 127));
 
   while (true) {
+    fps = (fps * 3 + 155 / time2) >> 2;
+    time2 = 0;
+
+    text.font(standard_5x7);
+    text.printf(PSTR("\fcpu %u%% | mem %u%% | fps %u \n\n"), time, memoryFree(), fps);
+
     text.font(arial_14);
-    text.printf(PSTR("\f   Keyboard  60-keys\n\n"));
+    text.printf(PSTR("   Keyboard  60-keys\n"));
 
     printKey(*(uint64_t *)key._on);
     printKey(*(uint64_t *)key._off);
@@ -61,6 +79,7 @@ int main()
     for (byte i = 0; i < 3; i++)
       text.printf(PSTR("   %s     \n"), &v[32 - (psg.volume[i] << 1)]);
   }
+
 }
 
 ISR(TIMER0_COMPA_vect)
@@ -68,4 +87,6 @@ ISR(TIMER0_COMPA_vect)
   char k = key.tick();
   if (k + 1) psg.note(k, key._keys[(byte)k]);
   psg.tick();
+  time = TCNT0;
+  time2++;
 }

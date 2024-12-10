@@ -181,7 +181,7 @@
 #define T1_DIV_1024   TCCR1B = (TCCR1B & ~_BV(CS01)) | _BV(CS02)   | _BV(CS00);
 
 
-// циклично 8 бит, top = 0xFFFF
+// циклично 16 бит, top = 0xFFFF
 // f = clk / N*65536
 // Выводы OC1A/OC1B: toggle (f/2)
 #define T1_NORMAL \

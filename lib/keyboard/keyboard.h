@@ -1,9 +1,14 @@
 #include <Arduino.h>
 #include "shift.h"
 
-#define KEYS_OFFSET 4
-#define KEYS_SIZE   8
-#define KEYS_COUNT  60
+#define KEYS_OFFSET         4
+#define KEYS_SIZE           8
+#define KEYS_COUNT          60
+#define KEYS_LOAD_DELAY     2
+#define KEYS_MAX_DELAY      31
+#define KEYS_SPEED_FACTOR   1
+#define KEYS_MIN_SPEED      4
+#define KEYS_MAX_SPEED      16
 
 class Keyboard : public Shift {
 private:
@@ -34,17 +39,14 @@ public:
     byte *off = _off;
     char key = -1;
 
-    _MMIO_BYTE(_port) |= _line;
-    byte t = F_CPU / 2000000; // 1 uc delay
-    while (t--) asm volatile ("nop");
     load();
     readBytes(on, KEYS_SIZE);
-
     _MMIO_BYTE(_port) &= ~_line;
-    t = F_CPU / 2000000; // 1 uc delay
-    while (t--) asm volatile ("nop");
+    delayMicroseconds(KEYS_LOAD_DELAY);
+
     load();
     readBytes(off, KEYS_SIZE);
+    _MMIO_BYTE(_port) |= _line;
 
     for (byte i = 0; i < KEYS_COUNT; i++) {
       if (*off & mask) {
@@ -53,31 +55,20 @@ public:
       else
         if (*on & mask) {
           if (_timer[i] < 255) {
-            _keys[i] = 16 - (_timer[i] >> 4);
-            if (_keys[i] < 4) _keys[i] = 4;
+            _keys[i] = KEYS_MAX_SPEED - (_timer[i] >> KEYS_SPEED_FACTOR);
+            if (_keys[i] < KEYS_MIN_SPEED) _keys[i] = KEYS_MIN_SPEED;
             _timer[i] = 255;
             key = i;
           }
         }
         else
-          if (_timer[i] < 254) _timer[i]++;
+          if (_timer[i] < KEYS_MAX_DELAY) _timer[i]++;
 
       mask <<= 1;
       if (!mask) { mask = 1; on++; off++; }
     }
 
     return key;
-  }
-
-  word getKeyVolume()
-  {
-    for (byte i = 0; i < KEYS_COUNT; i++)
-      if (_keys[i]) {
-        byte t = _keys[i];
-        _keys[i] = 0;
-        return (t << 8) | i;
-      }
-    return 0;
   }
 
   char getKey()

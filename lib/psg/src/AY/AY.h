@@ -180,15 +180,14 @@ public:
 
   byte read(byte reg)
   {
-    byte data, t;
+    byte data;
     AY_OUT;
     AY_PORT = reg;
     AY_LATCH_ADR;
     AY_INACTIVE;
     AY_IN;
     AY_READ;
-    t = (F_CPU / 2) / 2000000; // 2 МГц максимальная частота работы ПГЗ
-    while (t--) asm volatile ("nop");
+    delayMicroseconds(1);
     data = AY_PIN;
     AY_INACTIVE;
     return data;
@@ -240,7 +239,7 @@ public:
   {
     uint16_t  f = fdiv[60 - key + 15];
 
-    writeW(_TGA, f / 3);
+    writeW(_TGA, f << 1);
     writeW(_TGB, f);
     writeW(_TGC, f >> 1);
     volume[0] = vol - 4;
@@ -250,16 +249,22 @@ public:
     // if (volume[2] < 0) volume[2] = 0;
   }
 
-  // DIV = 12 ~ 1/8,  25 ~ 1/4,  50 ~ 1/2,  100 ~ 1 
-#define DIV 64
+  // Для полной ноты, один шаг = 0.1 с
+  // DIV = 2 ~ 1/8,  4 ~ 1/4,  8 ~ 1/2,  16 ~ 1 
+#define DIV 16
   byte counter = 0;
 
   void tick()
   {
     if (counter++ == DIV) {
-      if (volume[0]) write(_AA, --volume[0]);
-      if (volume[1]) write(_AB, --volume[1]);
-      if (volume[2]) write(_AC, --volume[2]);
+      if (volume[0]) volume[0]--;
+      if (volume[1]) volume[1]--;
+      if (volume[2]) volume[2]--;
+
+      write(_AA, volume[0]);
+      write(_AB, volume[1]);
+      write(_AC, volume[2]);
+
       counter = 1;
     }
   }
