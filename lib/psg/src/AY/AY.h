@@ -171,7 +171,7 @@ public:
     write(_NOISE, 0); // шум
     write(_MIX, 070);
     write(_ENVL, 0); //огибающая
-    write(_ENVH, 24); //огибающая
+    write(_ENVH, 0); //огибающая
     write(_ENVC, 0);
     write(_AA, 0);
     write(_AB, 0);
@@ -246,8 +246,6 @@ public:
     volume[0] = vol - 4;
     volume[1] = vol;
     volume[2] = vol - 2;
-    // if (volume[0] < 0) volume[0] = 0;
-    // if (volume[2] < 0) volume[2] = 0;
   }
 
   // Для полной ноты, один шаг = 0.1 с
@@ -255,7 +253,7 @@ public:
   byte div = 16;
   byte counter = 0;
 
-  void tick(boolean reset = false)
+  void tick()
   {
     if (counter++ >= div) {
       if (volume[0]) volume[0]--;

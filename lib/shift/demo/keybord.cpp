@@ -79,7 +79,7 @@ int main()
 
     char v[] = "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
     for (byte i = 0; i < 3; i++)
-      text.printf(PSTR("   %s     \n"), &v[32 - (psg.volume[i] << 1)]);
+      text.printf(PSTR("   %s         \n"), &v[32 - (psg.volume[i] << 1)]);
   }
 
 }
