@@ -266,7 +266,7 @@ void Text::printHex(uint32_t number)
 void Text::printHex(uint16_t number)
 {
   char string[6];
-  string[0] = 'x';
+  string[0] = '#';
   string[5] = 0;
 
   string[4] = hexToChar(number);

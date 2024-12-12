@@ -22,7 +22,7 @@
 #define EX_X_Y    true
 
 // Связь через SPI
-#define LCD_SPI   true
+// #define LCD_SPI   true
 
 //==========================================================
 
@@ -64,19 +64,20 @@
 
 #else
 // SDA, SCK должны быть на одном порту !
-#define LCD_PORT    PORTB
-#define LCD_SDA     _BV(PB3)
-#define LCD_SCK     _BV(PB5)
+#define LCD_PORT    PORTC
+#define LCD_SDA     _BV(PB1)
+#define LCD_SCK     _BV(PB0)
 
 #define LCD_CONTROL PORTC
-#define LCD_CS      PC5
-#define LCD_RS      PC4
+#define LCD_CS      PC4
+#define LCD_RST     PC3
+#define LCD_RS      PC2
 
-#define INIT_LCD                          \
-  DDRC  |= _BV(LCD_RS) | _BV(LCD_CS) ;    \
-  PORTC |= _BV(LCD_RS) | _BV(LCD_CS);     \
-  DDRB  |=  LCD_SDA    |  LCD_SCK ;       \
-  PORTB |=  LCD_SDA    |  LCD_SCK ;
+#define INIT_LCD                                        \
+  DDRC  |= _BV(LCD_RS) | _BV(LCD_CS) | _BV(LCD_RST);    \
+  PORTC |= _BV(LCD_RS) | _BV(LCD_CS) | _BV(LCD_RST);    \
+  DDRC  |=  LCD_SDA    |  LCD_SCK ;                     \
+  PORTC |=  LCD_SDA    |  LCD_SCK ;
 #endif
 
 #endif

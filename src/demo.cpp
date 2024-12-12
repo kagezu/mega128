@@ -1,4 +1,4 @@
-﻿// -------------  libray Display  --------------
+﻿// -------------  libray Display  ----------------
 // ---------
 // #include "../lib/display/demo/sample.cpp"
 
@@ -18,7 +18,7 @@
 // #include "../lib/display/demo/memory_scroll.cpp"
 
 
-// -------------  libray XPage  --------------
+// -------------  libray XPage  -----------------
 // Выделение памяти
 // #include "../lib/xmem/demo/dynamic-memory.cpp"
 
@@ -26,10 +26,14 @@
 // #include "../lib/xmem/demo/memory-test.cpp"
 
 
-// -------------  libray PSG  ----------------
+// -------------  libray PSG  -------------------
 // Выделение памяти
 // #include "../lib/psg/demo/demo.cpp"
 
 // Тест клавиатуры
-#include "../lib/shift/demo/keybord.cpp"
+// #include "../lib/shift/demo/keybord.cpp"
+
+// -------------  libray AVR OS  ----------------
+// Выделение памяти
+#include "../lib/avros/demo/test.cpp"
 

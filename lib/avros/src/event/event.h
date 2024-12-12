@@ -17,3 +17,4 @@ class EventManager : public Buffer {
 public:
   Event buffer[EVENT_BUFFER_SIZE];
 };
+
