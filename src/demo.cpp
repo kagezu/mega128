@@ -35,5 +35,5 @@
 
 // -------------  libray AVR OS  ----------------
 // Выделение памяти
-#include "../lib/avros/demo/test.cpp"
+#include "../lib/include/demo/test.cpp"
 

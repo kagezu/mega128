@@ -1,4 +1,4 @@
-#include <buffer/buffer.h>
+#include <type/buffer.h>
 #include <display/display.h>
 #include "text/text.h"
 #include "font/arial_14.h"
@@ -23,15 +23,13 @@ word memoryFree()
 
 int main()
 {
-  Buffer<int>  buf(100);
+  Buffer<int, byte>  buf(100);
 
   text.setInterline(3);
   text.font(arial_14);
   lcd.clear(RGB(0, 0, 64));
   lcd.background(RGB(0, 0, 64));
   lcd.color(RGB(255, 255, 127));
-
-  //  
 
   text.printf(PSTR("mem %2u  \n\n"), memoryFree());
 
