@@ -1,5 +1,12 @@
 #include <Arduino.h>
 
+/*
+   peek()  =  [tail]
+   read() <-- [tail] ... [head] <-- write()
+  shift() <-- [tail] ... [head] <--  push()
+unshift() --> [tail] ... [head] -->   pop()
+*/
+
 template <typename T, typename  S>
 class Buffer {
 protected:
@@ -26,7 +33,7 @@ public:
   }
 
   // Текущий размер буфера
-  inline S amount() { return _size - _heap; }
+  inline S length() { return _size - _heap; }
 
   // Свободный размер буфера
   inline S heap() { return _heap; }
@@ -54,7 +61,7 @@ public:
   }
 
   // Записывает элементы в буфер до заполнения
-  write(T *data, S length)
+  void write(T *data, S length)
   {
     T *target = _buffer + _head;
     S count = _size - _head;                  // Линейный размер пространства
@@ -71,7 +78,7 @@ public:
   }
 
   // Возвращает элементы из буфера до опустошения
-  read(T *data, S length)
+  void read(T *data, S length)
   {
     T *source = _buffer + _tail;
     S count = _size - _tail;                  // Линейный размер пространства
@@ -83,9 +90,31 @@ public:
       length -= count;                        // Остаток на считывание
       _tail = length;                         // Новое положение хвоста
       while (count--) *data++ = *source++;
-      target = _buffer;                       // Продолжим читать с начала буфера
+      source = _buffer;                       // Продолжим читать с начала буфера
     }
-    while (length--)*source++ = *data++;
+    while (length--) *data++ = *source++;
   }
 
+  // Извлекает последний элемент
+  T pop()
+  {
+    if (_heap == _size) return T(0);    // Буфер пуст
+    if (_head == 0) _head = _size;
+    T data = _buffer[--_head];
+    _heap++;
+    return data;
+  }
+
+  // Добавляет первый элемент
+  void unshift(T data)
+  {
+    if (!_heap) return;                 // Буфер полон
+    if (_tail == 0) _tail = _size;
+    _buffer[--_tail] = data;
+    _heap--;
+  }
+
+  // Alis
+  inline void push(T data) { write(data); }
+  inline T shift() { return read(); }
 };

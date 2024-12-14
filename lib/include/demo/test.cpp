@@ -1,4 +1,4 @@
-#include <type/buffer.h>
+#include <type/array.h>
 #include <display/display.h>
 #include "text/text.h"
 #include "font/arial_14.h"
