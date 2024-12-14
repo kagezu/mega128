@@ -23,7 +23,7 @@ word memoryFree()
 
 int main()
 {
-  Buffer<int, byte>  buf(100);
+  Array<int, byte>  buf(100);
 
   text.setInterline(3);
   text.font(arial_14);
@@ -34,7 +34,7 @@ int main()
   text.printf(PSTR("mem %2u  \n\n"), memoryFree());
 
 
-  text.printf(PSTR("mem %2u %u  \n\n"), memoryFree(), buf.read());
+  text.printf(PSTR("mem %2u %u  \n\n"), memoryFree(), buf);
 
   for (;;);
   return 1;
