@@ -13,10 +13,10 @@ word memoryFree()
   // word freeValue = ((word)&freeValue) - ((word)&__bss_end);
   // return  100 - ((25 * freeValue) >> 9);
 
-
   word freeValue;
   byte *x = (byte *)malloc(1);
   freeValue = ((word)&freeValue) - ((word)x);
+  free(x);
 
   return  freeValue;
 }

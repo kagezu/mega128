@@ -1,21 +1,23 @@
 #include <Arduino.h>
+#include <type/array.h>
 
 #define TASK_MAX_COUNT      10
 
 class Task {
+protected:
+  Array<void *, char> _adr;
+
 public:
-  byte count = 1;
-  byte pid = 0;
-  byte pids[TASK_MAX_COUNT];
+  Task() :_adr(TASK_MAX_COUNT) {}
 
   byte async(void *callback())
   {
     cli();
-    pid = count;
+    char pid = _adr.add((void *)*(uint16_t *)SP);
     sei();
     callback();
     cli();
-    pid = 0;
+    _adr.get(pid);
     sei();
   }
 };
