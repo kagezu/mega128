@@ -1,7 +1,9 @@
-#include <type/array.h>
+#include <core/core.h>
 #include <display/display.h>
 #include "text/text.h"
 #include "font/arial_14.h"
+
+// #pragma GCC optimize "O0"
 
 Display lcd;
 Text text(&lcd);
@@ -21,21 +23,55 @@ word memoryFree()
   return  freeValue;
 }
 
+// __attribute__((naked))
+
+
+// void func()__attribute__((noinline));
+// __attribute__((noinline)) 
+void func()
+{
+  // byte *sp = (byte *)(SP + 7);
+  byte *sp = (byte *)Core::_adr.at(0);
+  text.printf(PSTR("%x "), sp);
+  text.printf(PSTR("%x."), *sp++);
+  text.printf(PSTR("%x."), *sp++);
+  text.printf(PSTR("%x."), *sp++);
+  text.printf(PSTR("%x."), *sp++);
+  text.printf(PSTR("%x."), *sp++);
+  text.printf(PSTR("%x."), *sp++);
+  text.printf(PSTR("%x."), *sp++);
+  text.printf(PSTR("%x\n"), *sp++);
+}
+
 int main()
 {
-  Array<int, byte>  buf(100);
-
+  // SP = 0x800;
   text.setInterline(3);
   text.font(arial_14);
   lcd.clear(RGB(0, 0, 64));
   lcd.background(RGB(0, 0, 64));
   lcd.color(RGB(255, 255, 127));
 
-  text.printf(PSTR("mem %2u  \n\n"), memoryFree());
+  Core::test(func);
 
+  func();
 
-  text.printf(PSTR("mem %2u %u  \n\n"), memoryFree(), buf);
+  byte *sp = (byte *)(SP + 1);
+  text.printf(PSTR("%x "), sp);
+  text.printf(PSTR("%x."), *sp++);
+  text.printf(PSTR("%x."), *sp++);
+  text.printf(PSTR("%x."), *sp++);
+  text.printf(PSTR("%x."), *sp++);
+  text.printf(PSTR("%x."), *sp++);
+  text.printf(PSTR("%x."), *sp++);
+  text.printf(PSTR("%x."), *sp++);
+  text.printf(PSTR("%x\n"), *sp++);
+
+  text.printf(PSTR("%2x\n"), func);
+  text.printf(PSTR("%2x\n"), Core::test);
+  text.printf(PSTR("%2x\n"), main);
 
   for (;;);
   return 1;
 }
+

@@ -39,16 +39,16 @@ public:
     _head = S(0);
     for (S i = 0; i < _size; i++) _index[i] = i;
   }
-
-  S add(T data)
+  __attribute__((noinline))
+    S add(T data)
   {
     if (_head == _size) return S(-1);   // Массив полон
     S index = _index[_head++];
     _array[index] = data;
     return index;
   }
-
-  T get(S index)
+  __attribute__((noinline))
+    T get(S index)
   {
     S i, j;
     for (i = 0; i < _head; i++)

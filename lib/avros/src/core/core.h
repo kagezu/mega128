@@ -1,23 +1,43 @@
 #include <Arduino.h>
 #include <type/array.h>
-
 #define TASK_MAX_COUNT      10
 
-class Task {
-protected:
-  Array<void *, char> _adr;
+namespace Core {
 
-public:
-  Task() :_adr(TASK_MAX_COUNT) {}
+  Array<word, byte> _adr(TASK_MAX_COUNT);
 
-  byte async(void *callback())
+  /*
+    byte async(void *callback())
+    {
+      word *sp = (word *)(SP + 1);
+      cli();
+      // char pid = _adr.add(*sp);
+      sei();
+      callback();
+      cli();
+      // _adr.get(pid);
+      sei();
+      return 0;// pid;
+    }
+  */
+
+  // void test(void callback()) __attribute__((noinline));
+  // __attribute__((noinline)) 
+  void test(void callback())
   {
     cli();
-    char pid = _adr.add((void *)*(uint16_t *)SP);
+    byte pid = _adr.add(SP);
     sei();
     callback();
     cli();
     _adr.get(pid);
     sei();
+
+
+    //   // h = *sp++;
+    //   // l = *sp++;
+    //   // a = (h << 8) + l;
+
+    //   return -1;
   }
-};
+}

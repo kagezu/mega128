@@ -171,7 +171,7 @@ void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
     #endif
 
     }
-    }
+  }
 
 #else
 
@@ -194,7 +194,7 @@ void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
       if (data & bit) sendRGB(_color);
       else sendRGB(_background);
     }
-  }
+    }
 
 #endif
 
@@ -236,7 +236,7 @@ void Display::test(byte k)
 
       // sendRGB(RGB(r, g, b));
       // sendRGB(r, g, b);
-      sendRGB(x<<1, y<<1, k);
+      sendRGB(x << 1, y << 1, k);
     }
   DISPLAY_DISCONNECT
 }
