@@ -30,8 +30,8 @@ word memoryFree()
 // __attribute__((noinline)) 
 void func()
 {
-  // byte *sp = (byte *)(SP + 7);
-  byte *sp = (byte *)Core::_adr.at(0);
+  byte *sp = (byte *)(SP + 7);
+  // byte *sp = (byte *)Core::_adr.at(0);
   text.printf(PSTR("%x "), sp);
   text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x."), *sp++);

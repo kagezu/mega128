@@ -26,18 +26,7 @@ namespace Core {
   void test(void callback())
   {
     cli();
-    byte pid = _adr.add(SP);
-    sei();
     callback();
-    cli();
-    _adr.get(pid);
     sei();
-
-
-    //   // h = *sp++;
-    //   // l = *sp++;
-    //   // a = (h << 8) + l;
-
-    //   return -1;
   }
 }
