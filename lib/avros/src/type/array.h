@@ -1,24 +1,19 @@
-#include <Arduino.h>
+#include "buffer.h"
 
 template <typename T, typename  S>
-class Array {
+class Array : protected Buffer<, S> {
 protected:
   T *_array;
-  S *_index;
-  S _size;                              // Максимальный размер
-  S _head;                              // Вершина стека
 
 public:
   Array(S size)
   {
+    Buffer::Buffer(size);
     _array = (T *)malloc(size * sizeof(T));
-    _index = (S *)malloc(size * sizeof(S));
-    _size = size;
     clear();
   }
   ~Array()
   {
-    free(_index);
     free(_array);
   }
 
@@ -37,7 +32,7 @@ public:
   inline void clear()
   {
     _head = S(0);
-    for (S i = 0; i < _size; i++) _index[i] = i;
+    for (S i = 0; i < _size; i++) __buffer[i] = i;
   }
   __attribute__((noinline))
     S add(T data)

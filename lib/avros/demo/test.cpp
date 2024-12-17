@@ -43,7 +43,7 @@ void func()
   text.printf(PSTR("%x\n"), *sp++);
 }
 
-int main()
+__attribute__((naked)) int main()
 {
   // SP = 0x800;
   text.setInterline(3);
@@ -72,6 +72,5 @@ int main()
   text.printf(PSTR("%2x\n"), main);
 
   for (;;);
-  return 1;
 }
 

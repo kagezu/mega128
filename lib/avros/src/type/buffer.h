@@ -1,13 +1,13 @@
 #include <Arduino.h>
 
 /*
-   read() <-- [tail] ... [head] <-- write()
-  shift() <-- [tail] ... [head] <--  push()
-unshift() --> [tail] ... [head] -->   pop()
+   read() <-- [ tail ] ... [ head ] <-- write()
+  shift() <-- [ tail ] ... [ head ] <--  push()
+unshift() --> [ tail ] ... [ head ] -->   pop()
 
-    at(i)  =  buffer[i]
- peekIn()  =  at( head )
-peekOut()  =  at( tail )
+   tail()  =  buffer [ tail ]
+   head()  =  buffer [ head ]
+  seek(x)  =  buffer [ x ]
 */
 
 template <typename T, typename  S>
@@ -26,10 +26,10 @@ public:
 
   inline  S     length();
   inline  S     heap();
-  inline  T     peekIn();
-  inline  T     peekOut();
+  inline  T     tail();
+  inline  T     head();
   inline  T     shift(); // Alis read()
-  inline  T     at(S index);
+  inline  T     seek(S index);
 
   void    write(T data);
   T       read();
@@ -82,14 +82,14 @@ inline S Buffer<T, S>::heap()
 
 // Возвращает элемент с головы, без удаления, даже если буфер пуст
 template<typename T, typename S>
-inline T Buffer<T, S>::peekIn()
+inline T Buffer<T, S>::head()
 {
   return _buffer[_head ? _head - 1 : _size - 1];
 }
 
 // Возвращает элемент с хвоста, без удаления, даже если буфер пуст
 template<typename T, typename S>
-inline T Buffer<T, S>::peekOut()
+inline T Buffer<T, S>::tail()
 {
   return _buffer[_tail];
 }
@@ -207,7 +207,7 @@ S Buffer<T, S>::unshift(T data)
 
 // Возвращает элемент по индексу
 template<typename T, typename S>
-inline T Buffer<T, S>::at(S index)
+inline T Buffer<T, S>::seek(S index)
 {
   return _buffer[index];
 }
