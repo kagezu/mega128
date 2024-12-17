@@ -5,9 +5,9 @@
   shift() <-- [ tail ] ... [ head ] <--  push()
 unshift() --> [ tail ] ... [ head ] -->   pop()
 
-   tail()  =  buffer [ tail ]
-   head()  =  buffer [ head ]
-  seek(x)  =  buffer [ x ]
+   tail()  = & array [ tail ]
+   head()  = & array [ head ]
+    at(x)  = & array [ x ]
 */
 
 template <typename T, typename  S>
@@ -29,17 +29,19 @@ public:
   inline  S  heap();
   inline  T *tail();
   inline  T *head();
-  inline  T  shift(); // Alis read()
-  inline  T  seek(S index);
+  inline  T *at(S index);
 
   void write(T *data, S length);
   void read(T *data, S length);
   void write(T data);
   T    read();
+  S    push(T data);
   T    pop();
   S    unshift(T data);
-  S    push(T data);
+  T    shift(); // Alis read()
+
   boolean isIndex(S index);
+  void erase(S index);
 };
 
 // Конструктор
@@ -163,27 +165,18 @@ void Array<T, S>::read(T *data, S length)
   while (length--) *data++ = _array[*source++];
 }
 
-//////////////////////////////////////////////////////////////////////////////////////
-
-
-
 // Проверяет существование элемента по индексу
 template<typename T, typename S>
 boolean Array<T, S>::isIndex(S index)
 {
-  S i;
-  for (i = _tail; i != _head; i++) {
-    if (i == _size) i = 0;
+  S i = _tail;
+  while (i != _head) {
     if (_buffer[i] == index) break;
+    if (++i == _size) i = S(0);
   }
-
   if (i == _head) i = -1;                   // Индекс не найден
   return i;
 }
-
-
-
-
 
 // Добавляет элемент с головы, возвращает его индекс
 template<typename T, typename S>
@@ -191,7 +184,7 @@ S Array<T, S>::push(T data)
 {
   if (!_heap) return S(-1);                 // Буфер полон
   S index = _head;
-  _buffer[_head++] = data;
+  _array[_buffer[_head++]] = data;
   _head = _head == _size ? S(0) : _head;
   _heap--;
   return index;
@@ -204,7 +197,7 @@ T Array<T, S>::pop()
   if (_heap == _size) return T(0);          // Буфер пуст
   if (_head == 0) _head = _size - 1;
   _heap++;
-  return _buffer[_head];
+  return _array[_buffer[_head]];
 }
 
 // Добавляет элемент в хвост, возвращает его индекс
@@ -213,15 +206,14 @@ S Array<T, S>::unshift(T data)
 {
   if (!_heap) return S(-1);                 // Буфер полон
   if (_tail == 0) _tail = _size;
-  _buffer[--_tail] = data;
+  _array[_buffer[--_tail]] = data;
   _heap--;
   return _tail;
 }
 
-// Возвращает элемент по индексу
+// Возвращает указатель на элемент по индексу
 template<typename T, typename S>
-inline T Array<T, S>::seek(S index)
+inline T *Array<T, S>::at(S index)
 {
-  return _buffer[index];
+  return &_array[index];
 }
-
