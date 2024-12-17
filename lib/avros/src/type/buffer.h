@@ -164,11 +164,12 @@ template<typename T, typename S>
 boolean Buffer<T, S>::isIndex(S index)
 {
   boolean result = false;
-  if (index < _size && length())            // Если индекс не выходит за пределы буфера и буфер не пуст
+  if (index < _size && length()) {          // Если индекс не выходит за пределы буфера и буфер не пуст
     if (_head > _tail) {                    // Находиться ли индекс между указателями в зависимости от их положения
       if (index >= _tail && index < _head) result = true;
     }
     else if (index >= _tail || index < _head) result = true;
+  }
   return result;
 }
 
