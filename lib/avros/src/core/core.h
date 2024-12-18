@@ -9,34 +9,51 @@
 #define TASK_STACK_SIZE     100
 
 class Task {
-public:
-  word sp;
-  void *context;
+private:
+  word _sp = 0;
+  void *_context = nullptr;
 
 public:
-  Task(byte param = 1)
+  Task() {}
+
+  void create()
   {
-    if (param) {
-      context = malloc(TASK_STACK_SIZE);
-      sp = (word)context - 1 + TASK_STACK_SIZE;
-      SP = sp;
-    }
+    _context = malloc(TASK_STACK_SIZE);
+    _sp = (word)_context - 1 + TASK_STACK_SIZE;
   }
+
   void erase()
   {
-    free(context);
+    free(_context);
+  }
+
+  void load() GCC_INLINE
+  {
+    byte sreg = SREG;
+    cli();
+    SP = _sp;
+    SREG = sreg;
+  }
+
+  void save() GCC_INLINE
+  {
+    _sp = SP;
   }
 };
 
 
 class AVROS {
 protected:
-public:
   Array<Task, byte> _tasks;
+public:
+
+  Task *task() { return _tasks.head(); }
+  Task *next() { return _tasks.circ(); }
 
 public:
   AVROS() :_tasks(TASK_MAX_COUNT)
   {
+    core._tasks.push(Task());
     T0_DIV_1024;
     T0_CTC;
     OCR0A = F_CPU / 1024 / 150 - 1; // 150 Hz
@@ -46,20 +63,44 @@ public:
   void async(void callback()) GCC_NO_INLINE
   {
     SAVE_CONTEXT;
+    __CLI;
+    _tasks.head()->save();
     _tasks.push(Task());
+    _tasks.head()->create();
+    _tasks.head()->load();
     __SEI;
     callback();
     __CLI;
     _tasks.pop().erase();
-    SP = _tasks.head()->sp;
+    _tasks.head()->load();
     LOAD_CONTEXT;
+    __RETI;
   }
+
+  void await() GCC_NO_INLINE
+  {
+    __CLI;
+    while (_tasks.length() != 1)
+      wait();
+    __SEI;
+  }
+
+private:
+  void wait() GCC_NAKED GCC_NO_INLINE
+  {
+    SAVE_CONTEXT;
+    core.task()->save();
+    core.next()->load();
+    LOAD_CONTEXT;
+    __RETI;
+  }
+
 } core;
 
 ISR(TIMER0_COMPA_vect, GCC_NAKED)
 {
   SAVE_CONTEXT;
-  core._tasks.head()->sp = SP;
+  core.task()->save();
   SP = 0x8FF;
 
   // real time func
@@ -67,8 +108,6 @@ ISR(TIMER0_COMPA_vect, GCC_NAKED)
 
   // Диспетчер задач
 
-  Task task = core._tasks.shift();
-  core._tasks.push(task);
-  SP = task.sp;
+  core.next()->load();
   LOAD_CONTEXT;
 }

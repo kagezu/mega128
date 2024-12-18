@@ -32,7 +32,6 @@ word memoryFree()
 void func()
 {
   byte *sp = (byte *)(SP + 7);
-  // byte *sp = (byte *)Core::_adr.at(0);
   text.printf(PSTR("%x "), sp);
   text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x."), *sp++);
@@ -44,9 +43,10 @@ void func()
   text.printf(PSTR("%x\n"), *sp++);
 }
 
-__attribute__((naked)) int main()
+int main()
 {
-  // SP = 0x800;
+  __SEI;
+
   text.setInterline(3);
   text.font(arial_14);
   lcd.clear(RGB(0, 0, 64));

@@ -3,7 +3,6 @@
 #include <Arduino.h>
 
 #define SAVE_CONTEXT __asm__ __volatile__ ( \
-			"cli             \n\t" \
 			"push r0         \n\t" \
 	    "in r0, __SREG__ \n\t" \
 			"push r0         \n\t" \
@@ -77,7 +76,6 @@
 			"pop r0               \n\t" \
 	    "out __SREG__, r0     \n\t" \
 			"pop r0               \n\t" \
-			"reti                 \n\t" \
 			:: \
 		)
 
