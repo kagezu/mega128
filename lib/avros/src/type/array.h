@@ -5,11 +5,13 @@
   shift() <-- [ tail ] ... [ head ] <--  push()
 unshift() --> [ tail ] ... [ head ] -->   pop()
 
+    at(x)  = & array [ x ]
    tail()  = & array [ tail ]
    head()  = & array [ head ]
-    at(x)  = & array [ x ]
-  erase(X)    [ tail ] ... X <-- ... <-- [ head ] X
- .                         ! -->    -->     -->   i
+   circ()  = & array [ tail ] --> [ head ]
+ uncirc()  = & array [ tail ] <-- [ head ]
+ erase(X)    [ X ] <-- ... <-- [ head ] X
+.              !   -->    -->    -->    i
 */
 
 template <typename T, typename  S>
@@ -43,6 +45,8 @@ public:
   T    shift(); // Alis read()
 
   void erase(S index);
+  T *circ();
+  T *uncirc();
 
 protected:
   S    seek(S index);
@@ -125,7 +129,7 @@ void Array<T, S>::write(T data)
 template<typename T, typename S>
 T Array<T, S>::read()
 {
-  if (_heap == _size) return T(0);          // Буфер пуст
+  if (_heap == _size) return _array[0];     // Буфер пуст
   S index = _tail++;
   _tail = _tail == _size ? S(0) : _tail;
   _heap++;
@@ -173,7 +177,7 @@ void Array<T, S>::read(T *data, S length)
 template<typename T, typename S>
 S Array<T, S>::push(T data)
 {
-  if (!_heap) return S(-1);                 // Буфер полон
+  if (!_heap) return _size;                 // Буфер полон
   S index = _head;
   _array[_buffer[_head++]] = data;
   _head = _head == _size ? S(0) : _head;
@@ -185,8 +189,8 @@ S Array<T, S>::push(T data)
 template<typename T, typename S>
 T Array<T, S>::pop()
 {
-  if (_heap == _size) return T(0);          // Буфер пуст
-  if (_head == 0) _head = _size - 1;
+  if (_heap == _size) return _array[0];     // Буфер пуст
+  _head = _head == S(0) ? _size - 1 : _head - 1;
   _heap++;
   return _array[_buffer[_head]];
 }
@@ -195,7 +199,7 @@ T Array<T, S>::pop()
 template<typename T, typename S>
 S Array<T, S>::unshift(T data)
 {
-  if (!_heap) return S(-1);                 // Буфер полон
+  if (!_heap) return _size;                 // Буфер полон
   if (_tail == 0) _tail = _size;
   _array[_buffer[--_tail]] = data;
   _heap--;
@@ -237,4 +241,30 @@ void Array<T, S>::erase(S index)
     _buffer[j] = _buffer[i];                // Сдвиг индексации
   }
   _buffer[j] = index;
+}
+
+template<typename T, typename S>
+T *Array<T, S>::circ()
+{
+  S last = _buffer[_heap];
+  _buffer[_heap] = _buffer[_head];
+  _buffer[_head] = last;
+
+  _head = ++_head == _size ? S(0) : _head;
+  _heap = ++_heap == _size ? S(0) : _heap;
+
+  return &_array[last];
+}
+
+template<typename T, typename S>
+T *Array<T, S>::uncirc()
+{
+  S top = _buffer[_head];
+  _buffer[_head] = _buffer[_heap];
+  _buffer[_heap] = top;
+
+  _head = _head == S(0) ? _size - 1 : _head - 1;
+  _heap = _heap == S(0) ? _size - 1 : _heap - 1;
+
+  return &_array[top];
 }
