@@ -8,6 +8,8 @@ unshift() --> [ tail ] ... [ head ] -->   pop()
    tail()  = & array [ tail ]
    head()  = & array [ head ]
     at(x)  = & array [ x ]
+  erase(X)    [ tail ] ... X <-- ... <-- [ head ] X
+ .                         ! -->    -->     -->   i
 */
 
 template <typename T, typename  S>
@@ -15,10 +17,10 @@ class Array {
 protected:
   T *_array;
   S *_buffer;
-  S _head;                                    // Голова
-  S _tail;                                    // Хвост
-  S _size;                                    // Максимальный размер
-  S _heap;                                    // Размер кучи
+  S _head;                                  // Голова
+  S _tail;                                  // Хвост
+  S _size;                                  // Максимальный размер
+  S _heap;                                  // Размер кучи
 
 public:
   Array(S size);
@@ -32,16 +34,18 @@ public:
   inline  T *at(S index);
 
   void write(T *data, S length);
-  void read(T *data, S length);
   void write(T data);
+  void read(T *data, S length);
   T    read();
   S    push(T data);
   T    pop();
   S    unshift(T data);
   T    shift(); // Alis read()
 
-  boolean isIndex(S index);
   void erase(S index);
+
+protected:
+  S    seek(S index);
 };
 
 // Конструктор
@@ -165,19 +169,6 @@ void Array<T, S>::read(T *data, S length)
   while (length--) *data++ = _array[*source++];
 }
 
-// Проверяет существование элемента по индексу
-template<typename T, typename S>
-boolean Array<T, S>::isIndex(S index)
-{
-  S i = _tail;
-  while (i != _head) {
-    if (_buffer[i] == index) break;
-    if (++i == _size) i = S(0);
-  }
-  if (i == _head) i = -1;                   // Индекс не найден
-  return i;
-}
-
 // Добавляет элемент с головы, возвращает его индекс
 template<typename T, typename S>
 S Array<T, S>::push(T data)
@@ -216,4 +207,34 @@ template<typename T, typename S>
 inline T *Array<T, S>::at(S index)
 {
   return &_array[index];
+}
+
+// Находит индекс в буфере
+template<typename T, typename S>
+S Array<T, S>::seek(S index)
+{
+  S i = _tail;
+  while (i != _head) {
+    if (_buffer[i] == index) break;
+    if (++i == _size) i = S(0);
+  }
+  if (i == _head) i = -1;                   // Индекс не найден
+  return i;
+}
+
+template<typename T, typename S>
+void Array<T, S>::erase(S index)
+{
+  S i = _tail, j;
+  while (i != _head) {
+    if (_buffer[i] == index) break;
+    if (++i == _size) i = S(0);
+  }
+  if (i == _head)  return;                  // Индекс не найден
+  while (i != _head) {
+    j = i;
+    if (++i == _size) i = S(0);
+    _buffer[j] = _buffer[i];                // Сдвиг индексации
+  }
+  _buffer[j] = index;
 }

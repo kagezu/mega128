@@ -7,6 +7,7 @@
 
 Display lcd;
 Text text(&lcd);
+// AVROS core;
 
 extern int __bss_end;
 // Функция, возвращающая количество свободного ОЗУ (RAM)
@@ -52,7 +53,7 @@ __attribute__((naked)) int main()
   lcd.background(RGB(0, 0, 64));
   lcd.color(RGB(255, 255, 127));
 
-  Core::test(func);
+  core.async(func);
 
   func();
 
@@ -66,10 +67,6 @@ __attribute__((naked)) int main()
   text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x\n"), *sp++);
-
-  text.printf(PSTR("%2x\n"), func);
-  text.printf(PSTR("%2x\n"), Core::test);
-  text.printf(PSTR("%2x\n"), main);
 
   for (;;);
 }

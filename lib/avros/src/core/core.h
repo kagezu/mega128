@@ -1,32 +1,74 @@
 #include <Arduino.h>
 #include <type/array.h>
+#include <type/buffer.h>
+#include <macros/attribute.h>
+#include <macros/context.h>
+#include <macros/avrasm.h>
+#include <timer.h>
 #define TASK_MAX_COUNT      10
+#define TASK_STACK_SIZE     100
 
-namespace Core {
+class Task {
+public:
+  word sp;
+  void *context;
 
-  Array<word, byte> _adr(TASK_MAX_COUNT);
-
-  /*
-    byte async(void *callback())
-    {
-      word *sp = (word *)(SP + 1);
-      cli();
-      // char pid = _adr.add(*sp);
-      sei();
-      callback();
-      cli();
-      // _adr.get(pid);
-      sei();
-      return 0;// pid;
-    }
-  */
-
-  // void test(void callback()) __attribute__((noinline));
-  // __attribute__((noinline)) 
-  void test(void callback())
+public:
+  Task(byte param = 1)
   {
-    cli();
-    callback();
-    sei();
+    if (param) {
+      context = malloc(TASK_STACK_SIZE);
+      sp = (word)context - 1 + TASK_STACK_SIZE;
+      SP = sp;
+    }
   }
+  void erase()
+  {
+    free(context);
+  }
+};
+
+
+class AVROS {
+protected:
+public:
+  Array<Task, byte> _tasks;
+
+public:
+  AVROS() :_tasks(TASK_MAX_COUNT)
+  {
+    T0_DIV_1024;
+    T0_CTC;
+    OCR0A = F_CPU / 1024 / 150 - 1; // 150 Hz
+    T0_COMPA_ON;
+  }
+
+  void async(void callback()) GCC_NO_INLINE
+  {
+    SAVE_CONTEXT;
+    _tasks.push(Task());
+    __SEI;
+    callback();
+    __CLI;
+    _tasks.pop().erase();
+    SP = _tasks.head()->sp;
+    LOAD_CONTEXT;
+  }
+} core;
+
+ISR(TIMER0_COMPA_vect, GCC_NAKED)
+{
+  SAVE_CONTEXT;
+  core._tasks.head()->sp = SP;
+  SP = 0x8FF;
+
+  // real time func
+
+
+  // Диспетчер задач
+
+  Task task = core._tasks.shift();
+  core._tasks.push(task);
+  SP = task.sp;
+  LOAD_CONTEXT;
 }
