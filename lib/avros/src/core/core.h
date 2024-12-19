@@ -41,19 +41,19 @@ public:
   }
 };
 
+Array<Task, byte> _tasks(TASK_MAX_COUNT);
+Task *task() { return _tasks.head(); }
+Task *next() { return _tasks.circ(); }
 
 class AVROS {
 protected:
-  Array<Task, byte> _tasks;
 public:
 
-  Task *task() { return _tasks.head(); }
-  Task *next() { return _tasks.circ(); }
 
 public:
-  AVROS() :_tasks(TASK_MAX_COUNT)
+  AVROS() //:_tasks()
   {
-    core._tasks.push(Task());
+    _tasks.push(Task());
     T0_DIV_1024;
     T0_CTC;
     OCR0A = F_CPU / 1024 / 150 - 1; // 150 Hz
@@ -86,11 +86,12 @@ public:
   }
 
 private:
-  void wait() GCC_NAKED GCC_NO_INLINE
+  GCC_NAKED GCC_NO_INLINE
+    static void wait()
   {
     SAVE_CONTEXT;
-    core.task()->save();
-    core.next()->load();
+    task()->save();
+    next()->load();
     LOAD_CONTEXT;
     __RETI;
   }
@@ -100,14 +101,14 @@ private:
 ISR(TIMER0_COMPA_vect, GCC_NAKED)
 {
   SAVE_CONTEXT;
-  core.task()->save();
-  SP = 0x8FF;
+  task()->save();
+  SP = RAMEND;
 
   // real time func
 
 
   // Диспетчер задач
 
-  core.next()->load();
+  next()->load();
   LOAD_CONTEXT;
 }

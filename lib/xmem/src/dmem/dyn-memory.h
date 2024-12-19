@@ -1,4 +1,5 @@
 #include "memory-block.h"
+#include "type/stack.h"
 
 #define DYN_ERROR     0
 #define DYN_OK        1
@@ -8,20 +9,28 @@
 
 class DynMemory {
 protected:
-  uint16_t    _start;
-  uint16_t    _over;
-  MemoryBlock *_stack;
+  word    _start;
+  // word    _over;
+  Stack<MemoryBlock, byte>   _stack;
 
 public:
-  DynMemory() {}
-  DynMemory(uint16_t start, uint16_t length);
+  DynMemory() : _stack(0) {}
+  DynMemory(word start, word length);
 
 public:
-  uint16_t  getSizeHeap() { return _stack->getSize(); }
-  uint16_t  getSizeFree();
+  word  getSizeHeap() { return _stack.peek()->getSize(); }
+  word  getSizeFree();
 
 public:
-  uint8_t   get(void **var, uint16_t size);
+  uint8_t   get(void **var, word size);
   void      free(void **var);
   void      free(void *var);
+
+private:
+  static word _count;
+  static void _sum(MemoryBlock *block)
+  {
+    if (block->getLink())
+      _count += block->getSize() + sizeof(MemoryBlock);
+  }
 };

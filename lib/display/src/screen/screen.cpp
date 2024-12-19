@@ -1,5 +1,5 @@
 #include "screen.h"
-
+/*
 void Screen::pixel(uint8_t x, uint8_t y, RGB color)
 {
   _bitmap[y][x] = color;
@@ -44,3 +44,4 @@ void Screen::saveBitmap(uint8_t x, uint8_t y, uint8_t width, uint8_t height, RGB
     bitmap += inc;
   }
 }
+*/

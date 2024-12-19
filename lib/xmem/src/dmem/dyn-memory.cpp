@@ -1,30 +1,28 @@
 #include "dyn-memory.h"
 
-DynMemory::DynMemory(uint16_t start, uint16_t length)
+DynMemory::DynMemory(word start, word length)
+  :_stack(start + length)
 {
   _start = start;
-  _over = start + length;
-  _stack = (MemoryBlock *)_over;
-  *(--_stack) = MemoryBlock(start, length - sizeof(MemoryBlock));
+  _stack.push(MemoryBlock(start, length - sizeof(MemoryBlock)));
 }
 
-uint16_t DynMemory::getSizeFree()
+word DynMemory::getSizeFree()
 {
-  uint16_t sum = 0;
-  for (MemoryBlock *p = _stack; p != (MemoryBlock *)_over; p--)
-    if (p->getLink())
-      sum += p->getSize() + sizeof(MemoryBlock);
-  return _over - _start - sum;
+  _count = 0;
+  _stack.forEach(this->_sum);
+  return (word)_stack.head() - _start - _count;
 }
 
-uint8_t DynMemory::get(void **var, uint16_t size)
+uint8_t DynMemory::get(void **var, word size)
 {
+  /*
   // Если нет места в куче, либо уже нет самой кучи
-  if (size > _stack->getSize() - sizeof(MemoryBlock) || _stack->getLink())
+  if (size > _stack.peek()->getSize() - sizeof(MemoryBlock) || _stack.peek()->getLink())
     for (MemoryBlock *p = _stack; p != (MemoryBlock *)_over; p--) {
       // Если есть ранее высвобожденный блок с доситочным местом
       if (p->getSize() >= size && !p->getLink()) {
-        p->setLink(*(uint16_t *)var);
+        p->setLink(*(word *)var);
         // если новый размер меньше, происходит утечка памяти
         p->setSize(size);
         // признак повторного использования памяти
@@ -33,32 +31,33 @@ uint8_t DynMemory::get(void **var, uint16_t size)
       // свободного блока нужного размера не нашлось
       return DYN_ERROR;
     }
+*/
 
-  uint16_t newBlock = _stack->getStart() + size;
-  _stack->setLink(*(uint16_t *)var);
-  _stack->setSize(size);
-  _stack--;
+  word newBlock = _stack.peek()->getStart() + size;
+  _stack.peek()->setLink(*(word *)var);
+  _stack.peek()->setSize(size);
+
   // переопределение адреса и размера кучи
-  *_stack = MemoryBlock(newBlock, (uint16_t)_stack - newBlock);
+  _stack.push(MemoryBlock(newBlock, (word)_stack.head() - newBlock));
   return DYN_OK;
 }
 
 void DynMemory::free(void **var)
 {
-  for (MemoryBlock *p = _stack; p != (MemoryBlock *)_over; p--)
+  // for (MemoryBlock *p = _stack; p != (MemoryBlock *)_over; p--)
     // Ищем указатель в стеке и удаляем его
-    if (p->getLink() == *(uint16_t *)var) {
-      p->free();
-      return;
-    }
+    // if (p->getLink() == *(word *)var) {
+      // p->free();
+      // return;
+    // }
 }
 
 void DynMemory::free(void *var)
 {
-  for (MemoryBlock *p = _stack; p != (MemoryBlock *)_over; p--)
+  // for (MemoryBlock *p = _stack; p != (MemoryBlock *)_over; p--)
     // Ищем указатель в стеке и удаляем его
-    if (p->getStart() == (uint16_t)var) {
-      p->free();
-      return;
-    }
+    // if (p->getStart() == (word)var) {
+      // p->free();
+      // return;
+    // }
 }
