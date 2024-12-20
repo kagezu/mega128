@@ -7,10 +7,10 @@
 + unshift() -> [ tail ] .. [ head ] -->   pop()
  + circ () <== shift () --> push()
  + uncirc() = unshift() <-- pop()
- + at (x)  = & [ x ]
- + tail()  = & [ tail ]
- + head()  = & [ head ]
+ + at(x)/tail()/head() = & [x]/[tail]/[head]
  + erase(X) [ X ] <--  <-- [ head ]
+ + find() / findindex() / indexOf()
+ + filter() / forEach()
 */
 template <typename T, typename  I>
 class Array {
@@ -50,13 +50,13 @@ public:
     // Действия над элементами
 
     void erase(I index);
+    void filter(bool callback(T *)); // Удалить несоответствующие элементы
     void forEach(callback(T *)); // Перебор элементов
     T *find(bool callback(T *)); // Поиск элемента
     I findindex(bool callback(T *)); // Поиск элемента
     I indexOf(T *); // Поиск элемента
-    void filter(bool callback(T *)); // Удалить несоответствующие элементы
-  */
 
+  // Не реализовано
 
   virtual void flat(); // Убрать дыры, обновить индексацию
   virtual bool some(bool callback(T *)); // Проверка на наличие
@@ -65,24 +65,7 @@ public:
   virtual bool sort(bool compare(T *, T *)); // Сортировка
   virtual bool splice(I start, I deleteCount = 1, T *items = nullptr, I count = 0); // Удаление/замена элементов
 
-
-  // Удалить несоответствующие элементы
-  void filter(bool callback(T *))
-  {
-    I i = _size;
-    _count = _tail;
-    while (i--)
-      if (!callback(&_array[_index[_count]])) _erase();
-      else _incCount();
-  }
-
-
-
-
-
-
-
-
+  */
 
 public:
   Array(I size)
@@ -282,6 +265,16 @@ public:
       callback(&_array[_index[_count]]);
       _incCount();
     }
+  }
+
+  // Удалить несоответствующие элементы
+  void filter(bool callback(T *))
+  {
+    I i = _size;
+    _count = _tail;
+    while (i--)
+      if (!callback(&_array[_index[_count]])) _erase();
+      else _incCount();
   }
 
 private:
