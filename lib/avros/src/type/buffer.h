@@ -1,15 +1,13 @@
 #include <Arduino.h>
 
 /*
-   read() <-- [ tail ] ... [ head ] <-- write()
-  shift() <-- [ tail ] ... [ head ] <--  push()
-unshift() --> [ tail ] ... [ head ] -->   pop()
-
-   tail()  =  buffer [ tail ]
-   head()  =  buffer [ head ]
-  seek(x)  =  buffer [ x ]
+#### Buffer<T, S>
++ read() <-- -- [ tail ] ... [ head ] <-- write()
++ shift() <-- - [ tail ] ... [ head ] <--  push()
++ unshift() --> [ tail ] ... [ head ] -->   pop()
++ tail()  =  buffer [ tail ]
++ head()  =  buffer [ head ]
 */
-
 template <typename T, typename  S>
 class Buffer {
 protected:
@@ -29,7 +27,6 @@ public:
   inline  T     tail();
   inline  T     head();
   inline  T     shift(); // Alis read()
-  inline  T     seek(S index);
 
   void    write(T data);
   T       read();
@@ -205,11 +202,3 @@ S Buffer<T, S>::unshift(T data)
   _heap--;
   return _tail;
 }
-
-// Возвращает элемент по индексу
-template<typename T, typename S>
-inline T Buffer<T, S>::seek(S index)
-{
-  return _buffer[index];
-}
-

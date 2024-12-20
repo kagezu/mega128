@@ -1,29 +1,25 @@
 #include <Arduino.h>
 /*
-#### Stack<T, S>
-T - type element S - type index
-+ clear
-+ size
-+ push
-+ pop
-+ peek
-+ head
-+ forEach
-+ findindex
-+ find
+#### Stack<T, I> T - element, I - index
++ clear() / size()
++ push() --> [ sp ]
++ pop () <-- [++sp]
++ peek() <== [sp+1]
++ head() <== [ sp ]
++ forEach() / find() / findindex()
 */
-template <typename T, typename S>
+template <typename T, typename I>
 class Stack {
 protected:
   T *_stack;
-  S _size = 0;
+  I _size = 0;
 
 public:
   Stack(word sp) : _stack(sp - sizeof(T)) {}
   ~Array() {}
 
   inline void clear() { _stack -= _size; _size = 0; }
-  inline S size() { return _size; }
+  inline I size() { return _size; }
   inline void push(T data) { *_stack++ = data; _size++; }
   inline  T pop() { _size--; return *_stack--; }
   inline  T *head() { return _stack; }
@@ -32,14 +28,14 @@ public:
 public:
   void forEach(callback(T *ptr))
   {
-    S index = _size;
+    I index = _size;
     T *ptr = _stack;
     while (index--) callback(++ptr);
   }
 
-  S findindex(bool callback(T *ptr))
+  I findindex(bool callback(T *ptr))
   {
-    S index = _size;
+    I index = _size;
     T *ptr = _stack;
     while (index) {
       if (callback(++ptr)) break;
@@ -50,7 +46,7 @@ public:
 
   T *find(bool callback(T *ptr))
   {
-    S index = _size;
+    I index = _size;
     T *ptr = _stack;
     while (index) {
       if (callback(++ptr)) break;

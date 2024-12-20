@@ -1,270 +1,323 @@
 #include <Arduino.h>
 
 /*
-   read() <-- [ tail ] ... [ head ] <-- write()
-  shift() <-- [ tail ] ... [ head ] <--  push()
-unshift() --> [ tail ] ... [ head ] -->   pop()
-
-    at(x)  = & array [ x ]
-   tail()  = & array [ tail ]
-   head()  = & array [ head ]
-   circ()  = & array [ tail ] --> [ head ]
- uncirc()  = & array [ tail ] <-- [ head ]
- erase(X)    [ X ] <-- ... <-- [ head ] X
-.              !   -->    -->    -->    i
+#### Array<T, I> T элемент, I индекс
++ read () <--- [ tail ] .. [ head ] <-- write()
++ shift() <--- [ tail ] .. [ head ] <--  push()
++ unshift() -> [ tail ] .. [ head ] -->   pop()
+ + circ () <== shift () --> push()
+ + uncirc() = unshift() <-- pop()
+ + at (x)  = & [ x ]
+ + tail()  = & [ tail ]
+ + head()  = & [ head ]
+ + erase(X) [ X ] <--  <-- [ head ]
 */
-
-template <typename T, typename  S>
+template <typename T, typename  I>
 class Array {
 protected:
   T *_array;
-  S *_buffer;
-  S _head;                                  // Голова
-  S _tail;                                  // Хвост
-  S _size;                                  // Максимальный размер
-  S _heap;                                  // Размер кучи
+  I *_index;
+  I _head;    // Голова
+  I _tail;    // Хвост
+  I _size;    // Максимальный размер
+  I _heap;    // Размер кучи
 
 public:
-  Array(S size);
-  ~Array();
-  void       clear();
+  /*
+    Array(I size);
+    ~Array();
+    void       clear();
+    inline  I  length();
+    inline  I  heap();
 
-  inline  S  length();
-  inline  S  heap();
-  inline  T *tail();
-  inline  T *head();
-  inline  T *at(S index);
+    // Чтение и запись элементов
 
-  void write(T *data, S length);
-  void write(T data);
-  void read(T *data, S length);
-  T    read();
-  S    push(T data);
-  T    pop();
-  S    unshift(T data);
-  T    shift(); // Alis read()
+    inline  T *tail();
+    inline  T *head();
+    inline  T *at(I index);
 
-  void erase(S index);
-  T *circ();
-  T *uncirc();
+    void write(T *data, I length);
+    void write(T data);
+    void read(T *data, I length);
+    T    read();
+    I    push(T data);
+    T    pop();
+    I    unshift(T data);
+    T    shift(); // Alis read()
+    T *circ();
+    T *unCirc();
 
-protected:
-  S    seek(S index);
+    // Действия над элементами
+
+    void erase(I index);
+    void forEach(callback(T *)); // Перебор элементов
+    T *find(bool callback(T *)); // Поиск элемента
+    I findindex(bool callback(T *)); // Поиск элемента
+    I indexOf(T *); // Поиск элемента
+    void filter(bool callback(T *)); // Удалить несоответствующие элементы
+  */
+
+
+  virtual void flat(); // Убрать дыры, обновить индексацию
+  virtual bool some(bool callback(T *)); // Проверка на наличие
+  virtual bool every(bool callback(T *)); // Проверка на отсутствие
+  virtual bool fill(T, I, I); // Заполнение
+  virtual bool sort(bool compare(T *, T *)); // Сортировка
+  virtual bool splice(I start, I deleteCount = 1, T *items = nullptr, I count = 0); // Удаление/замена элементов
+
+
+  // Удалить несоответствующие элементы
+  void filter(bool callback(T *))
+  {
+    I i = _size;
+    _count = _tail;
+    while (i--)
+      if (!callback(&_array[_index[_count]])) _erase();
+      else _incCount();
+  }
+
+
+
+
+
+
+
+
+
+public:
+  Array(I size)
+  {
+    _index = (I *)malloc(size * sizeof(I));
+    _array = (T *)malloc(size * sizeof(T));
+    _size = size;
+    clear();
+  }
+  ~Array() { free(_array); free(_index); }
+
+  // Очищает массив
+  void clear()
+  {
+    _heap = _size;
+    _head = _tail = 0;
+    for (I i = 0; i < _size; i++) _index[i] = i;
+  }
+
+  // Текущий размер массива
+  inline I length() { return _size - _heap; }
+
+  // Свободный размер массива
+  inline I heap() { return _heap; }
+
+  // Возвращает элемент с головы, без удаления, даже если буфер пуст
+  inline T *head() { return &_array[_index[_head ? _head - 1 : _size - 1]]; }
+
+  // Возвращает элемент с хвоста, без удаления, даже если буфер пуст
+  inline T *tail() { return &_array[_index[_tail]]; }
+
+  // Возвращает элемент с хвоста либо пустой элемент, если буфер пуст
+  inline T shift() { return read(); }
+
+  // Возвращает указатель на элемент по индексу
+  inline T *at(I index) { return &_array[index]; }
+
+  // Записывает элемент в буфер, если буфер не полон
+  void write(T data)
+  {
+    if (!_heap) return; // Буфер полон
+    _array[_index[_head]] = data;
+    _incHead();
+    _heap--;
+  }
+
+  // Возвращает элемент из буфера либо пустой элемент, если буфер пуст
+  T read()
+  {
+    if (_heap == _size) return _array[0]; // Буфер пуст
+    I index = _tail;
+    _incTail();
+    _heap++;
+    return _array[_index[index]];
+  }
+
+  // Записывает элементы в буфер до заполнения буфера, то что не влезло - обрезается
+  void write(T *data, I length)
+  {
+    T *target = _index + _head;
+    I count = _size - _head;                  // Линейный размер пространства
+    length = length > _heap ? _heap : length; // Размер перемещаемых данных ограничен кучей
+    _heap -= length;                          // Уменьшаем кучу
+    _head += length;                          // Двигаем голову
+    if (length >= count) {                    // Если будет достигнут конец буферного пространства
+      length -= count;                        // Остаток на запись
+      _head = length;                         // Новое положение головы
+      while (count--) _array[*target++] = *data++;
+      target = _index;                        // продолжим запись с начала буфера
+    }
+    while (length--) _array[*target++] = *data++;
+  }
+
+  // Возвращает элементы из буфера до опустошения
+  void read(T *data, I length)
+  {
+    T *source = _index + _tail;
+    I count = _size - _tail;                  // Линейный размер пространства
+    length = length > _size - _heap
+      ? _size - _heap : length;               // Размер перемещаемых данных ограничен их количеством
+    _heap += length;                          // высвобождаем кучу
+    _tail += length;                          // Двигаем хвост
+    if (length >= count) {                    // Если будет достигнут конец буферного пространства
+      length -= count;                        // Остаток на считывание
+      _tail = length;                         // Новое положение хвоста
+      while (count--) *data++ = _array[*source++];
+      source = _index;                        // Продолжим читать с начала буфера
+    }
+    while (length--) *data++ = _array[*source++];
+  }
+
+  // Добавляет элемент с головы, возвращает его индекс
+  I push(T data)
+  {
+    if (!_heap) return _size; // Буфер полон
+    I index = _head;
+    _array[_index[_head]] = data;
+    _incHead();
+    _heap--;
+    return index;
+  }
+
+  // Извлекает элемент с головы
+  T pop()
+  {
+    if (_heap == _size) return _array[0]; // Буфер пуст
+    _decHead();
+    _heap++;
+    return _array[_index[_head]];
+  }
+
+  // Добавляет элемент в хвост, возвращает его индекс
+  I unshift(T data)
+  {
+    if (!_heap) return _size; // Буфер полон
+    _decTail();
+    _array[_index[_tail]] = data;
+    _heap--;
+    return _tail;
+  }
+
+  // Переносит элемент с хвоста в голову
+  T *circ()
+  {
+    I last = _index[_tail];
+    _index[_tail] = _index[_head];
+    _index[_head] = last;
+    _incHead();
+    _incTail();
+    return &_array[last];
+  }
+
+  // Переносит элемент с головы в хвост
+  T *unCirc()
+  {
+    I top = _index[_head];
+    _index[_head] = _index[_tail];
+    _index[_tail] = top;
+    _decHead();
+    _decTail();
+    return &_array[top];
+  }
+
+  // Выкидывает элемент из массива
+  void erase(I index)
+  {
+    _seek(index);
+    if (_count == _head)  return; // Индекс не найден
+    _erase();
+  }
+
+  // Поиск элемента
+  T *find(bool callback(T *))
+  {
+    I i = _size;
+    _count = _tail;
+    while (i--) {
+      T *element = &_array[_index[_count]];
+      if (callback(element)) return element;
+      _incCount();
+    }
+    return nullptr;
+  }
+
+  // Поиск элемента
+  I findindex(bool callback(T *))
+  {
+    I i = _size;
+    _count = _tail;
+    while (i--) {
+      T index = _index[_count];
+      if (callback(&_array[index])) return index;
+      _incCount();
+    }
+    return -1;
+  }
+
+  // Поиск элемента
+  I indexOf(T *element)
+  {
+    I i = _size;
+    _count = _tail;
+    while (i--) {
+      T index = _index[_count];
+      if (_array[index] == *element) return index;
+      _incCount();
+    }
+    return -1;
+  }
+
+  // Перебор элементов
+  void forEach(void callback(T *))
+  {
+    I i = _size;
+    _count = _tail;
+    while (i--) {
+      callback(&_array[_index[_count]]);
+      _incCount();
+    }
+  }
+
+private:
+  I _count;
+  inline void _incCount() { _count = ++_count == _size ? 0 : _count; }
+  inline void _incHead() { _head = ++_head == _size ? 0 : _head; }
+  inline void _decHead() { _head = _head == 0 ? _size - 1 : _head - 1; }
+  inline void _incTail() { _tail = ++_tail == _size ? 0 : _tail; }
+  inline void _decTail() { _tail = _tail == 0 ? _size - 1 : _tail - 1; }
+
+  // Индекс элемента в положение индекса в буфере
+  // Возвращает _count
+  void _seek(I index)
+  {
+    _count = _tail;
+    while (_count != _head) {
+      if (_index[_count] == index) break;
+      _incCount();
+    }
+  }
+
+  // Удаляет элемент из массива по адресу индекса в массиве
+  // Принимает _count
+  void _erase()
+  {
+    I tmp = _count,
+      index = _index[_count],
+      j;
+    while (_count != _head) {
+      j = _count;
+      _incCount();
+      _index[j] = _index[_count]; // Сдвиг индексации
+    }
+    _index[j] = index;
+    _decHead();
+    _heap++;
+    _count = tmp;
+  }
 };
-
-// Конструктор
-template<typename T, typename S>
-Array<T, S>::Array(S size)
-{
-  _buffer = (S *)malloc(size * sizeof(S));
-  _array = (T *)malloc(size * sizeof(T));
-  _size = size;
-  clear();
-}
-
-// Деструктор
-template<typename T, typename S>
-Array<T, S>::~Array()
-{
-  free(_array);
-  free(_buffer);
-}
-
-// Очищает массив
-template<typename T, typename S>
-void Array<T, S>::clear()
-{
-  _heap = _size;
-  _head = _tail = S(0);
-  for (S i = 0; i < _size; i++)
-    _buffer[i] = i;
-}
-
-// Текущий размер буфера
-template<typename T, typename S>
-inline S Array<T, S>::length()
-{
-  return _size - _heap;
-}
-
-// Свободный размер буфера
-template<typename T, typename S>
-inline S Array<T, S>::heap()
-{
-  return _heap;
-}
-
-// Возвращает элемент с головы, без удаления, даже если буфер пуст
-template<typename T, typename S>
-inline T *Array<T, S>::head()
-{
-  return &_array[_buffer[_head ? _head - 1 : _size - 1]];
-}
-
-// Возвращает элемент с хвоста, без удаления, даже если буфер пуст
-template<typename T, typename S>
-inline T *Array<T, S>::tail()
-{
-  return &_array[_buffer[_tail]];
-}
-
-// Возвращает элемент с хвоста либо пустой элемент, если буфер пуст
-template<typename T, typename S>
-inline T Array<T, S>::shift()
-{
-  return read();
-}
-
-// Записывает элемент в буфер, если буфер не полон
-template<typename T, typename S>
-void Array<T, S>::write(T data)
-{
-  if (!_heap) return;                       // Буфер полон
-  _array[_buffer[_head++]] = data;
-  _head = _head == _size ? S(0) : _head;
-  _heap--;
-}
-
-// Возвращает элемент из буфера либо пустой элемент, если буфер пуст
-template<typename T, typename S>
-T Array<T, S>::read()
-{
-  if (_heap == _size) return _array[0];     // Буфер пуст
-  S index = _tail++;
-  _tail = _tail == _size ? S(0) : _tail;
-  _heap++;
-  return _array[_buffer[index]];
-}
-
-// Записывает элементы в буфер до заполнения буфера, то что не влезло - обрезается
-template<typename T, typename S>
-void Array<T, S>::write(T *data, S length)
-{
-  T *target = _buffer + _head;
-  S count = _size - _head;                  // Линейный размер пространства
-  length = length > _heap ? _heap : length; // Размер перемещаемых данных ограничен кучей
-  _heap -= length;                          // Уменьшаем кучу
-  _head += length;                          // Двигаем голову
-  if (length >= count) {                    // Если будет достигнут конец буферного пространства
-    length -= count;                        // Остаток на запись
-    _head = length;                         // Новое положение головы
-    while (count--) _array[*target++] = *data++;
-    target = _buffer;                       // продолжим запись с начала буфера
-  }
-  while (length--) _array[*target++] = *data++;
-}
-
-// Возвращает элементы из буфера до опустошения
-template<typename T, typename S>
-void Array<T, S>::read(T *data, S length)
-{
-  T *source = _buffer + _tail;
-  S count = _size - _tail;                  // Линейный размер пространства
-  length = length > _size - _heap
-    ? _size - _heap : length;               // Размер перемещаемых данных ограничен их количеством
-  _heap += length;                          // высвобождаем кучу
-  _tail += length;                          // Двигаем хвост
-  if (length >= count) {                    // Если будет достигнут конец буферного пространства
-    length -= count;                        // Остаток на считывание
-    _tail = length;                         // Новое положение хвоста
-    while (count--) *data++ = _array[*source++];
-    source = _buffer;                       // Продолжим читать с начала буфера
-  }
-  while (length--) *data++ = _array[*source++];
-}
-
-// Добавляет элемент с головы, возвращает его индекс
-template<typename T, typename S>
-S Array<T, S>::push(T data)
-{
-  if (!_heap) return _size;                 // Буфер полон
-  S index = _head;
-  _array[_buffer[_head++]] = data;
-  _head = _head == _size ? S(0) : _head;
-  _heap--;
-  return index;
-}
-
-// Извлекает элемент с головы
-template<typename T, typename S>
-T Array<T, S>::pop()
-{
-  if (_heap == _size) return _array[0];     // Буфер пуст
-  _head = _head == S(0) ? _size - 1 : _head - 1;
-  _heap++;
-  return _array[_buffer[_head]];
-}
-
-// Добавляет элемент в хвост, возвращает его индекс
-template<typename T, typename S>
-S Array<T, S>::unshift(T data)
-{
-  if (!_heap) return _size;                 // Буфер полон
-  if (_tail == 0) _tail = _size;
-  _array[_buffer[--_tail]] = data;
-  _heap--;
-  return _tail;
-}
-
-// Возвращает указатель на элемент по индексу
-template<typename T, typename S>
-inline T *Array<T, S>::at(S index)
-{
-  return &_array[index];
-}
-
-// Находит индекс в буфере
-template<typename T, typename S>
-S Array<T, S>::seek(S index)
-{
-  S i = _tail;
-  while (i != _head) {
-    if (_buffer[i] == index) break;
-    if (++i == _size) i = S(0);
-  }
-  if (i == _head) i = -1;                   // Индекс не найден
-  return i;
-}
-
-template<typename T, typename S>
-void Array<T, S>::erase(S index)
-{
-  S i = _tail, j;
-  while (i != _head) {
-    if (_buffer[i] == index) break;
-    if (++i == _size) i = S(0);
-  }
-  if (i == _head)  return;                  // Индекс не найден
-  while (i != _head) {
-    j = i;
-    if (++i == _size) i = S(0);
-    _buffer[j] = _buffer[i];                // Сдвиг индексации
-  }
-  _buffer[j] = index;
-}
-
-template<typename T, typename S>
-T *Array<T, S>::circ()
-{
-  S last = _buffer[_heap];
-  _buffer[_heap] = _buffer[_head];
-  _buffer[_head] = last;
-
-  _head = ++_head == _size ? S(0) : _head;
-  _heap = ++_heap == _size ? S(0) : _heap;
-
-  return &_array[last];
-}
-
-template<typename T, typename S>
-T *Array<T, S>::uncirc()
-{
-  S top = _buffer[_head];
-  _buffer[_head] = _buffer[_heap];
-  _buffer[_heap] = top;
-
-  _head = _head == S(0) ? _size - 1 : _head - 1;
-  _heap = _heap == S(0) ? _size - 1 : _heap - 1;
-
-  return &_array[top];
-}
