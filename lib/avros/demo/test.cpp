@@ -7,7 +7,7 @@
 
 Display lcd;
 Text text(&lcd);
-// AVROS core;
+AvrOS core(150);
 
 extern int __bss_end;
 // Функция, возвращающая количество свободного ОЗУ (RAM)
@@ -24,28 +24,30 @@ word memoryFree()
   return  freeValue;
 }
 
-// __attribute__((naked))
+//
 
 
-// void func()__attribute__((noinline));
-// __attribute__((noinline)) 
+// void func()__attribute__((noinline)); __attribute__((naked))
+//  
+void func() __attribute__((noinline));
 void func()
 {
   byte *sp = (byte *)(SP + 7);
-  text.printf(PSTR("%x "), sp);
+  text.printf(PSTR("%2x "), sp);
   text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x."), *sp++);
-  text.printf(PSTR("%x."), *sp++);
-  text.printf(PSTR("%x."), *sp++);
+  // text.printf(PSTR("%x."), *sp++);
+  // text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x\n"), *sp++);
 }
 
 int main()
 {
-  __SEI;
+  core.current()->load();
+  sei();
 
   text.setInterline(3);
   text.font(arial_14);
@@ -54,18 +56,19 @@ int main()
   lcd.color(RGB(255, 255, 127));
 
   core.async(func);
-
+  // core.await();
   func();
 
-  byte *sp = (byte *)(SP + 1);
-  text.printf(PSTR("%x "), sp);
+  byte *sp = (byte *)(core.current()->_context);
+  text.printf(PSTR("%2x \n"), core.current()->_sp);
+  text.printf(PSTR("%2x "), sp);
   text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x."), *sp++);
-  text.printf(PSTR("%x."), *sp++);
-  text.printf(PSTR("%x."), *sp++);
+  // text.printf(PSTR("%x."), *sp++);
+  // text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x\n"), *sp++);
 
   for (;;);

@@ -1,114 +1,79 @@
 #include <Arduino.h>
 #include <type/array.h>
-#include <type/buffer.h>
 #include <macros/attribute.h>
 #include <macros/context.h>
-#include <macros/avrasm.h>
 #include <timer.h>
+#include "task.h"
+
 #define TASK_MAX_COUNT      10
-#define TASK_STACK_SIZE     100
+#define FREQ_DEFAULT        150
 
-class Task {
-private:
-  word _sp = 0;
-  void *_context = nullptr;
+static void nextTask() GCC_NAKED GCC_NO_INLINE;
 
-public:
-  Task() {}
-
-  void create()
-  {
-    _context = malloc(TASK_STACK_SIZE);
-    _sp = (word)_context - 1 + TASK_STACK_SIZE;
-  }
-
-  void erase()
-  {
-    free(_context);
-  }
-
-  void load() GCC_INLINE
-  {
-    byte sreg = SREG;
-    cli();
-    SP = _sp;
-    SREG = sreg;
-  }
-
-  void save() GCC_INLINE
-  {
-    _sp = SP;
-  }
-};
-
-Array<Task, byte> _tasks(TASK_MAX_COUNT);
-Task *task() { return _tasks.head(); }
-Task *next() { return _tasks.circ(); }
-
-class AVROS {
+class AvrOS {
 protected:
-public:
+  Array<Task, byte> _tasks;
 
-
 public:
-  AVROS() //:_tasks()
+  // Частота от (F_CPU / 1024) до (F_CPU / 1024) Гц
+  // для 16 МГц от 15625 до 61 Гц
+  AvrOS(word freq = FREQ_DEFAULT) :_tasks(TASK_MAX_COUNT)
   {
-    _tasks.push(Task());
+    // _tasks.push(Task());
+    create();
     T0_DIV_1024;
     T0_CTC;
-    OCR0A = F_CPU / 1024 / 150 - 1; // 150 Hz
+    OCR0A = (F_CPU / 1024) / freq - 1;
     T0_COMPA_ON;
   }
 
-  void async(void callback()) GCC_NO_INLINE
+  inline void  create() { _tasks.push(Task()); _tasks.head()->create(); }
+  inline void  erase() { _tasks.pop().erase(); }
+  inline Task *current() { return _tasks.head(); }
+  inline Task *next() { return _tasks.circ(); }
+
+  volatile void async(void callback()) GCC_NO_INLINE
   {
     SAVE_CONTEXT;
-    __CLI;
-    _tasks.head()->save();
-    _tasks.push(Task());
-    _tasks.head()->create();
-    _tasks.head()->load();
-    __SEI;
+    current()->save();
+    create();
+    current()->load();
+    sei();
     callback();
-    __CLI;
-    _tasks.pop().erase();
-    _tasks.head()->load();
+    cli();
+    erase();
+    current()->load();
     LOAD_CONTEXT;
-    __RETI;
   }
 
-  void await() GCC_NO_INLINE
+  void await(byte limit = 1) GCC_NO_INLINE
   {
-    __CLI;
-    while (_tasks.length() != 1)
-      wait();
-    __SEI;
+    while (_tasks.length() > limit) nextTask();
   }
+};
 
-private:
-  GCC_NAKED GCC_NO_INLINE
-    static void wait()
-  {
-    SAVE_CONTEXT;
-    task()->save();
-    next()->load();
-    LOAD_CONTEXT;
-    __RETI;
-  }
+extern AvrOS core;
+extern void realtime() {}
 
-} core;
+void nextTask()
+{
+  SAVE_CONTEXT;
+  core.current()->save();
+  core.next()->load();
+  LOAD_CONTEXT;
+}
 
 ISR(TIMER0_COMPA_vect, GCC_NAKED)
 {
   SAVE_CONTEXT;
-  task()->save();
+  core.current()->save();
   SP = RAMEND;
 
   // real time func
-
+  realtime();
 
   // Диспетчер задач
 
-  next()->load();
+  core.next()->load();
   LOAD_CONTEXT;
 }
