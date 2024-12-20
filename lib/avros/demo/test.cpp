@@ -46,7 +46,7 @@ void func()
 
 int main()
 {
-  core.current()->load();
+  // core.current()->load();
   sei();
 
   text.setInterline(3);

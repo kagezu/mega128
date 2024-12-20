@@ -33,9 +33,9 @@ uint8_t DynMemory::get(void **var, word size)
     }
 */
 
-  word newBlock = _stack.peek()->getStart() + size;
-  _stack.peek()->setLink(*(word *)var);
-  _stack.peek()->setSize(size);
+  word newBlock = _stack.top()->getStart() + size;
+  _stack.top()->setLink(*(word *)var);
+  _stack.top()->setSize(size);
 
   // переопределение адреса и размера кучи
   _stack.push(MemoryBlock(newBlock, (word)_stack.head() - newBlock));

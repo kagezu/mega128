@@ -18,7 +18,7 @@ public:
   DynMemory(word start, word length);
 
 public:
-  word  getSizeHeap() { return _stack.peek()->getSize(); }
+  word  getSizeHeap() { return _stack.top()->getSize(); }
   word  getSizeFree();
 
 public:

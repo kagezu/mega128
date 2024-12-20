@@ -23,7 +23,7 @@ public:
   inline void push(T data) { *_stack++ = data; _size++; }
   inline  T pop() { _size--; return *_stack--; }
   inline  T *head() { return _stack; }
-  inline  T *peek() { return _stack + 1; }
+  inline  T *top() { return _stack + 1; }
 
 public:
   void forEach(callback(T *ptr))
