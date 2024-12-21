@@ -32,21 +32,19 @@ word memoryFree()
 void func() __attribute__((noinline));
 void func()
 {
-  byte *sp = (byte *)(SP + 7);
+  byte *sp = (byte *)(SP + 1);
   text.printf(PSTR("%2x "), sp);
   text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x."), *sp++);
-  // text.printf(PSTR("%x."), *sp++);
-  // text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x\n"), *sp++);
 }
 
 int main()
 {
-  // core.current()->load();
+  core.create();
   sei();
 
   text.setInterline(3);
@@ -55,22 +53,31 @@ int main()
   lcd.background(RGB(0, 0, 64));
   lcd.color(RGB(255, 255, 127));
 
-  core.async(func);
   // core.await();
-  func();
+  // func();
 
-  byte *sp = (byte *)(core.current()->_context);
-  text.printf(PSTR("%2x \n"), core.current()->_sp);
+  // byte *sp = (byte *)(core.current()->_sp + 1);
+  byte *sp = (byte *)(SP + 1);
   text.printf(PSTR("%2x "), sp);
   text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x."), *sp++);
-  // text.printf(PSTR("%x."), *sp++);
-  // text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x\n"), *sp++);
 
+  text.printf(PSTR("%x."), *sp++);
+  text.printf(PSTR("%x."), *sp++);
+  text.printf(PSTR("%x."), *sp++);
+  text.printf(PSTR("%x."), *sp++);
+  text.printf(PSTR("%x."), *sp++);
+  text.printf(PSTR("%x."), *sp++);
+  text.printf(PSTR("%x."), *sp++);
+  text.printf(PSTR("%x\n"), *sp++);
+
+  core.async(func);
+
+  text.printf(PSTR("\nmain = %2x\n"), main);
+  text.printf(PSTR("func = %2x\n"), func);
   for (;;);
 }
-

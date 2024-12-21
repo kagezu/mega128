@@ -20,10 +20,10 @@ public:
   AvrOS(word freq = FREQ_DEFAULT) :_tasks(TASK_MAX_COUNT)
   {
     // _tasks.push(Task());
-    create();
+    // create();
     T0_DIV_1024;
     T0_CTC;
-    OCR0A = (F_CPU / 1024) / freq - 1;
+    OCR0A = ((F_CPU / 1024) / 150 - 1);
     T0_COMPA_ON;
   }
 
@@ -32,18 +32,19 @@ public:
   inline Task *current() { return _tasks.head(); }
   inline Task *next() { return _tasks.circ(); }
 
-  volatile void async(void callback()) GCC_NO_INLINE
+  void async(void callback()) //GCC_NAKED
   {
     SAVE_CONTEXT;
     current()->save();
     create();
-    current()->load();
-    sei();
-    callback();
-    cli();
-    erase();
-    current()->load();
-    LOAD_CONTEXT;
+    // sei();
+    // callback();
+    // cli();
+    // erase();
+    // current()->load();
+    // LOAD_CONTEXT;
+    // sei();
+  // asm volatile ("reti");
   }
 
   void await(byte limit = 1) GCC_NO_INLINE
@@ -67,13 +68,14 @@ ISR(TIMER0_COMPA_vect, GCC_NAKED)
 {
   SAVE_CONTEXT;
   core.current()->save();
-  SP = RAMEND;
+  // SP = RAMEND;
 
   // real time func
-  realtime();
+  // realtime();
 
   // Диспетчер задач
 
   core.next()->load();
   LOAD_CONTEXT;
+  asm volatile ("reti");
 }

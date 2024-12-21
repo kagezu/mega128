@@ -6,7 +6,7 @@
 class Task {
 private:
 public:
-  volatile  word _sp = 0;
+  volatile word _sp = 0;
   void *_context = nullptr;
 
   Task() {}
@@ -15,6 +15,7 @@ public:
   {
     _context = malloc(size);
     _sp = ((word)_context) - 1 + size;
+    load();
   }
   inline void erase() { free(_context); }
   inline void save() GCC_INLINE { _sp = SP; }
