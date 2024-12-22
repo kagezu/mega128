@@ -7,7 +7,6 @@
 
 Display lcd;
 Text text(&lcd);
-AvrOS core(150);
 
 extern int __bss_end;
 // Функция, возвращающая количество свободного ОЗУ (RAM)
@@ -29,7 +28,7 @@ word memoryFree()
 
 // void func()__attribute__((noinline)); __attribute__((naked))
 //  
-void func() __attribute__((noinline));
+// void func() __attribute__((noinline));
 void func()
 {
   byte *sp = (byte *)(SP + 1);
@@ -42,9 +41,63 @@ void func()
   text.printf(PSTR("%x\n"), *sp++);
 }
 
+// void init9() GCC_INIT(9) GCC_NAKED;
+// void init9()
+// {
+  // core.create();
+// }
+
+// int main() GCC_NAKED;
 int main()
 {
-  core.create();
+  Core::init();
+  Core::current()->load();
+
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  asm volatile ("nop");
+  
   sei();
 
   text.setInterline(3);
@@ -53,8 +106,10 @@ int main()
   lcd.background(RGB(0, 0, 64));
   lcd.color(RGB(255, 255, 127));
 
-  // core.await();
-  // func();
+  // Core::async(func);
+  // Core::async(func);
+  // Core::await();
+  func();
 
   // byte *sp = (byte *)(core.current()->_sp + 1);
   byte *sp = (byte *)(SP + 1);
@@ -66,18 +121,18 @@ int main()
   text.printf(PSTR("%x."), *sp++);
   text.printf(PSTR("%x\n"), *sp++);
 
-  text.printf(PSTR("%x."), *sp++);
-  text.printf(PSTR("%x."), *sp++);
-  text.printf(PSTR("%x."), *sp++);
-  text.printf(PSTR("%x."), *sp++);
-  text.printf(PSTR("%x."), *sp++);
-  text.printf(PSTR("%x."), *sp++);
-  text.printf(PSTR("%x."), *sp++);
-  text.printf(PSTR("%x\n"), *sp++);
+  // text.printf(PSTR("%x."), *sp++);
+  // text.printf(PSTR("%x."), *sp++);
+  // text.printf(PSTR("%x."), *sp++);
+  // text.printf(PSTR("%x."), *sp++);
+  // text.printf(PSTR("%x."), *sp++);
+  // text.printf(PSTR("%x."), *sp++);
+  // text.printf(PSTR("%x."), *sp++);
+  // text.printf(PSTR("%x\n"), *sp++);
 
-  core.async(func);
 
   text.printf(PSTR("\nmain = %2x\n"), main);
   text.printf(PSTR("func = %2x\n"), func);
   for (;;);
+  Core::await();
 }

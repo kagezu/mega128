@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <macros/attribute.h>
 
-#define TASK_STACK_SIZE   360
+#define TASK_STACK_SIZE   160
 
 class Task {
 private:
@@ -15,7 +15,6 @@ public:
   {
     _context = malloc(size);
     _sp = ((word)_context) - 1 + size;
-    load();
   }
   inline void erase() { free(_context); }
   inline void save() GCC_INLINE { _sp = SP; }

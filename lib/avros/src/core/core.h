@@ -8,74 +8,71 @@
 #define TASK_MAX_COUNT      10
 #define FREQ_DEFAULT        150
 
-static void nextTask() GCC_NAKED GCC_NO_INLINE;
+namespace Core {
+  void async(void callback()) GCC_NO_INLINE GCC_NAKED;
 
-class AvrOS {
-protected:
-  Array<Task, byte> _tasks;
+  static void await(byte) GCC_NO_INLINE;
+  static void nextTask() GCC_NAKED GCC_NO_INLINE;
 
-public:
+  static  Array<Task, byte> _tasks(TASK_MAX_COUNT);
+  static inline void  create() { _tasks.push(Task()); _tasks.head()->create(); }
+  static inline void  erase() { _tasks.pop().erase(); }
+  static inline Task *current() { return _tasks.head(); }
+  static inline Task *next() { return _tasks.circ(); }
+
   // Частота от (F_CPU / 1024) до (F_CPU / 1024) Гц
   // для 16 МГц от 15625 до 61 Гц
-  AvrOS(word freq = FREQ_DEFAULT) :_tasks(TASK_MAX_COUNT)
+  void init(word freq = FREQ_DEFAULT)
   {
-    // _tasks.push(Task());
-    // create();
+    _tasks.push(Task());
+    current()->create(100);
     T0_DIV_1024;
     T0_CTC;
     OCR0A = ((F_CPU / 1024) / 150 - 1);
     T0_COMPA_ON;
   }
 
-  inline void  create() { _tasks.push(Task()); _tasks.head()->create(); }
-  inline void  erase() { _tasks.pop().erase(); }
-  inline Task *current() { return _tasks.head(); }
-  inline Task *next() { return _tasks.circ(); }
-
-  void async(void callback()) //GCC_NAKED
+  void async(void callback())
   {
     SAVE_CONTEXT;
     current()->save();
     create();
-    // sei();
-    // callback();
-    // cli();
-    // erase();
-    // current()->load();
-    // LOAD_CONTEXT;
-    // sei();
-  // asm volatile ("reti");
+    current()->load();
+    sei();
+    callback();
+    cli();
+    erase();
+    current()->load();
+    LOAD_CONTEXT;
   }
 
-  void await(byte limit = 1) GCC_NO_INLINE
+
+  void nextTask()
   {
-    while (_tasks.length() > limit) nextTask();
+    SAVE_CONTEXT;
+    current()->save();
+    next()->load();
+    LOAD_CONTEXT;
   }
-};
 
-extern AvrOS core;
-extern void realtime() {}
+  void await(byte limit = 1) { while (_tasks.length() > limit) nextTask(); }
 
-void nextTask()
-{
-  SAVE_CONTEXT;
-  core.current()->save();
-  core.next()->load();
-  LOAD_CONTEXT;
-}
+  // extern void realtime() {}
 
-ISR(TIMER0_COMPA_vect, GCC_NAKED)
-{
-  SAVE_CONTEXT;
-  core.current()->save();
-  // SP = RAMEND;
 
-  // real time func
-  // realtime();
+  ISR(TIMER0_COMPA_vect, GCC_NAKED)
+  {
+    SAVE_CONTEXT;
+    current()->save();
+    // SP = RAMEND;
 
-  // Диспетчер задач
+    // real time func
+    // realtime();
 
-  core.next()->load();
-  LOAD_CONTEXT;
-  asm volatile ("reti");
+    // Диспетчер задач
+
+    next()->load();
+    LOAD_CONTEXT;
+  }
+
 }
