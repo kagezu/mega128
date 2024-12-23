@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#pragma once
 
 /*
 #### Array<T, I> T элемент, I индекс
@@ -275,6 +276,15 @@ public:
     while (i--)
       if (!callback(&_array[_index[_count]])) _erase();
       else _incCount();
+  }
+
+  // Двигает голову, возвращает index // test
+  I add()
+  {
+    I index = _head;
+    _incHead();
+    _heap--;
+    return _index[index];
   }
 
 private:
