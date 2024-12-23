@@ -1,12 +1,12 @@
 #include <Arduino.h>
 #include <macros/attribute.h>
 
-#define TASK_STACK_SIZE   160
+#define TASK_STACK_SIZE   500
 
 class Task {
 private:
 public:
-  volatile word _sp = 0;
+  volatile word sp = 0;
   void *_context = nullptr;
 
   Task() {}
@@ -14,15 +14,18 @@ public:
   void create(word size = TASK_STACK_SIZE)
   {
     _context = malloc(size);
-    _sp = ((word)_context) - 1 + size;
+    if(_context)
+    sp = ((word)_context) - 1 + size;
+    else
+    sp = SP;
   }
   inline void erase() { free(_context); }
-  inline void save() GCC_INLINE { _sp = SP; }
+  inline void save() GCC_INLINE { sp = SP; }
   inline void load() GCC_INLINE
   {
     byte sreg = SREG;
     cli();
-    SP = _sp;
+    SP = sp;
     SREG = sreg;
   }
 };
