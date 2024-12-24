@@ -1,4 +1,5 @@
 #include "text.h"
+#include <macros/context.h>
 
 void Text::printf(const char *string, ...)
 {
@@ -90,7 +91,9 @@ void Text::symbol(uint8_t symbol)
     cursorX = 0;
   }
   if (cursorY > MAX_Y - dy) cursorX = cursorY = 0;
+  I_SAVE;
   _display->symbol((uint8_t *)source, cursorX, cursorY, dx, dy);
+  I_REST;
   cursorX += dx + 1;
 }
 

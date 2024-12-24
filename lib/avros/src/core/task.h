@@ -6,28 +6,30 @@
 #define TASK_MAX_COUNT    10
 
 static Array<word, byte> mem(TASK_MAX_COUNT);
-static volatile word max_mem = 0x200;
+static byte array[TASK_MAX_COUNT][TASK_STACK_SIZE];
+static byte flag = 0;
 
 class Task {
 private:
 public:
   volatile word _sp = 0;
-  volatile byte _pid = 0;
+  word *_pid = 0;
 
   Task()
   {
-    if (max_mem != 0x200) return;
+    if (flag) return;
     for (byte i = 0; i < TASK_MAX_COUNT; i++) {
-      mem.push(max_mem);
-      max_mem += TASK_STACK_SIZE;
+      mem.write((word)array[i]);
     }
     mem.clear();
+    flag = 1;
   }
 
-  inline void create(word size = TASK_STACK_SIZE)
+  inline Task *create()
   {
-    _pid = mem.add();
-    _sp = *mem.at(_pid) - 1 + size;
+    _pid = mem.push();
+    _sp = *_pid - 1 + TASK_STACK_SIZE;
+    return this;
   }
   inline void erase()
   {

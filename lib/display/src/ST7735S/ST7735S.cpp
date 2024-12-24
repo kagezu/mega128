@@ -5,12 +5,11 @@
 
 ST7735S::ST7735S()
 {
-  INIT_LCD
-    delayMicroseconds(15000); // Ждать стабилизации напряжений
+  INIT_LCD;
+  delayMicroseconds(1000); // Ждать стабилизации напряжений
   DISPLAY_CONNECT;          // CS Выбор дисплея
 
   sendCommand(SLPOUT);      // Проснуться
-  delayMicroseconds(15000); // Ждать стабилизации напряжений
 
   sendCommand(FRMCTR1); // In normal mode (Full colors)
   sendByte(0x05);

@@ -11,19 +11,20 @@ void func()
 {
   // sei();
   byte *sp = (byte *)SP;
-  // byte *sp = (byte *)Core::current()->_sp;
-  text.printf(PSTR("pid = %x SP = %2x \n"), Core::current()->_pid, sp++);
+  // byte *sp = (byte *)Core::tasks.head()->_sp;
+  text.printf(PSTR("pid %2x SP = %2x \n"), Core::tasks.head()->_pid, sp++);
   // text.printf(PSTR("%x."), *sp++);
   // text.printf(PSTR("%x\n"), *sp++);
   // cli();
 }
 
-// int main() GCC_NAKED;
+int main() GCC_NAKED;
 int main()
 {
   Core::init();
-  Core::current()->load();
+  Core::tasks.head()->load();
   sei();
+
 
   text.setInterline(3);
   text.font(standard_5x7);
@@ -31,11 +32,12 @@ int main()
   lcd.background(RGB(0, 0, 64));
   lcd.color(RGB(255, 255, 127));
 
+
   while (true) {
 
-    byte *sp = (byte *)SP;
-    // byte *sp = (byte *)Core::current()->_sp;
-    text.printf(PSTR("\fpid = %x SP = %2x \n"), Core::current()->_pid, sp++);
+  byte *sp = (byte *)SP;
+    // byte *sp = (byte *)Core::tasks.head()->_sp;
+    text.printf(PSTR("\fpid %2x SP = %2x \n"), Core::tasks.head()->_pid, sp);
     // text.printf(PSTR("%x."), *sp++);
     // text.printf(PSTR("%x\n"), *sp++);
 
@@ -55,11 +57,11 @@ int main()
 
     // func();
     Core::async(func);
-    Core::async(func);
-    Core::async(func);
     // Core::async(func);
     // Core::async(func);
-    // Core::await();
+    // Core::async(func);
+    // Core::async(func);
+    Core::await();
     // Core::async(func);
     // Core::await(6);
 
@@ -68,4 +70,6 @@ int main()
     text.printf(PSTR("async = %2x\n"), Core::async);
 
   }
+
+  while (true);
 }
