@@ -90,7 +90,6 @@ void Text::symbol(uint8_t symbol)
     cursorX = 0;
   }
   if (cursorY > MAX_Y - dy) cursorX = cursorY = 0;
-
   _display->symbol((uint8_t *)source, cursorX, cursorY, dx, dy);
   cursorX += dx + 1;
 }

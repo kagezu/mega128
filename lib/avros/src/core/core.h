@@ -5,17 +5,15 @@
 #include <timer.h>
 #include "task.h"
 
-#define FREQ_DEFAULT        2500
+#define FREQ_DEFAULT    100
 
 namespace Core {
   void async(void callback()) GCC_NO_INLINE GCC_NAKED;
 
-  static void await(byte) GCC_NO_INLINE;
-  static void nextTask() GCC_NAKED GCC_NO_INLINE;
+  void await(byte) GCC_NO_INLINE;
+  void nextTask()  GCC_NO_INLINE;
 
   static  Array<Task, byte> _tasks(TASK_MAX_COUNT);
-  static inline void  create() { _tasks.push(Task()); _tasks.head()->create(); }
-  static inline void  erase() { _tasks.pop().erase(); }
   static inline Task *current() { return _tasks.head(); }
   static inline Task *next() { return _tasks.circ(); }
 
@@ -23,8 +21,8 @@ namespace Core {
   // для 16 МГц от 15625 до 61 Гц
   void init(word freq = FREQ_DEFAULT)
   {
-    _tasks.push(Task());
-    current()->create();
+    _tasks.push();
+    _tasks.head()->create();
     T0_DIV_1024;
     T0_CTC;
     OCR0A = ((F_CPU / 1024) / freq - 1);
@@ -35,12 +33,15 @@ namespace Core {
   {
     SAVE_CONTEXT;
     current()->save();
-    create();
+    // SP = RAMEND;
+    _tasks.add();
+    // _tasks.push();
+    _tasks.head()->create();
     current()->load();
     sei();
     callback();
     cli();
-    erase();
+    _tasks.pop().erase();
     current()->load();
     LOAD_CONTEXT;
   }
@@ -61,14 +62,14 @@ namespace Core {
 ISR(TIMER0_COMPA_vect, GCC_NAKED)
 {
   SAVE_CONTEXT;
-  // Core::current()->save();
-  // SP = RAMEND;
+  Core::current()->save();
+  SP = RAMEND;
 
   // real time func
 
 
   // Диспетчер задач
 
-  // Core::next()->load();
+  Core::next()->load();
   LOAD_CONTEXT;
 }

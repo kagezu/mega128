@@ -1,4 +1,5 @@
 #include "display.h"
+#include <macros/context.h>
 
 // Реализация виртуальных методов класса Draw
 
@@ -135,6 +136,8 @@ void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
   y1 = MAX_Y - u;
 #endif
 
+  I_SAVE;
+
 #if EX_X_Y
   setAddr(y, x, y1, x1);
 #else
@@ -171,7 +174,7 @@ void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
     #endif
 
     }
-  }
+    }
 
 #else
 
@@ -194,11 +197,12 @@ void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
       if (data & bit) sendRGB(_color);
       else sendRGB(_background);
     }
-    }
+  }
 
 #endif
 
-  DISPLAY_DISCONNECT
+  DISPLAY_DISCONNECT;
+  I_REST;
 }
 
 // тестирование дисплея

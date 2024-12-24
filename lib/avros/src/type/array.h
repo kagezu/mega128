@@ -159,11 +159,11 @@ public:
   }
 
   // Добавляет элемент с головы, возвращает его индекс
-  I push(T data)
+  I push(T data = T())
   {
     if (!_heap) return _size; // Буфер полон
-    I index = _head;
-    _array[_index[_head]] = data;
+    I index = _index[_head];
+    _array[index] = data;
     _incHead();
     _heap--;
     return index;

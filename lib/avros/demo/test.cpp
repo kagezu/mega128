@@ -7,16 +7,15 @@
 Display lcd;
 Text text(&lcd);
 
-void func()__attribute__((noinline)); __attribute__((naked))
-//  
-// void func() __attribute__((noinline));
 void func()
 {
+  // sei();
   byte *sp = (byte *)SP;
-  // byte *sp = (byte *)(Core::current()->_context);
-  text.printf(PSTR("func SP = %2x "), sp++);
-  text.printf(PSTR("%x."), *sp++);
-  text.printf(PSTR("%x\n"), *sp++);
+  // byte *sp = (byte *)Core::current()->_sp;
+  text.printf(PSTR("pid = %x SP = %2x \n"), Core::current()->_pid, sp++);
+  // text.printf(PSTR("%x."), *sp++);
+  // text.printf(PSTR("%x\n"), *sp++);
+  // cli();
 }
 
 // int main() GCC_NAKED;
@@ -32,24 +31,41 @@ int main()
   lcd.background(RGB(0, 0, 64));
   lcd.color(RGB(255, 255, 127));
 
-  byte *sp = (byte *)SP;
-  text.printf(PSTR("main SP = %2x "), sp++);
-  text.printf(PSTR("%x."), *sp++);
-  text.printf(PSTR("%x\n"), *sp++);
+  while (true) {
 
-  func();
-  Core::async(func);
-  // Core::async(func);
-  // Core::async(func);
-  // Core::async(func);
-  // Core::async(func);
-  Core::await();
-  // Core::async(func);
-  // Core::await();
+    byte *sp = (byte *)SP;
+    // byte *sp = (byte *)Core::current()->_sp;
+    text.printf(PSTR("\fpid = %x SP = %2x \n"), Core::current()->_pid, sp++);
+    // text.printf(PSTR("%x."), *sp++);
+    // text.printf(PSTR("%x\n"), *sp++);
 
-  text.printf(PSTR("\nmain = %2x\n"), main);
-  text.printf(PSTR("func = %2x\n"), func);
-  text.printf(PSTR("async = %2x\n"), Core::async);
-  while (true);
-  Core::await();
+    asm volatile ("nop"::);
+    asm volatile ("nop"::);
+    asm volatile ("nop"::);
+    asm volatile ("nop"::);
+    asm volatile ("nop"::);
+    asm volatile ("nop"::);
+    asm volatile ("nop"::);
+    asm volatile ("nop"::);
+    asm volatile ("nop"::);
+    asm volatile ("nop"::);
+    asm volatile ("nop"::);
+    asm volatile ("nop"::);
+    asm volatile ("nop"::);
+
+    // func();
+    Core::async(func);
+    Core::async(func);
+    Core::async(func);
+    // Core::async(func);
+    // Core::async(func);
+    // Core::await();
+    // Core::async(func);
+    // Core::await(6);
+
+    text.printf(PSTR("\nmain = %2x\n"), main);
+    text.printf(PSTR("func = %2x\n"), func);
+    text.printf(PSTR("async = %2x\n"), Core::async);
+
+  }
 }
