@@ -227,17 +227,18 @@ public:
   // Переносит элемент с головы в хвост
   T *back()
   {
+    _decHead();
+    _decTail();
     I top = _index[_head];
     _index[_head] = _index[_tail];
     _index[_tail] = top;
-    _decHead();
-    _decTail();
     return &_array[top];
   }
 
   // Выкидывает элемент из массива
   T *drop(T *ptr)
   {
+    if (ptr == nullptr) return nullptr;
     I index = ptr - _array;
     _seek(index);
     if (_count == _head)  return nullptr; // Индекс не найден
@@ -248,6 +249,7 @@ public:
   // Выкидывает элемент из массива
   void erase(T *ptr)
   {
+    if (ptr == nullptr) return;
     I index = ptr - _array;
     _seek(index);
     if (_count == _head)  return; // Индекс не найден
@@ -319,7 +321,7 @@ private:
       _incCount();
       _index[j] = _index[_count]; // Сдвиг индексации
     }
-    _index[j] = index;
+    _index[_count] = index;
     _decHead();
     _heap++;
     _count = tmp;

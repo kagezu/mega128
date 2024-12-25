@@ -11,24 +11,11 @@ void func()
 {
   byte *sp = (byte *)SP;
   // byte *sp = (byte *)Core::tasks.head()->_sp;
-  text.printf(PSTR("pid %2x SP = %2x \n"), Core::task.curent()->start, sp);
+  text.printf(PSTR("pid %2x SP = %2x \n"), Core::task.current()->_start, sp);
 }
 
 GCC_INIT(7)
 {
-  // asm volatile ("nop"::);
-  // asm volatile ("nop"::);
-  // asm volatile ("nop"::);
-  // asm volatile ("nop"::);
-  // asm volatile ("nop"::);
-  // asm volatile ("nop"::);
-  // asm volatile ("nop"::);
-  // asm volatile ("nop"::);
-  // asm volatile ("nop"::);
-  // asm volatile ("nop"::);
-  // asm volatile ("nop"::);
-  // asm volatile ("nop"::);
-  // asm volatile ("nop"::);
 
 }
 
@@ -36,8 +23,7 @@ GCC_INIT(7)
 int GCC_NAKED main()
 {
   Core::init();
-  // Core::task.create();
-  // Core::task.load();
+  // Core::task.current()->load();
 
   sei();
 
@@ -49,39 +35,25 @@ int GCC_NAKED main()
 
   while (true) {
 
-  byte *sp = (byte *)SP;
-  // byte *sp = (byte *)Core::tasks.head()->_sp;
-  text.printf(PSTR("\fpid %2x SP = %2x \n"), Core::task.curent()->start, sp);
+    byte *sp = (byte *)SP;
+    // byte *sp = (byte *)Core::tasks.head()->_sp;
+    text.printf(PSTR("\fpid %2x SP = %2x \n"), Core::task.current()->_start, sp);
 
-  asm volatile ("nop"::);
-  asm volatile ("nop"::);
-  asm volatile ("nop"::);
-  asm volatile ("nop"::);
-  asm volatile ("nop"::);
-  asm volatile ("nop"::);
-  asm volatile ("nop"::);
-  asm volatile ("nop"::);
-  asm volatile ("nop"::);
-  asm volatile ("nop"::);
-  asm volatile ("nop"::);
-  asm volatile ("nop"::);
-  asm volatile ("nop"::);
+    // func();
+    Core::async(func);
+    // Core::async(func);
+    // Core::async(func);
+    // Core::async(func);
+    // Core::async(func);
+    Core::await();
+    // Core::async(func);
+    // Core::await(6);
 
-  // func();
-  Core::async(func);
-  Core::async(func);
-  Core::async(func);
-  Core::async(func);
-  Core::async(func);
-  // Core::await();
-  // Core::async(func);
-  // Core::await(6);
+    text.printf(PSTR("\nmain = %2x\n"), main);
+    text.printf(PSTR("func = %2x\n"), func);
+    text.printf(PSTR("async = %2x\n"), Core::async);
 
-  text.printf(PSTR("\nmain = %2x\n"), main);
-  text.printf(PSTR("func = %2x\n"), func);
-  text.printf(PSTR("async = %2x\n"), Core::async);
-
-  // while (true);
+    // while (true);
   }
 
 }

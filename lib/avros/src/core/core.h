@@ -3,7 +3,7 @@
 #include <macros/attribute.h>
 #include <macros/context.h>
 #include <timer.h>
-#include "task.h"
+#include "dispatch.h"
 
 #define FREQ_DEFAULT    1000
 
@@ -18,8 +18,8 @@ namespace Core {
   // для 16 МГц от 15625 до 61 Гц
   void GCC_INLINE init()
   {
-    task.create();
-    task.load();
+    task.now();
+    task.current()->load();
     T0_DIV_1024;
     T0_CTC;
     OCR0A = ((F_CPU / 1024) / FREQ_DEFAULT - 1);
@@ -30,34 +30,33 @@ namespace Core {
   void GCC_NO_INLINE GCC_NAKED async(void callback())
   {
     SAVE_CONTEXT;
-    task.save();
-    // SP = RAMEND;
-    task.create()->load();
+    task.current()->save();
+    task.now();
+    task.current()->load();
     sei();
     callback();
     cli();
-    task.erase();
-    task.load();
+    task.drop();
+    task.current()->load();
     LOAD_CONTEXT;
   }
 
-
-  void GCC_NO_INLINE GCC_NAKED nextTask()
+  void GCC_NO_INLINE GCC_NAKED next_task()
   {
     SAVE_CONTEXT;
-    task.save();
+    task.current()->save();
     task.next()->load();
     LOAD_CONTEXT;
   }
 
-  void GCC_NO_INLINE await(byte limit = 1) { while (task.count() > limit) nextTask(); }
+  void GCC_NO_INLINE await(byte limit = 1) { while (task.count() > limit); next_task(); }
 
 }
 
 ISR(TIMER0_COMPA_vect, GCC_NAKED)
 {
   SAVE_CONTEXT;
-  Core::task.save();
+  Core::task.current()->save();
   // SP = RAMEND;
 
   // real time func
