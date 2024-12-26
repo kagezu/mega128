@@ -2,7 +2,7 @@
 #include <macros/attribute.h>
 
 class Task {
-public:
+protected:
   volatile word _sp;
   word _start;
   word _end;

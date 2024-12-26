@@ -24,38 +24,6 @@ protected:
 
 public:
   /*
-    Array(I size);
-    ~Array();
-    void       clear();
-    inline  I  length();
-    inline  I  heap();
-
-    // Чтение и запись элементов
-
-    inline  T *tail();
-    inline  T *head();
-    inline  T *at(I index);
-
-    void write(T *data, I length);
-    void write(T data);
-    void read(T *data, I length);
-    T    read();
-    I    push(T data);
-    T    pop();
-    I    unshift(T data);
-    T    shift(); // Alis read()
-    T *circ();
-    T *unCirc();
-
-    // Действия над элементами
-
-    void erase(I index);
-    void filter(bool callback(T *)); // Удалить несоответствующие элементы
-    void forEach(callback(T *)); // Перебор элементов
-    T *find(bool callback(T *)); // Поиск элемента
-    I findindex(bool callback(T *)); // Поиск элемента
-    I indexOf(T *); // Поиск элемента
-
   // Не реализовано
 
   virtual void flat(); // Убрать дыры, обновить индексацию
@@ -235,6 +203,7 @@ public:
   }
 
   // Выкидывает элемент из массива
+  // не реализован
   T *drop(T *ptr)
   {
     if (ptr == nullptr) return nullptr;
@@ -246,6 +215,7 @@ public:
   }
 
   // Выкидывает элемент из массива
+  // не реализован
   void erase(T *ptr)
   {
     if (ptr == nullptr) return;

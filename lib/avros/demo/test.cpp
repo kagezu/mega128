@@ -10,10 +10,9 @@ Text text(&lcd);
 void func()
 {
   byte *sp = (byte *)SP;
-  text.printf(PSTR("pid %2x SP = %2x \n"), Core::task.current()->_start, sp);
+  text.printf(PSTR("SP = %2x \n"), sp);
 }
 
-#pragma GCC optimize "O0"
 int main()
 {
   sei();
@@ -26,19 +25,18 @@ int main()
 
   while (true) {
     // byte *sp = (byte *)SP;
-    // text.printf(PSTR("\fpid %2x SP = %2x \n"), Core::task.current()->_start, sp);
 
     // func();
     Core::async(func);
-    byte t1 = Core::task.count();
+    volatile byte t1 = Core::count();
     Core::async(func);
-    byte t2 = Core::task.count();
+    volatile byte t2 = Core::count();
     Core::async(func);
-    byte t3 = Core::task.count();
+    volatile byte t3 = Core::count();
     Core::async(func);
-    byte t4 = Core::task.count();
+    volatile byte t4 = Core::count();
     Core::async(func);
-    byte t5 = Core::task.count();
+    volatile byte t5 = Core::count();
     // Core::async(func);
     // Core::await();
     // Core::async(func);
@@ -47,13 +45,13 @@ int main()
     // Core::async(func);
     // Core::await(2);
 
-    cli();
+    I_SAVE;
     text.printf(PSTR("\ft = %x %x %x %x %x   \n"), t1, t2, t3, t4, t5);
-    sei();
+    I_REST;
 
-    // text.printf(PSTR("\nmain = %2x\n"), main);
-    // text.printf(PSTR("func = %2x\n"), func);
-    // text.printf(PSTR("async = %2x\n"), Core::async);
+    text.printf(PSTR("\nmain = %2x\n"), main);
+    text.printf(PSTR("func = %2x\n"), func);
+    text.printf(PSTR("async = %2x\n"), Core::async);
 
     // while (true);
   }
