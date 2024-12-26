@@ -5,8 +5,7 @@
 #include <timer.h>
 #include "dispatch.h"
 
-#define FREQ_DEFAULT    1000
-
+#define FREQ_DEFAULT  300
 
 namespace Core {
 
@@ -18,28 +17,13 @@ namespace Core {
   // для 16 МГц от 15625 до 61 Гц
   void GCC_INLINE init()
   {
-    task.now();
-    task.current()->load();
+    task.now()->load();
     T0_DIV_1024;
     T0_CTC;
     OCR0A = ((F_CPU / 1024) / FREQ_DEFAULT - 1);
     T0_COMPA_ON;
   }
 #pragma GCC diagnostic pop
-
-  void GCC_NO_INLINE GCC_NAKED async(void callback())
-  {
-    SAVE_CONTEXT;
-    task.current()->save();
-    task.now();
-    task.current()->load();
-    sei();
-    callback();
-    cli();
-    task.drop();
-    task.current()->load();
-    LOAD_CONTEXT;
-  }
 
   void GCC_NO_INLINE GCC_NAKED next_task()
   {
@@ -49,8 +33,32 @@ namespace Core {
     LOAD_CONTEXT;
   }
 
-  void GCC_NO_INLINE await(byte limit = 1) { while (task.count() > limit); next_task(); }
+  void GCC_NO_INLINE await(byte limit = 1)
+  {
+    while (task.count() - limit)
+      next_task();
+  }
 
+  void GCC_NO_INLINE GCC_NAKED async(void callback())
+  {
+    SAVE_CONTEXT;
+    task.current()->save();
+    if (task.now()) {
+      task.current()->load();
+      sei();
+      callback();
+      cli();
+      task.drop();
+    }
+    task.current()->load();
+    LOAD_CONTEXT;
+  }
+
+}
+
+GCC_INIT(7)
+{
+  Core::init();
 }
 
 ISR(TIMER0_COMPA_vect, GCC_NAKED)

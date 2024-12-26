@@ -12,7 +12,7 @@ public:
     :_sp(0), _start(start), _end(start + size - 1)
   {}
 
-  GCC_INLINE Task *clear() { _sp = _end; return this; }
+  GCC_INLINE void clear() { _sp = _end; }
   GCC_INLINE void load() { SP = _sp; }
   GCC_INLINE void save() { _sp = SP; }
   GCC_INLINE void deep_load()

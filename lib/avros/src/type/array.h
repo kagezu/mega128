@@ -17,10 +17,10 @@ class Array {
 protected:
   T *_array;
   I *_index;
-  I _head;    // Голова
-  I _tail;    // Хвост
-  I _size;    // Максимальный размер
-  I _heap;    // Размер кучи
+  const I _size;       // Максимальный размер
+  volatile I _head;    // Голова
+  volatile I _tail;    // Хвост
+  volatile I _heap;    // Размер кучи
 
 public:
   /*
@@ -68,11 +68,10 @@ public:
   */
 
 public:
-  Array(I size)
+  Array(I size) :_size(size)
   {
     _index = (I *)malloc(size * sizeof(I));
     _array = (T *)malloc(size * sizeof(T));
-    _size = size;
     clear();
   }
   ~Array() { free(_array); free(_index); }
