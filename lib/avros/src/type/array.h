@@ -1,5 +1,5 @@
-#include <Arduino.h>
 #pragma once
+#include <Arduino.h>
 
 /*
 #### Array<T, I> T элемент, I индекс
@@ -69,7 +69,7 @@ public:
   {
     if (!_heap) return; // Буфер полон
     _array[_index[_head]] = data;
-    _incHead();
+    _inc_head();
     _heap--;
   }
 
@@ -78,7 +78,7 @@ public:
   {
     if (_heap == _size) return T(); // Буфер пуст
     I index = _tail;
-    _incTail();
+    _inc_tail();
     _heap++;
     return _array[_index[index]];
   }
@@ -126,7 +126,7 @@ public:
     if (!_heap) return nullptr; // Буфер полон
     T *ptr = &_array[_index[_head]];
     *ptr = data;
-    _incHead();
+    _inc_head();
     _heap--;
     return ptr;
   }
@@ -136,7 +136,7 @@ public:
   {
     if (!_heap) return nullptr; // Буфер полон
     T *ptr = &_array[_index[_head]];
-    _incHead();
+    _inc_head();
     _heap--;
     return ptr;
   }
@@ -145,7 +145,7 @@ public:
   T *unshift(T data)
   {
     if (!_heap) return nullptr; // Буфер полон
-    _decTail();
+    _dec_tail();
     _heap--;
     T *ptr = &_array[_index[_tail]];
     *ptr = data;
@@ -156,7 +156,7 @@ public:
   T *unshift()
   {
     if (!_heap) return nullptr; // Буфер полон
-    _decTail();
+    _dec_tail();
     _heap--;
     return &_array[_index[_tail]];
   }
@@ -165,7 +165,7 @@ public:
   T *pop()
   {
     if (_heap == _size) return nullptr; // Буфер пуст
-    _decHead();
+    _dec_head();
     _heap++;
     return &_array[_index[_head]];
   }
@@ -175,7 +175,7 @@ public:
   {
     if (_heap == _size) return nullptr; // Буфер пуст
     I index = _tail;
-    _incTail();
+    _inc_tail();
     _heap++;
     return &_array[_index[index]];
   }
@@ -186,16 +186,16 @@ public:
     I last = _index[_tail];
     _index[_tail] = _index[_head];
     _index[_head] = last;
-    _incHead();
-    _incTail();
+    _inc_head();
+    _inc_tail();
     return &_array[last];
   }
 
   // Переносит элемент с головы в хвост
   T *back()
   {
-    _decHead();
-    _decTail();
+    _dec_head();
+    _dec_tail();
     I top = _index[_head];
     _index[_head] = _index[_tail];
     _index[_tail] = top;
@@ -233,7 +233,7 @@ public:
     while (i--) {
       T *element = &_array[_index[_count]];
       if (callback(element)) return element;
-      _incCount();
+      _inc_count();
     }
     return nullptr;
   }
@@ -245,7 +245,7 @@ public:
     _count = _tail;
     while (i--) {
       callback(&_array[_index[_count]]);
-      _incCount();
+      _inc_count();
     }
   }
 
@@ -256,16 +256,16 @@ public:
     _count = _tail;
     while (i--)
       if (!callback(&_array[_index[_count]])) _erase();
-      else _incCount();
+      else _inc_count();
   }
 
 private:
   I _count;
-  inline void _incCount() { _count = ++_count == _size ? 0 : _count; }
-  inline void _incHead() { _head = ++_head == _size ? 0 : _head; }
-  inline void _decHead() { _head = _head == 0 ? _size - 1 : _head - 1; }
-  inline void _incTail() { _tail = ++_tail == _size ? 0 : _tail; }
-  inline void _decTail() { _tail = _tail == 0 ? _size - 1 : _tail - 1; }
+  inline void _inc_count() { _count = ++_count == _size ? 0 : _count; }
+  inline void _inc_head() { _head = ++_head == _size ? 0 : _head; }
+  inline void _dec_head() { _head = _head == 0 ? _size - 1 : _head - 1; }
+  inline void _inc_tail() { _tail = ++_tail == _size ? 0 : _tail; }
+  inline void _dec_tail() { _tail = _tail == 0 ? _size - 1 : _tail - 1; }
 
   // Индекс элемента в положение индекса в буфере
   // Возвращает _count
@@ -274,7 +274,7 @@ private:
     _count = _tail;
     while (_count != _head) {
       if (_index[_count] == index) break;
-      _incCount();
+      _inc_count();
     }
   }
 
@@ -287,11 +287,11 @@ private:
       j;
     while (_count != _head) {
       j = _count;
-      _incCount();
+      _inc_count();
       _index[j] = _index[_count]; // Сдвиг индексации
     }
     _index[_count] = index;
-    _decHead();
+    _dec_head();
     _heap++;
     _count = tmp;
   }

@@ -21,64 +21,64 @@ void Text::printf(const char *string, ...)
             case 'd': print((int8_t)va_arg(args, int16_t)); break;
             case 'i': print((int16_t)va_arg(args, int16_t)); break;
             case 's': print((char *)va_arg(args, char *)); break;
-            case 'S': printPstr((char *)va_arg(args, char *)); break;
+            case 'S': print_pstr((char *)va_arg(args, char *)); break;
             case 'u':
               switch (arg) {
                 case '0':
-                case '1': print((uint8_t)va_arg(args, uint16_t)); break;
-                case '2': print((uint16_t)va_arg(args, uint16_t)); break;
+                case '1': print((byte)va_arg(args, word)); break;
+                case '2': print((word)va_arg(args, word)); break;
                 case '4': print((uint32_t)va_arg(args, uint32_t)); break;
               } break;
             case 'x':
               switch (arg) {
                 case '0':
-                case '1':  printHex((uint8_t)va_arg(args, uint16_t)); break;
-                case '2':  printHex((uint16_t)va_arg(args, uint16_t)); break;
+                case '1':  printHex((byte)va_arg(args, word)); break;
+                case '2':  printHex((word)va_arg(args, word)); break;
                 case '4':  printHex((uint32_t)va_arg(args, uint32_t)); break;
                 case '8':  printHex((uint64_t)va_arg(args, uint64_t)); break;
               } break;
-            case 'p': printHex((uint16_t)va_arg(args, uint16_t)); break;
+            case 'p': printHex((word)va_arg(args, word)); break;
             case '%': symbol('%'); break;
           } break;
         }
       case '\f': cursorX = cursorY = 0; break;  // Новая страница
-      case '\n': printLF(); printCR(); break;   // Перевод строки с возвратом
-      case '\r': printCR(); break;
-      case '\b': printBS(); break;
-      case '\t': printTAB(); break;
-      case '\v': printLF(); break;
+      case '\n': LF(); CR(); break;   // Перевод строки с возвратом
+      case '\r': CR(); break;
+      case '\b': BS(); break;
+      case '\t': TAB(); break;
+      case '\v': LF(); break;
       case '\e': escape(); break;
       case '\a': bel(); break;
-      default: if ((uint8_t)ch < 0xd0) symbol(ch);
+      default: if ((byte)ch < 0xd0) symbol(ch);
     }
   }
   va_end(args);
 }
 
-void Text::font(const uint8_t *font)
+void Text::font(const byte *font)
 {
-  _font = (uint16_t)font;
+  _font = (word)font;
   _line = (1 + ((FONT_HEIGHT - 1) >> 3));
   _charSize = (FONT_WEIGHT & 0x7f) * _line;
-  _offset = (uint16_t)_font + FONT_OFFSET;
-  setInterline(2);
-  setInterval(1);
+  _offset = (word)_font + FONT_OFFSET;
+  set_inter_line(2);
+  set_interval(1);
 
   if (FONT_WEIGHT & 0x80)
-    _offset += (FONT_COUNT + 1) * sizeof(uint16_t);
+    _offset += (FONT_COUNT + 1) * sizeof(word);
 }
 
-void Text::symbol(uint8_t symbol)
+void Text::symbol(byte symbol)
 {
   symbol -= FONT_FIRST;
   if (FONT_COUNT <= symbol) symbol = 0;
 
-  uint8_t dx = FONT_WEIGHT & 0x7f;
-  uint8_t dy = FONT_HEIGHT;
-  uint16_t source;
+  byte dx = FONT_WEIGHT & 0x7f;
+  byte dy = FONT_HEIGHT;
+  word source;
 
   if (FONT_WEIGHT & 0x80) {
-    uint16_t  charIndex = (uint16_t)_font + symbol * sizeof(uint16_t) + FONT_OFFSET;
+    word  charIndex = (word)_font + symbol * sizeof(word) + FONT_OFFSET;
     source = pgm_read_word(charIndex);
     dx = (pgm_read_word(charIndex + 2) - source) / _line;
     source += _offset;
@@ -92,19 +92,19 @@ void Text::symbol(uint8_t symbol)
   }
   if (cursorY > MAX_Y - dy) cursorX = cursorY = 0;
   I_SAVE;
-  _display->symbol((uint8_t *)source, cursorX, cursorY, dx, dy);
+  _display->symbol((byte *)source, cursorX, cursorY, dx, dy);
   I_REST;
   cursorX += dx + 1;
 }
 
 void Text::print(const char *string)
 {
-  while (char ch = *string++) if ((uint8_t)ch < 0xd0) symbol(ch);
+  while (char ch = *string++) if ((byte)ch < 0xd0) symbol(ch);
 }
 
-void Text::printPstr(const char *string)
+void Text::print_pstr(const char *string)
 {
-  while (char ch = pgm_read_byte(string++)) if ((uint8_t)ch < 0xd0) symbol(ch);
+  while (char ch = pgm_read_byte(string++)) if ((byte)ch < 0xd0) symbol(ch);
 }
 
 void Text::print(int32_t number)
@@ -116,26 +116,26 @@ void Text::print(int32_t number)
 void Text::print(int16_t number)
 {
   if (number < 0) { symbol('-'); number = -number; }
-  print((uint16_t)number);
+  print((word)number);
 }
 
 void Text::print(int8_t number)
 {
   if (number < 0) { symbol('-'); number = -number; }
-  print((uint8_t)number);
+  print((byte)number);
 }
 
 void Text::print(uint32_t number)
 {
   static const uint32_t mult[] PROGMEM = { 1000000000,100000000,10000000,1000000,100000,10000,1000,100,10,1 };
   char string[11];
-  uint8_t i = 0, di = 0;
+  byte i = 0, di = 0;
   string[0] = '0';
   string[1] = 0;
 
-  for (uint8_t j = 0; j < 10; j++) {
+  for (byte j = 0; j < 10; j++) {
     uint32_t m = pgm_read_dword(mult + j);
-    uint8_t n = number / m;
+    byte n = number / m;
     if (n) {
       number -= m * n;
       di = 1;
@@ -147,17 +147,17 @@ void Text::print(uint32_t number)
   print(string);
 }
 
-void Text::print(uint16_t number)
+void Text::print(word number)
 {
-  static const uint16_t mult[] PROGMEM = { 10000,1000,100,10,1 };
+  static const word mult[] PROGMEM = { 10000,1000,100,10,1 };
   char string[6];
-  uint8_t i = 0, di = 0;
+  byte i = 0, di = 0;
   string[0] = '0';
   string[1] = 0;
 
-  for (uint8_t j = 0; j < 5; j++) {
-    uint16_t m = pgm_read_word(mult + j);
-    uint8_t n = number / m;
+  for (byte j = 0; j < 5; j++) {
+    word m = pgm_read_word(mult + j);
+    byte n = number / m;
     if (n) {
       number -= m * n;
       di = 1;
@@ -169,17 +169,17 @@ void Text::print(uint16_t number)
   print(string);
 }
 
-void Text::print(uint8_t number)
+void Text::print(byte number)
 {
-  static const uint8_t mult[] PROGMEM = { 100,10,1 };
+  static const byte mult[] PROGMEM = { 100,10,1 };
   char string[4];
-  uint8_t i = 0, di = 0;
+  byte i = 0, di = 0;
   string[0] = '0';
   string[1] = 0;
 
-  for (uint8_t j = 0; j < 3; j++) {
-    uint8_t m = pgm_read_byte(mult + j);
-    uint8_t n = number / m;
+  for (byte j = 0; j < 3; j++) {
+    byte m = pgm_read_byte(mult + j);
+    byte n = number / m;
     if (n) {
       number -= m * n;
       di = 1;
@@ -191,7 +191,7 @@ void Text::print(uint8_t number)
   print(string);
 }
 
-uint8_t Text::hexToChar(uint8_t number)
+byte Text::hex_to_char(byte number)
 {
   number &= 0xf;
   return number > 9 ? number + '7' : number + '0';
@@ -204,37 +204,37 @@ void Text::printHex(uint64_t number)
   string[1] = 'x';
   string[18] = 0;
 
-  string[17] = hexToChar(number);
+  string[17] = hex_to_char(number);
   number >>= 4;
-  string[16] = hexToChar(number);
+  string[16] = hex_to_char(number);
   number >>= 4;
-  string[15] = hexToChar(number);
+  string[15] = hex_to_char(number);
   number >>= 4;
-  string[14] = hexToChar(number);
+  string[14] = hex_to_char(number);
   number >>= 4;
-  string[13] = hexToChar(number);
+  string[13] = hex_to_char(number);
   number >>= 4;
-  string[12] = hexToChar(number);
+  string[12] = hex_to_char(number);
   number >>= 4;
-  string[11] = hexToChar(number);
+  string[11] = hex_to_char(number);
   number >>= 4;
-  string[10] = hexToChar(number);
+  string[10] = hex_to_char(number);
   number >>= 4;
-  string[9] = hexToChar(number);
+  string[9] = hex_to_char(number);
   number >>= 4;
-  string[8] = hexToChar(number);
+  string[8] = hex_to_char(number);
   number >>= 4;
-  string[7] = hexToChar(number);
+  string[7] = hex_to_char(number);
   number >>= 4;
-  string[6] = hexToChar(number);
+  string[6] = hex_to_char(number);
   number >>= 4;
-  string[5] = hexToChar(number);
+  string[5] = hex_to_char(number);
   number >>= 4;
-  string[4] = hexToChar(number);
+  string[4] = hex_to_char(number);
   number >>= 4;
-  string[3] = hexToChar(number);
+  string[3] = hex_to_char(number);
   number >>= 4;
-  string[2] = hexToChar(number);
+  string[2] = hex_to_char(number);
 
   print(string);
 }
@@ -246,44 +246,44 @@ void Text::printHex(uint32_t number)
   string[1] = 'x';
   string[10] = 0;
 
-  string[9] = hexToChar(number);
+  string[9] = hex_to_char(number);
   number >>= 4;
-  string[8] = hexToChar(number);
+  string[8] = hex_to_char(number);
   number >>= 4;
-  string[7] = hexToChar(number);
+  string[7] = hex_to_char(number);
   number >>= 4;
-  string[6] = hexToChar(number);
+  string[6] = hex_to_char(number);
   number >>= 4;
-  string[5] = hexToChar(number);
+  string[5] = hex_to_char(number);
   number >>= 4;
-  string[4] = hexToChar(number);
+  string[4] = hex_to_char(number);
   number >>= 4;
-  string[3] = hexToChar(number);
+  string[3] = hex_to_char(number);
   number >>= 4;
-  string[2] = hexToChar(number);
+  string[2] = hex_to_char(number);
 
   print(string);
 }
 
-void Text::printHex(uint16_t number)
+void Text::printHex(word number)
 {
   char string[6];
   string[0] = '#';
   string[5] = 0;
 
-  string[4] = hexToChar(number);
+  string[4] = hex_to_char(number);
   number >>= 4;
-  string[3] = hexToChar(number);
+  string[3] = hex_to_char(number);
   number >>= 4;
-  string[2] = hexToChar(number);
+  string[2] = hex_to_char(number);
   number >>= 4;
-  string[1] = hexToChar(number);
+  string[1] = hex_to_char(number);
 
   print(string);
 }
 
-void Text::printHex(uint8_t number)
+void Text::printHex(byte number)
 {
-  symbol(hexToChar(number >> 4));
-  symbol(hexToChar(number));
+  symbol(hex_to_char(number >> 4));
+  symbol(hex_to_char(number));
 }

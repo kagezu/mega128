@@ -9,128 +9,128 @@ ST7735S::ST7735S()
   delayMicroseconds(1000); // Ждать стабилизации напряжений
   DISPLAY_CONNECT;          // CS Выбор дисплея
 
-  sendCommand(SLPOUT);      // Проснуться
+  send_command(SLPOUT);      // Проснуться
 
-  sendCommand(FRMCTR1); // In normal mode (Full colors)
-  sendByte(0x05);
-  sendByte(0x3C);
-  sendByte(0x3C);
+  send_command(FRMCTR1); // In normal mode (Full colors)
+  send_byte(0x05);
+  send_byte(0x3C);
+  send_byte(0x3C);
 
-  sendCommand(FRMCTR2); // In Idle mode (8-colors)
-  sendByte(0x05);
-  sendByte(0X3C);
-  sendByte(0X3C);
+  send_command(FRMCTR2); // In Idle mode (8-colors)
+  send_byte(0x05);
+  send_byte(0X3C);
+  send_byte(0X3C);
 
-  sendCommand(FRMCTR3); // In partial mode + Full colors
-  sendByte(0x05);
-  sendByte(0x3C);
-  sendByte(0x3C);
-  sendByte(0x05);
-  sendByte(0x3C);
-  sendByte(0x3C);
+  send_command(FRMCTR3); // In partial mode + Full colors
+  send_byte(0x05);
+  send_byte(0x3C);
+  send_byte(0x3C);
+  send_byte(0x05);
+  send_byte(0x3C);
+  send_byte(0x3C);
 
-  sendCommand(INVCTR); // Display inversion control
-  sendByte(0x03);
+  send_command(INVCTR); // Display inversion control
+  send_byte(0x03);
 
-  sendCommand(PWCTR1); // Power control setting
-  sendByte(0x28);
-  sendByte(0x08);
-  sendByte(0x04);
+  send_command(PWCTR1); // Power control setting
+  send_byte(0x28);
+  send_byte(0x08);
+  send_byte(0x04);
 
-  sendCommand(PWCTR2); // Power control setting
-  sendByte(0xC0);
+  send_command(PWCTR2); // Power control setting
+  send_byte(0xC0);
 
-  sendCommand(PWCTR3); // In normal mode (Full colors)
-  sendByte(0x0D);
-  sendByte(0X00);
+  send_command(PWCTR3); // In normal mode (Full colors)
+  send_byte(0x0D);
+  send_byte(0X00);
 
-  sendCommand(PWCTR4); // In Idle mode (8-colors)
-  sendByte(0x8D);
-  sendByte(0x2A);
+  send_command(PWCTR4); // In Idle mode (8-colors)
+  send_byte(0x8D);
+  send_byte(0x2A);
 
-  sendCommand(PWCTR5); // In partial mode + Full colors
-  sendByte(0x8D);
-  sendByte(0xEE);
+  send_command(PWCTR5); // In partial mode + Full colors
+  send_byte(0x8D);
+  send_byte(0xEE);
 
-  sendCommand(VMCTR1); // VCOM control 1
-  sendByte(0x1A);
+  send_command(VMCTR1); // VCOM control 1
+  send_byte(0x1A);
 
-  sendCommand(0x17); // ?
-  sendByte(0x05);
+  send_command(0x17); // ?
+  send_byte(0x05);
 
-  sendCommand(MADCTL); // Memory Data Access Control
-  sendByte(0xD8);
+  send_command(MADCTL); // Memory Data Access Control
+  send_byte(0xD8);
 
-  sendCommand(GAMCTRP1); // Set Gamma adjustment (+ polarity)
-  sendByte(0x03);
-  sendByte(0x22);
-  sendByte(0x07);
-  sendByte(0x0A);
-  sendByte(0x2E);
-  sendByte(0x30);
-  sendByte(0x25);
-  sendByte(0x2A);
-  sendByte(0x28);
-  sendByte(0x26);
-  sendByte(0x2E);
-  sendByte(0x3A);
-  sendByte(0x00);
-  sendByte(0x01);
-  sendByte(0x03);
-  sendByte(0x13);
+  send_command(GAMCTRP1); // Set Gamma adjustment (+ polarity)
+  send_byte(0x03);
+  send_byte(0x22);
+  send_byte(0x07);
+  send_byte(0x0A);
+  send_byte(0x2E);
+  send_byte(0x30);
+  send_byte(0x25);
+  send_byte(0x2A);
+  send_byte(0x28);
+  send_byte(0x26);
+  send_byte(0x2E);
+  send_byte(0x3A);
+  send_byte(0x00);
+  send_byte(0x01);
+  send_byte(0x03);
+  send_byte(0x13);
 
-  sendCommand(GAMCTRN1); // Set Gamma adjustment (- polarity)
-  sendByte(0x04);
-  sendByte(0x16);
-  sendByte(0x06);
-  sendByte(0x0D);
-  sendByte(0x2D);
-  sendByte(0x26);
-  sendByte(0x23);
-  sendByte(0x27);
-  sendByte(0x27);
-  sendByte(0x25);
-  sendByte(0x2D);
-  sendByte(0x3B);
-  sendByte(0x00);
-  sendByte(0x01);
-  sendByte(0x04);
-  sendByte(0x13);
+  send_command(GAMCTRN1); // Set Gamma adjustment (- polarity)
+  send_byte(0x04);
+  send_byte(0x16);
+  send_byte(0x06);
+  send_byte(0x0D);
+  send_byte(0x2D);
+  send_byte(0x26);
+  send_byte(0x23);
+  send_byte(0x27);
+  send_byte(0x27);
+  send_byte(0x25);
+  send_byte(0x2D);
+  send_byte(0x3B);
+  send_byte(0x00);
+  send_byte(0x01);
+  send_byte(0x04);
+  send_byte(0x13);
 
-  sendCommand(COLMOD);
-  sendByte(RGB_FORMAT);
+  send_command(COLMOD);
+  send_byte(RGB_FORMAT);
 
-  sendCommand(DISPON); // Display On
+  send_command(DISPON); // Display On
   DISPLAY_DISCONNECT
 }
 
-void ST7735S::sendCommand(byte command)
+void ST7735S::send_command(byte command)
 {
   COMMAND_MODE; // Запись команды
-  sendByte(command);
+  send_byte(command);
   DATA_MODE // Запись данных
 };
 
-void ST7735S::setAddr(byte x0, byte y0, byte x1, byte y1)
+void ST7735S::set_addr(byte x0, byte y0, byte x1, byte y1)
 {
   DISPLAY_CONNECT; // CS Выбор дисплея
 
-  sendCommand(CASET); // Column Address Set
-  sendZero();
-  sendByte(x0);
-  sendZero();
-  sendByte(x1);
+  send_command(CASET); // Column Address Set
+  send_zero();
+  send_byte(x0);
+  send_zero();
+  send_byte(x1);
 
-  sendCommand(RASET); // Row Address Set
-  sendZero();
-  sendByte(y0);
-  sendZero();
-  sendByte(y1);
+  send_command(RASET); // Row Address Set
+  send_zero();
+  send_byte(y0);
+  send_zero();
+  send_byte(y1);
 
-  sendCommand(RAMWR); // Memory Write
+  send_command(RAMWR); // Memory Write
 };
 
-void ST7735S::sendZero()
+void ST7735S::send_zero()
 {
   LCD_PORT &= ~LCD_SDA;
 
@@ -155,7 +155,7 @@ void ST7735S::sendZero()
   LCD_PORT = set;
 };
 
-void ST7735S::sendByte(byte data)
+void ST7735S::send_byte(byte data)
 {
   byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
   byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
@@ -181,7 +181,7 @@ void ST7735S::sendByte(byte data)
 };
 
 #if RGB_FORMAT == RGB_12
-void ST7735S::sendRGB(uint16_t data)
+void ST7735S::send_rgb(uint16_t data)
 {
   byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
   byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
@@ -216,7 +216,7 @@ void ST7735S::sendRGB(uint16_t data)
 };
 
 #elif RGB_FORMAT == RGB_16
-void ST7735S::sendRGB(uint16_t data)
+void ST7735S::send_rgb(uint16_t data)
 {
   byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
   byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
@@ -260,27 +260,27 @@ void ST7735S::sendRGB(uint16_t data)
 };
 
 #elif RGB_FORMAT == RGB_18
-void ST7735S::sendRGB(uint16_t data) // формат 0x0rgb
+void ST7735S::send_rgb(uint16_t data) // формат 0x0rgb
 {
-  sendRGB((data >> 4) & 0xf0, data & 0xf0, data << 4);
+  send_rgb((data >> 4) & 0xf0, data & 0xf0, data << 4);
 }
 #endif
 
-void ST7735S::sendRGB(uint32_t color)
+void ST7735S::send_rgb(uint32_t color)
 {
-  sendRGB(color >> 16, color >> 8, color);
+  send_rgb(color >> 16, color >> 8, color);
 }
 
-void ST7735S::sendRGB(RGB color)
+void ST7735S::send_rgb(RGB color)
 {
 #if RGB_FORMAT == RGB_12 || RGB_FORMAT == RGB_16
-  sendRGB((uint16_t)color);
+  send_rgb((uint16_t)color);
 #elif RGB_FORMAT == RGB_18
-  sendRGB(color.red, color.green, color.blue);
+  send_rgb(color.red, color.green, color.blue);
 #endif
 }
 
-void ST7735S::sendRGB(byte r, byte g, byte b)
+void ST7735S::send_rgb(byte r, byte g, byte b)
 {
   byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
   byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
@@ -366,7 +366,7 @@ void ST7735S::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
   byte b = color.blue;
 #endif
 
-  setAddr(x0, y0, x1, y1);
+  set_addr(x0, y0, x1, y1);
   word len = (x1 - x0 + 1) * (y1 - y0 + 1);
   byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
   byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;

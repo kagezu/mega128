@@ -39,12 +39,12 @@ public:
     char key = -1;
 
     load();
-    readBytes(on, KEYS_SIZE);
+    read_bytes(on, KEYS_SIZE);
     _MMIO_BYTE(_port) &= ~_line;
     delayMicroseconds(KEYS_LOAD_DELAY);
 
     load();
-    readBytes(off, KEYS_SIZE);
+    read_bytes(off, KEYS_SIZE);
     _MMIO_BYTE(_port) |= _line;
 
     for (byte i = 0; i < KEYS_COUNT; i++) {
@@ -70,7 +70,7 @@ public:
     return key;
   }
 
-  char getKey()
+  char get_key()
   {
     byte mask = _BV(KEYS_OFFSET);
     byte *on = _on;

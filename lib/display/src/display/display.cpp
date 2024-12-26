@@ -15,28 +15,28 @@ void Display::pixel(byte x, byte y, RGB color)
 #endif
 
 #if EX_X_Y
-  setAddr(y, x, y, x);
+  set_addr(y, x, y, x);
 #else
-  setAddr(x, y, x, y);
+  set_addr(x, y, x, y);
 #endif
 
 #if RGB_FORMAT == RGB_12
-  sendRGB((word)0);
-  sendRGB(color);
+  send_rgb((word)0);
+  send_rgb(color);
 #elif RGB_FORMAT == RGB_16
-  sendByte(0);
-  sendByte(0);
-  sendRGB(color);
+  send_byte(0);
+  send_byte(0);
+  send_rgb(color);
 #elif RGB_FORMAT == RGB_18
-  sendByte(0);
-  sendByte(0);
-  sendByte(0);
-  sendRGB(color);
+  send_byte(0);
+  send_byte(0);
+  send_byte(0);
+  send_rgb(color);
 #endif
   DISPLAY_DISCONNECT;
 }
 
-void Display::rectFill(uint8_t x, uint8_t y, uint8_t x1, uint8_t y1)
+void Display::rect_fill(uint8_t x, uint8_t y, uint8_t x1, uint8_t y1)
 {
 #if FLIP_X
   uint8_t t = x;
@@ -62,31 +62,31 @@ void Display::clear(RGB color)
   rect(0, 0, LCD_MAX_X, LCD_MAX_Y, color);
 }
 
-void Display::scanBitmap(uint8_t x, uint8_t y, uint8_t width, uint8_t height, RGB *source)
+void Display::scan_bitmap(uint8_t x, uint8_t y, uint8_t width, uint8_t height, RGB *source)
 {
-  setAddr(x, y, x + width - 1, y + height - 1);
+  set_addr(x, y, x + width - 1, y + height - 1);
   uint16_t length = width * height;
   while (length--)
-    sendRGB(*source++);
+    send_rgb(*source++);
 
   DISPLAY_DISCONNECT;
 }
 
-void Display::scanBitmap(RGB *source)
+void Display::scan_bitmap(RGB *source)
 {
-  setAddr(0, 0, LCD_MAX_X, LCD_MAX_Y);
+  set_addr(0, 0, LCD_MAX_X, LCD_MAX_Y);
 
   // 0°
 #if !FLIP_X && !FLIP_Y && !EX_X_Y
   uint16_t length = (LCD_MAX_X + 1) * (LCD_MAX_Y + 1);
-  while (length--) sendRGB(*source++);
+  while (length--) send_rgb(*source++);
 #endif
 
   // 180°
 #if FLIP_X && FLIP_Y && !EX_X_Y
   uint16_t length = (LCD_MAX_X + 1) * (LCD_MAX_Y + 1);
   source += length - 1;
-  while (length--) sendRGB(*source--);
+  while (length--) send_rgb(*source--);
 #endif
 
   // 90°
@@ -96,7 +96,7 @@ void Display::scanBitmap(RGB *source)
   for (byte j = 0; j < LCD_MAX_Y + 1; j++) {
     ptr = source + j;
     for (byte i = 0; i < LCD_MAX_X + 1; i++) {
-      sendRGB(*source);
+      send_rgb(*source);
       ptr -= LCD_MAX_Y + 1;
     }
   }
@@ -109,7 +109,7 @@ void Display::scanBitmap(RGB *source)
   for (byte j = 0; j < LCD_MAX_Y + 1; j++) {
     ptr = source - j;
     for (byte i = 0; i < LCD_MAX_X + 1; i++) {
-      sendRGB(*source);
+      send_rgb(*source);
       ptr += LCD_MAX_Y + 1;
     }
   }
@@ -136,9 +136,9 @@ void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
 #endif
 
 #if EX_X_Y
-  setAddr(y, x, y1, x1);
+  set_addr(y, x, y1, x1);
 #else
-  setAddr(x, y, x1, y1);
+  set_addr(x, y, x1, y1);
 #endif
 
 #if EX_X_Y
@@ -159,14 +159,14 @@ void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
         data = pgm_read_byte((word)source + (j >> 3) * dx + i);
         bit = 128;
       }
-      if (data & bit) sendRGB(_color);
-      else sendRGB(_background);
+      if (data & bit) send_rgb(_color);
+      else send_rgb(_background);
       bit >>= 1;
     #else
     for (byte j = 0; j < dy; j++) {
       if (!(j & 7)) data = pgm_read_byte((word)source + (j >> 3) * dx + i);
-      if (data & 1) sendRGB(_color);
-      else sendRGB(_background);
+      if (data & 1) send_rgb(_color);
+      else send_rgb(_background);
       data >>= 1;
     #endif
 
@@ -191,8 +191,8 @@ void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
     #endif
 
       byte data = pgm_read_byte(offset + i);
-      if (data & bit) sendRGB(_color);
-      else sendRGB(_background);
+      if (data & bit) send_rgb(_color);
+      else send_rgb(_background);
     }
   }
 
@@ -206,7 +206,7 @@ void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
 #define VIEWPORT_OFFSET 30
 void Display::demo(byte d)
 {
-  setAddr(0, 0, LCD_MAX_X, LCD_MAX_Y);
+  set_addr(0, 0, LCD_MAX_X, LCD_MAX_Y);
   for (byte y = VIEWPORT_OFFSET; y < LCD_MAX_Y + VIEWPORT_OFFSET + 1; y++) {
     word yy = y * y;
 
@@ -218,7 +218,7 @@ void Display::demo(byte d)
       word g = ((yy - xx) >> 6) + e;
       word b = ((x * y) >> 6) - e;
 
-      sendRGB(r, g, b);
+      send_rgb(r, g, b);
     }
   }
   DISPLAY_DISCONNECT
@@ -226,7 +226,7 @@ void Display::demo(byte d)
 
 void Display::test(byte k)
 {
-  setAddr(0, 0, LCD_MAX_X, LCD_MAX_Y);
+  set_addr(0, 0, LCD_MAX_X, LCD_MAX_Y);
   for (byte y = 0; y < LCD_MAX_Y + 1; y++)
     for (byte x = 0; x < LCD_MAX_X + 1; x++) {
 
@@ -234,9 +234,9 @@ void Display::test(byte k)
       // word g = y << 1;
       // word b = k;
 
-      // sendRGB(RGB(r, g, b));
-      // sendRGB(r, g, b);
-      sendRGB(x << 1, y << 1, k);
+      // send_rgb(RGB(r, g, b));
+      // send_rgb(r, g, b);
+      send_rgb(x << 1, y << 1, k);
     }
   DISPLAY_DISCONNECT
 }

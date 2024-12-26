@@ -1,4 +1,6 @@
+#pragma once
 #include <Arduino.h>
+
 /*
 #### Stack<T, I> T - element, I - index
 + clear() / size()
@@ -26,7 +28,7 @@ public:
   inline  T *top() { return _stack + 1; }
 
 public:
-  void forEach(callback(T *ptr))
+  void each(callback(T *ptr))
   {
     I index = _size;
     T *ptr = _stack;

@@ -18,7 +18,7 @@ int main()
   sei();
 
   text.font(standard_5x7);
-  text.setInterline(3);
+  text.set_inter_line(3);
   lcd.clear(RGB(0, 0, 64));
   lcd.background(RGB(0, 0, 64));
   lcd.color(RGB(255, 255, 127));

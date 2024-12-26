@@ -1,5 +1,4 @@
-#ifndef FONT_H
-#define FONT_H
+#pragma once
 
 #include <Arduino.h>
 #include "display/display.h"
@@ -15,61 +14,59 @@
 class Text {
 private:
   Draw *_display;
-  uint16_t  _font;
-  uint16_t  _offset;
-  uint8_t  _charSize;
-  uint8_t  _line;
-  uint8_t  _interline;
-  uint8_t  _interval;
+  word  _font;
+  word  _offset;
+  byte  _charSize;
+  byte  _line;
+  byte  _interline;
+  byte  _interval;
 
 public:
-  uint8_t cursorX = 0;
-  uint8_t cursorY = 0;
+  byte cursorX = 0;
+  byte cursorY = 0;
 
 public:
   Text(Draw *lcd) :_display(lcd) {};
 
-  void font(const uint8_t *font);
+  void font(const byte *font);
 
   void printf(const char *string, ...);
-  void symbol(uint8_t symbol);
+  void symbol(byte symbol);
   void print(const char *string);
-  void printPstr(const char *string);
+  void print_pstr(const char *string);
 
-  void print(uint8_t number);
-  void print(uint16_t number);
+  void print(byte number);
+  void print(word number);
   void print(uint32_t number);
   void print(int8_t number);
   void print(int16_t number);
   void print(int32_t number);
 
-  uint8_t hexToChar(uint8_t number);
+  byte hex_to_char(byte number);
   void printHex(uint64_t number);
   void printHex(uint32_t number);
-  void printHex(uint16_t number);
-  void printHex(uint8_t number);
+  void printHex(word number);
+  void printHex(byte number);
 
-  uint8_t getRow() { return MAX_Y / _interline; }
-  uint8_t getCol() { return MAX_X / _interval; }
+  byte get_row() { return MAX_Y / _interline; }
+  byte get_col() { return MAX_X / _interval; }
 
 public:
-  inline  void at(uint8_t x, uint8_t y) { cursorX = x; cursorY = y; }
-  inline void setInterline(uint8_t interline) { _interline = FONT_HEIGHT + interline; }
-  inline void setInterval(uint8_t interval) { _interval = (FONT_WEIGHT & 0x7f) + interval; }
+  inline  void at(byte x, byte y) { cursorX = x; cursorY = y; }
+  inline void set_inter_line(byte interline) { _interline = FONT_HEIGHT + interline; }
+  inline void set_interval(byte interval) { _interval = (FONT_WEIGHT & 0x7f) + interval; }
 
   // Вертикальная табуляция / Перевод строки
-  inline void printLF() { cursorY += _interline; }
+  inline void LF() { cursorY += _interline; }
   // Возврат каретки
-  inline void printCR() { cursorX = 0; }
+  inline void CR() { cursorX = 0; }
   // Табуляция
-  inline void printTAB() { cursorX = ((cursorX / (_interval << FONT_TAB_FACTOR) + 1) * _interval) << FONT_TAB_FACTOR; }
+  inline void TAB() { cursorX = ((cursorX / (_interval << FONT_TAB_FACTOR) + 1) * _interval) << FONT_TAB_FACTOR; }
   // Шаг назад
-  inline void printBS() { cursorX -= _interval; if (cursorX > MAX_X) cursorX = 0; }
+  inline void BS() { cursorX -= _interval; if (cursorX > MAX_X) cursorX = 0; }
 
   // Сигнал (обратный вызов)
   inline void bel() {}
   // Escape (обратный вызов)
   inline void escape() {}
 };
-
-#endif

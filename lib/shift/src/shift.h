@@ -1,3 +1,4 @@
+#pragma once
 #include <Arduino.h>
 
 // Регистры _SFR_MEM_ADDR(PORTx), _SFR_MEM_ADDR(DDRx), _SFR_MEM_ADDR(PINx)
@@ -24,8 +25,8 @@ public:
 public:
   inline void reset(boolean hold = false) { _MMIO_BYTE(_port) &= ~_rst; if (!hold)_MMIO_BYTE(_port) |= _rst; }
   inline void load() { _MMIO_BYTE(_port) &= ~_rst; _MMIO_BYTE(_port) |= _rst; }
-  inline void readBytes(byte *buffer, byte length) { while (length--) *buffer++ = read(); }
-  inline void writeBytes(byte *buffer, byte length) { while (length--) write(*buffer++); }
+  inline void read_bytes(byte *buffer, byte length) { while (length--) *buffer++ = read(); }
+  inline void write_bytes(byte *buffer, byte length) { while (length--) write(*buffer++); }
 
   byte read()
   {

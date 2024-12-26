@@ -5,9 +5,7 @@
  *      Author: Andrey Sharoyko <vanyamboe@gmail.com>
  */
 
-#ifndef AVRASM_H_
-#define AVRASM_H_
-
+#pragma once
 #include <inttypes.h>
 
 inline void __ADC(register uint8_t Rd, register uint8_t Rr)
@@ -401,5 +399,3 @@ inline void __POP(register uint8_t Rd)
 #define __SLEEP __asm__ __volatile__ ("sleep")
 #define __WDR __asm__ __volatile__ ("wdr")
 #define __BREAK __asm__ __volatile__ ("break")
-
-#endif /* AVRASM_H_ */

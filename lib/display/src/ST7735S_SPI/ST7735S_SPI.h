@@ -1,5 +1,4 @@
-#ifndef ST7735S_SPI_H
-#define ST7735S_SPI_H
+#pragma once
 
 #include "display.config.h"
 #include "rgb/rgb.h"
@@ -71,17 +70,15 @@ public:
   ST7735S_SPI();
 
 private:
-  void sendCommand(byte data);
+  void send_command(byte data);
 
 protected:
-  void setAddr(byte x0, byte y0, byte x1, byte y1);
-  // void sendZero();
-  void sendByte(byte data);
-  void sendRGB(byte r, byte g, byte b);
-  void sendRGB(uint16_t data); // формат 0x0rgb / RGB_16
-  void sendRGB(uint32_t color);
-  void sendRGB(RGB color);
+  void set_addr(byte x0, byte y0, byte x1, byte y1);
+  void send_byte(byte data);
+  void send_rgb(byte r, byte g, byte b);
+  void send_rgb(uint16_t data); // формат 0x0rgb / RGB_16
+  void send_rgb(uint32_t color);
+  void send_rgb(RGB color);
 
   void rect(byte x0, byte y0, byte x1, byte y1, RGB color);
 };
-#endif

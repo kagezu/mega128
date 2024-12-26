@@ -1,5 +1,5 @@
-#ifndef CONTEXT_H_
-#define CONTEXT_H_
+
+#pragma once
 #include <Arduino.h>
 
 #define I_SAVE  __asm__ __volatile__ ( \
@@ -93,6 +93,3 @@
       "reti                 \n\t" \
 			:: \
 		)
-
-
-#endif
