@@ -13,6 +13,13 @@ void func()
   text.printf(PSTR("SP = %2x \n"), sp);
 }
 
+void func(byte x)
+{
+  // byte *sp = (byte *)SP;
+  text.printf(PSTR("X = %x \n"), x);
+}
+
+#pragma GCC optimize "O0"
 int main()
 {
   sei();
@@ -29,29 +36,23 @@ int main()
     // func();
     Core::async(func);
     volatile byte t1 = Core::count();
-    Core::async(func);
+    Core::async(func, t1);
     volatile byte t2 = Core::count();
-    Core::async(func);
+    Core::async(func, t2);
     volatile byte t3 = Core::count();
-    Core::async(func);
+    Core::async(func, t1);
     volatile byte t4 = Core::count();
-    Core::async(func);
+    Core::async(func, t1);
     volatile byte t5 = Core::count();
-    // Core::async(func);
-    // Core::await();
-    // Core::async(func);
-    // Core::async(func);
-    // Core::async(func);
-    // Core::async(func);
-    // Core::await(2);
+    Core::await();
 
     I_SAVE;
     text.printf(PSTR("\ft = %x %x %x %x %x   \n"), t1, t2, t3, t4, t5);
     I_REST;
 
     text.printf(PSTR("\nmain = %2x\n"), main);
-    text.printf(PSTR("func = %2x\n"), func);
-    text.printf(PSTR("async = %2x\n"), Core::async);
+    // text.printf(PSTR("func = %2x\n"), func);
+    // text.printf(PSTR("async = %2x\n"), Core::async);
 
     // while (true);
   }

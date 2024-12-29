@@ -4,7 +4,7 @@
 #include <timer.h>
 #include "task.h"
 
-#define TASK_STACK_SIZE   150
+#define TASK_STACK_SIZE   250
 #define TASK_MAX_COUNT    3
 #define FREQ_DEFAULT      300
 
@@ -42,7 +42,7 @@ namespace Core {
   // Инициализация операционной системы
   // Частота от (F_CPU / 1024) до (F_CPU / 1024) Гц
   // для 16 МГц от 15625 до 61 Гц
-  void GCC_INLINE init(word freq)
+  void GCC_INLINE init()
   {
     for (byte i = 0; i < TASK_MAX_COUNT; i++) {
       Task t((word)memory[i], TASK_STACK_SIZE);
@@ -52,7 +52,7 @@ namespace Core {
     now()->load();
     T0_DIV_1024;
     T0_CTC;
-    OCR0A = ((F_CPU / 1024) / freq - 1);
+    OCR0A = ((F_CPU / 1024) / FREQ_DEFAULT - 1);
     T0_COMPA_ON;
   }
 #pragma GCC diagnostic pop
@@ -87,12 +87,29 @@ namespace Core {
     current()->load();
     LOAD_CONTEXT;
   }
+
+  // Выполнить функцию асинхронно с аргументами
+  template <typename T>
+  void GCC_NO_INLINE GCC_NAKED async(void callback(T), T arg)
+  {
+    while (!tasks.heap())
+      next_task();
+    SAVE_CONTEXT;
+    current()->save();
+    now()->load();
+    sei();
+    callback(arg);
+    cli();
+    drop();
+    current()->load();
+    LOAD_CONTEXT;
+  }
 }
 #pragma GCC pop_options
 
 GCC_INIT(7)
 {
-  Core::init(FREQ_DEFAULT);
+  Core::init();
 }
 
 ISR(TIMER0_COMPA_vect, GCC_NAKED)
