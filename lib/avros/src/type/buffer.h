@@ -13,10 +13,10 @@ template <typename T, typename  S>
 class Buffer {
 protected:
   T *_buffer;
-  S _head;                                    // Голова
-  S _tail;                                    // Хвост
-  S _size;                                    // Максимальный размер
-  S _heap;                                    // Размер кучи
+  S _head;    // Голова
+  S _tail;    // Хвост
+  S _size;    // Максимальный размер
+  S _heap;    // Размер кучи
 
 public:
   Buffer(S size);
@@ -34,7 +34,6 @@ public:
   void    write(T *data, S length);
   void    read(T *data, S length);
 
-  boolean isIndex(S index);
   T       pop();
   S       unshift(T data);
   S       push(T data);
@@ -61,7 +60,7 @@ template<typename T, typename S>
 void Buffer<T, S>::clear()
 {
   _heap = _size;
-  _head = _tail = S(0);
+  _head = _tail = 0;
 }
 
 // Текущий размер буфера
@@ -105,7 +104,7 @@ void Buffer<T, S>::write(T data)
 {
   if (!_heap) return;                       // Буфер полон
   _buffer[_head++] = data;
-  _head = _head == _size ? S(0) : _head;
+  _head = _head == _size ? 0 : _head;
   _heap--;
 }
 
@@ -115,7 +114,7 @@ T Buffer<T, S>::read()
 {
   if (_heap == _size) return T(0);          // Буфер пуст
   S index = _tail++;
-  _tail = _tail == _size ? S(0) : _tail;
+  _tail = _tail == _size ? 0 : _tail;
   _heap++;
   return _buffer[index];
 }
@@ -157,25 +156,11 @@ void Buffer<T, S>::read(T *data, S length)
   while (length--) *data++ = *source++;
 }
 
-// Проверяет существование элемента по индексу
-template<typename T, typename S>
-boolean Buffer<T, S>::isIndex(S index)
-{
-  boolean result = false;
-  if (index < _size && length()) {          // Если индекс не выходит за пределы буфера и буфер не пуст
-    if (_head > _tail) {                    // Находиться ли индекс между указателями в зависимости от их положения
-      if (index >= _tail && index < _head) result = true;
-    }
-    else if (index >= _tail || index < _head) result = true;
-  }
-  return result;
-}
-
 // Добавляет элемент с головы, возвращает его индекс
 template<typename T, typename S>
 S Buffer<T, S>::push(T data)
 {
-  if (!_heap) return S(-1);                 // Буфер полон
+  if (!_heap) return -1;                 // Буфер полон
   S index = _head;
   _buffer[_head++] = data;
   _head = _head == _size ? S(0) : _head;
@@ -187,7 +172,7 @@ S Buffer<T, S>::push(T data)
 template<typename T, typename S>
 T Buffer<T, S>::pop()
 {
-  if (_heap == _size) return T(0);          // Буфер пуст
+  if (_heap == _size) return 0;          // Буфер пуст
   if (_head == 0) _head = _size - 1;
   _heap++;
   return _buffer[_head];
@@ -197,7 +182,7 @@ T Buffer<T, S>::pop()
 template<typename T, typename S>
 S Buffer<T, S>::unshift(T data)
 {
-  if (!_heap) return S(-1);                 // Буфер полон
+  if (!_heap) return -1;                 // Буфер полон
   if (_tail == 0) _tail = _size;
   _buffer[--_tail] = data;
   _heap--;

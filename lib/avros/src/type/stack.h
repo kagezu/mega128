@@ -6,9 +6,10 @@
 + clear() / size()
 + push() --> [ sp ]
 + pop () <-- [++sp]
-+ peek() <== [sp+1]
++ top () <== [sp+1]
 + head() <== [ sp ]
-+ forEach() / find() / findindex()
++ each() / find() / findindex()
+index = 0[] 1[A] 2[B] ...
 */
 template <typename T, typename I>
 class Stack {
@@ -70,5 +71,3 @@ public:
   }
 
 };
-
-Stack<byte, byte> g;

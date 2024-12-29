@@ -8,7 +8,7 @@
 + unshift() -> [ tail ] .. [ head ] -->   pop()
 + back() <= shift () --> push()
 + circ() = unshift() <-- pop()
-+ tail() / head() = & [ tai l] / [ head ]
++ tail() / head() = & [ tail ] / [ head ]
 + erase(X) / drop(x) [ X ] <--  <-- [ head ]
 + find() / filter() / forEach()
 */

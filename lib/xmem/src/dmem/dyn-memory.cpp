@@ -10,7 +10,7 @@ DynMemory::DynMemory(word start, word length)
 word DynMemory::getSizeFree()
 {
   _count = 0;
-  _stack.forEach(this->_sum);
+  _stack.each(this->_sum);
   return (word)_stack.head() - _start - _count;
 }
 
