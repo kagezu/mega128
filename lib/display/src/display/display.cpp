@@ -2,7 +2,7 @@
 
 // Реализация виртуальных методов класса Draw
 
-void Display::pixel(byte x, byte y, RGB color)
+void Display::pixel(byte x, byte y)
 {
   if (x > MAX_X || y > MAX_Y) return;
 
@@ -22,16 +22,16 @@ void Display::pixel(byte x, byte y, RGB color)
 
 #if RGB_FORMAT == RGB_12
   send_rgb((word)0);
-  send_rgb(color);
+  send_rgb(_color);
 #elif RGB_FORMAT == RGB_16
   send_byte(0);
   send_byte(0);
-  send_rgb(color);
+  send_rgb(_color);
 #elif RGB_FORMAT == RGB_18
   send_byte(0);
   send_byte(0);
   send_byte(0);
-  send_rgb(color);
+  send_rgb(_color);
 #endif
   DISPLAY_DISCONNECT;
 }
@@ -57,11 +57,7 @@ void Display::rect_fill(uint8_t x, uint8_t y, uint8_t x1, uint8_t y1)
 #endif
 }
 
-void Display::clear(RGB color)
-{
-  rect(0, 0, LCD_MAX_X, LCD_MAX_Y, color);
-}
-
+/*
 void Display::scan_bitmap(uint8_t x, uint8_t y, uint8_t width, uint8_t height, RGB *source)
 {
   set_addr(x, y, x + width - 1, y + height - 1);
@@ -117,6 +113,7 @@ void Display::scan_bitmap(RGB *source)
 
   DISPLAY_DISCONNECT;
 }
+*/
 
 void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
 {
@@ -204,6 +201,7 @@ void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
 // тестирование дисплея
 
 #define VIEWPORT_OFFSET 30
+
 void Display::demo(byte d)
 {
   set_addr(0, 0, LCD_MAX_X, LCD_MAX_Y);

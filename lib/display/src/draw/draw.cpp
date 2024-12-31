@@ -2,45 +2,45 @@
 
 #define swap(a, b) { int16_t t = a; a = b; b = t; }
 
-void Draw::w_line(uint8_t x, uint8_t y, uint8_t x1)
+void Draw::w_line(byte x, byte y, byte x1)
 {
   // if (x > x1) swap(x, x1);
 
   if (x > MAX_X) x = 0;
   if (x1 > MAX_X) x1 = MAX_X;
-  if (x == x1) pixel(x, y, _color);
+  if (x == x1) pixel(x, y);
   else  rect_fill(x, y, x1, y);
 }
 
-void Draw::h_line(uint8_t x, uint8_t y, uint8_t y1)
+void Draw::h_line(byte x, byte y, byte y1)
 {
   // if (y > y1) swap(y, y1);
 
   if (y > MAX_Y) y = 0;
   if (y1 > MAX_Y) y1 = MAX_Y;
-  if (y == y1) pixel(x, y, _color);
+  if (y == y1) pixel(x, y);
   else  rect_fill(x, y, x, y1);
 }
 
-void Draw::w_line_fat(uint8_t x, uint8_t y, uint8_t x1)
+void Draw::w_line_fat(byte x, byte y, byte x1)
 {
-  uint8_t y1 = y + ((_fat + 1) >> 1) - 1;
+  byte y1 = y + ((_fat + 1) >> 1) - 1;
   y -= _fat >> 1;
   if (y > MAX_Y) y = 0;
   if (y1 > MAX_Y) y1 = MAX_Y;
   rect_fill(x, y, x1, y1);
 }
 
-void Draw::h_line_fat(uint8_t x, uint8_t y, uint8_t y1)
+void Draw::h_line_fat(byte x, byte y, byte y1)
 {
-  uint8_t x1 = x + ((_fat + 1) >> 1) - 1;
+  byte x1 = x + ((_fat + 1) >> 1) - 1;
   x -= _fat >> 1;
   if (x > MAX_X) x = 0;
   if (x1 > MAX_X) x1 = MAX_X;
   rect_fill(x, y, x1, y1);
 }
 
-void Draw::line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
+void Draw::line(byte x0, byte y0, byte x1, byte y1)
 {
   bool steep = abs(y1 - y0) > abs(x1 - x0);
   if (steep) {
@@ -72,7 +72,7 @@ void Draw::line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
     }
   }
 }
-void Draw::circle(uint8_t x, uint8_t y, uint8_t radius)
+void Draw::circle(byte x, byte y, byte radius)
 {
   int16_t f = 1 - radius;
   int16_t ddF_x = 1;
@@ -106,7 +106,7 @@ void Draw::circle(uint8_t x, uint8_t y, uint8_t radius)
   }
 }
 
-void Draw::circle_fat(uint8_t x, uint8_t y, uint8_t radius)
+void Draw::circle_fat(byte x, byte y, byte radius)
 {
   int16_t f = 1 - radius;
   int16_t ddF_x = 1;
@@ -114,12 +114,12 @@ void Draw::circle_fat(uint8_t x, uint8_t y, uint8_t radius)
   int16_t dx = 0;
   int16_t dy = radius;
 
-  uint8_t d0 = (_fat >> 1);
-  uint8_t d1 = ((_fat + 1) >> 1) - 1;
-  uint8_t x1 = x - d0;
-  uint8_t y1 = y - d0;
-  uint8_t x2 = x + d1;
-  uint8_t y2 = y + d1;
+  byte d0 = (_fat >> 1);
+  byte d1 = ((_fat + 1) >> 1) - 1;
+  byte x1 = x - d0;
+  byte y1 = y - d0;
+  byte x2 = x + d1;
+  byte y2 = y + d1;
 
   circle(x, y, radius - d0);
   circle(x, y, radius + d1);
@@ -151,7 +151,7 @@ void Draw::circle_fat(uint8_t x, uint8_t y, uint8_t radius)
   }
 }
 
-void Draw::circle_fill(uint8_t x, uint8_t y, uint8_t radius)
+void Draw::circle_fill(byte x, byte y, byte radius)
 {
   radius++;
   int16_t f = 1 - radius;
@@ -178,7 +178,7 @@ void Draw::circle_fill(uint8_t x, uint8_t y, uint8_t radius)
   }
 }
 
-void Draw::round_rect_fill(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius)
+void Draw::round_rect_fill(byte x, byte y, byte width, byte height, byte radius)
 {
   int16_t f = 1 - radius;
   int16_t ddF_x = 1;
@@ -186,10 +186,10 @@ void Draw::round_rect_fill(uint8_t x, uint8_t y, uint8_t width, uint8_t height, 
   int16_t dx = 0;
   int16_t dy = radius;
 
-  uint8_t x1 = x + radius;
-  uint8_t y1 = y + radius;
-  uint8_t x2 = x + width - radius - 1;
-  uint8_t y2 = y + height - radius - 1;
+  byte x1 = x + radius;
+  byte y1 = y + radius;
+  byte x2 = x + width - radius - 1;
+  byte y2 = y + height - radius - 1;
 
   rect_fill(x, y1, x + width, y2);
 
@@ -211,7 +211,7 @@ void Draw::round_rect_fill(uint8_t x, uint8_t y, uint8_t width, uint8_t height, 
   }
 }
 
-void Draw::round_rect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius)
+void Draw::round_rect(byte x, byte y, byte width, byte height, byte radius)
 {
   int16_t f = 1 - radius;
   int16_t ddF_x = 1;
@@ -219,10 +219,10 @@ void Draw::round_rect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8
   int16_t dx = 0;
   int16_t dy = radius;
 
-  uint8_t x1 = x + radius;
-  uint8_t y1 = y + radius;
-  uint8_t x2 = x + width - radius - 1;
-  uint8_t y2 = y + height - radius - 1;
+  byte x1 = x + radius;
+  byte y1 = y + radius;
+  byte x2 = x + width - radius - 1;
+  byte y2 = y + height - radius - 1;
 
   w_line(x1, y, x2);
   w_line(x1, y + height - 1, x2);
@@ -250,7 +250,7 @@ void Draw::round_rect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8
   }
 }
 
-void Draw::line_fat(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
+void Draw::line_fat(byte x0, byte y0, byte x1, byte y1)
 {
   bool steep = abs(y1 - y0) > abs(x1 - x0);
   if (steep) {
@@ -287,7 +287,7 @@ void Draw::line_fat(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
   }
 }
 
-void Draw::rect_line(uint8_t x, uint8_t y, uint8_t width, uint8_t height)
+void Draw::rect_line(byte x, byte y, byte width, byte height)
 {
   w_line(x, y, x + width - 1);
   w_line(x, y + height - 1, x + width - 1);
@@ -295,10 +295,10 @@ void Draw::rect_line(uint8_t x, uint8_t y, uint8_t width, uint8_t height)
   h_line(x + width - 1, y + 1, y + height - 2);
 }
 
-void Draw::rect_fat(uint8_t x, uint8_t y, uint8_t width, uint8_t height)
+void Draw::rect_fat(byte x, byte y, byte width, byte height)
 {
-  uint8_t d0 = _fat >> 1;
-  uint8_t d1 = ((_fat + 1) >> 1);
+  byte d0 = _fat >> 1;
+  byte d1 = ((_fat + 1) >> 1);
   w_line_fat(x - d0, y, x + width - 2 + d1);
   w_line_fat(x - d0, y + height - 1, x + width - 2 + d1);
   h_line_fat(x, y + d0, y + height - d1);

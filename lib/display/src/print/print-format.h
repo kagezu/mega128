@@ -1,11 +1,10 @@
 #pragma once
 
 #include <Arduino.h>
-#include "display/display.h"
 
-class Print {
+class PrintFormat {
 public:
-  Print() {};
+  PrintFormat() {};
 
   void printf(const char *string, ...);
   void print(const char *);

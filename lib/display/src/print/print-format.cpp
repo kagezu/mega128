@@ -1,7 +1,7 @@
-#include "print.h"
+#include "print-format.h"
 #include <macros/context.h>
 
-void Print::printf(const char *string, ...)
+void PrintFormat::printf(const char *string, ...)
 {
   char ch;
   va_list args;
@@ -47,35 +47,35 @@ void Print::printf(const char *string, ...)
   va_end(args);
 }
 
-void Print::print(const char *string)
+void PrintFormat::print(const char *string)
 {
   while (char ch = *string++) if ((byte)ch < 0xd0) write(ch);
 }
 
-void Print::print_pstr(const char *string)
+void PrintFormat::print_pstr(const char *string)
 {
   while (char ch = pgm_read_byte(string++)) if ((byte)ch < 0xd0) write(ch);
 }
 
-void Print::print(int32_t number)
+void PrintFormat::print(int32_t number)
 {
   if (number < 0) { write('-'); number = -number; }
   print((uint32_t)number);
 }
 
-void Print::print(int16_t number)
+void PrintFormat::print(int16_t number)
 {
   if (number < 0) { write('-'); number = -number; }
   print((word)number);
 }
 
-void Print::print(int8_t number)
+void PrintFormat::print(int8_t number)
 {
   if (number < 0) { write('-'); number = -number; }
   print((byte)number);
 }
 
-void Print::print(uint32_t number)
+void PrintFormat::print(uint32_t number)
 {
   static const uint32_t mult[] PROGMEM = { 1000000000,100000000,10000000,1000000,100000,10000,1000,100,10,1 };
   byte out = 0;
@@ -90,7 +90,7 @@ void Print::print(uint32_t number)
   }
 }
 
-void Print::print(word number)
+void PrintFormat::print(word number)
 {
   static const word mult[] PROGMEM = { 10000,1000,100,10,1 };
   byte out = 0;
@@ -105,7 +105,7 @@ void Print::print(word number)
   }
 }
 
-void Print::print(byte number)
+void PrintFormat::print(byte number)
 {
   static const byte mult[] PROGMEM = { 100,10,1 };
   byte out = 0;
@@ -120,7 +120,7 @@ void Print::print(byte number)
   }
 }
 
-void Print::print_h(uint64_t number)
+void PrintFormat::print_h(uint64_t number)
 {
   union { uint64_t val; struct { byte a; byte b; byte c; byte d; byte e; byte f; byte g; byte h; }; } out;
   out.val = number;
@@ -135,7 +135,7 @@ void Print::print_h(uint64_t number)
   print_h(out.a);
 }
 
-void Print::print_h(uint32_t number)
+void PrintFormat::print_h(uint32_t number)
 {
   union { uint32_t val; struct { byte a; byte b; byte c; byte d; }; } out;
   out.val = number;
@@ -146,7 +146,7 @@ void Print::print_h(uint32_t number)
   print_h(out.a);
 }
 
-void Print::print_h(word number)
+void PrintFormat::print_h(word number)
 {
   union { word val; struct { byte low; byte high; }; } out;
   out.val = number;
@@ -155,7 +155,7 @@ void Print::print_h(word number)
   print_h(out.low);
 }
 
-void Print::print_h(byte number)
+void PrintFormat::print_h(byte number)
 {
   byte low = number & 0xf;
   byte high = number >> 4;
