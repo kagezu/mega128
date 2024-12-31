@@ -3,8 +3,9 @@
 
 ST7735S_SPI::ST7735S_SPI()
 {
-  INIT_LCD
-    delayMicroseconds(15000); // Ждать стабилизации напряжений
+  INIT_LCD;
+  INIT_SPI;
+  delayMicroseconds(15000); // Ждать стабилизации напряжений
   DISPLAY_CONNECT;          // CS Выбор дисплея
 
   send_command(SLPOUT);      // Проснуться

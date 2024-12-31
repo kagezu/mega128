@@ -1,5 +1,5 @@
 #pragma once
-#include "Arduino.h"
+#include <macros/helper.h>
 
 //===================== Config =============================
 
@@ -27,37 +27,38 @@
 
 //==========================================================
 
-// LCD_PORT     Порт для SDA, SCK
+// LCD_DATA     Порт для SDA, SCK, RST ( 8 если не используется )
 // LCD_CONTROL  Порт для CS, RS
 // LCD_CS       Выбор дисплея
 // LCD_RS       0 = Запись команды / 1 = Запись данных
 // INIT_LCD     Инициализация порта
+// INIT_SPI     Инициализация SPI
 
 #ifdef __AVR_ATmega128__
-#define LCD_PORT PORTE
+#define LCD_DATA    E
 #define LCD_SCK     _BV(PE2)
 #define LCD_SDA     _BV(PE3)
+#define LCD_RST     _BV(PE7)
 
-#define LCD_CONTROL PORTE
-#define LCD_CS      PE0
-#define LCD_RS      PE1
-
-#define INIT_LCD                                            \
-  DDRE  |=  LCD_SDA | LCD_SCK | _BV(LCD_CS) | _BV(LCD_RS);  \
-  PORTE |=  LCD_SDA | LCD_SCK | _BV(LCD_CS) | _BV(LCD_RS);
+#define LCD_CONTROL E
+#define LCD_CS      _BV(PE0)
+#define LCD_RS      _BV(PE1)
 #endif
 
 #ifdef __AVR_ATmega328P__
-#if LCD_SPI
+#ifdef LCD_SPI
 
-#define LCD_CONTROL PORTC
-#define LCD_CS      PC5
-#define LCD_RS      PC4
+// Пины зарезервированы SPI
+#define LCD_DATA    B
+#define LCD_SCK     _BV(PB5)
+#define LCD_SDA     _BV(PB3)
+#define LCD_RST     _BV(PB2)
 
-#define INIT_LCD                                \
-  DDRC   |= _BV(LCD_RS) | _BV(LCD_CS);          \
-  PORTC  |= _BV(LCD_RS) | _BV(LCD_CS);          \
-  DDRB   |= _BV(PB2)    | _BV(PB3) | _BV(PB5);  \
+#define LCD_CONTROL C
+#define LCD_CS      _BV(PC5)
+#define LCD_RS      _BV(PC4)
+
+#define INIT_SPI                                \
   SPCR    = _BV(SPE)    | _BV(MSTR);            \
   SPSR    = _BV(SPI2X);                         \
   TCCR0B |= _BV(CS00);                          \
@@ -65,33 +66,39 @@
 
 #else
 // SDA, SCK должны быть на одном порту !
-#define LCD_PORT    PORTC
-#define LCD_SDA     _BV(PB1)
-#define LCD_SCK     _BV(PB0)
+#define LCD_DATA    C
+#define LCD_SCK     _BV(PC0)
+#define LCD_SDA     _BV(PC1)
+#define LCD_RST     _BV(PC3)
 
-#define LCD_CONTROL PORTC
-#define LCD_CS      PC4
-#define LCD_RST     PC3
-#define LCD_RS      PC2
-
-#define INIT_LCD                                        \
-  DDRC  |= _BV(LCD_RS) | _BV(LCD_CS) | _BV(LCD_RST);    \
-  PORTC |= _BV(LCD_RS) | _BV(LCD_CS) | _BV(LCD_RST);    \
-  DDRC  |=  LCD_SDA    |  LCD_SCK ;                     \
-  PORTC |=  LCD_SDA    |  LCD_SCK ;
+#define LCD_CONTROL C
+#define LCD_CS      _BV(PC4)
+#define LCD_RS      _BV(PC2)
 #endif
 
+#define INIT_SPI  // Заглушка
 #endif
+
+///////////////////////////////////////////////////////////////////////////
+// Вторичные макросы, зависящие от настроек выше
+
+#define INIT_LCD                                          \
+  SET_BITS(PORT(LCD_DATA), LCD_RST | LCD_SDA | LCD_SCK)   \
+  SET_BITS(DDR(LCD_DATA), LCD_RST | LCD_SDA | LCD_SCK)    \
+  SET_BITS(PORT(LCD_CONTROL), LCD_CS | LCD_RS);           \
+  SET_BITS(DDR(LCD_CONTROL), LCD_CS | LCD_RS);
+
+#define LCD_PORT    PORT(LCD_DATA)
 
 // размер дисплея
 #define LCD_MAX_X 127
 #define LCD_MAX_Y 159
 
 // Команды управления вывода на дисплей
-#define DISPLAY_DISCONNECT  bitSet(LCD_CONTROL, LCD_CS);      // Снять выбор дисплея
-#define DATA_MODE           bitSet(LCD_CONTROL, LCD_RS);      // Запись данных
-#define DISPLAY_CONNECT     bitClear(LCD_CONTROL, LCD_CS);    // Выбор дисплея
-#define COMMAND_MODE        bitClear(LCD_CONTROL, LCD_RS) ;   // Запись команды
+#define DISPLAY_DISCONNECT  SET_BITS(PORT(LCD_CONTROL), LCD_CS);    // Снять выбор дисплея
+#define DATA_MODE           SET_BITS(PORT(LCD_CONTROL), LCD_RS);    // Запись данных
+#define DISPLAY_CONNECT     CLR_BITS(PORT(LCD_CONTROL), LCD_CS);    // Выбор дисплея
+#define COMMAND_MODE        CLR_BITS(PORT(LCD_CONTROL), LCD_RS) ;   // Запись команды
 
 #if EX_X_Y
 #define MAX_X     LCD_MAX_Y

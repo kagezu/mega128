@@ -25,10 +25,11 @@ int main(void)
 
   while (true) {
     for (char k = lcd.get_height() - 1; k >= 0; k--) {
-      byte *p = (byte *)ptr;
+      byte *p = ptr;
       for (byte i = 0; i < lcd.get_row(); i++) {
         lcd.at(0, i * (lcd.get_height()) + k);
-        lcd.printf(PSTR("%2x %x %x %x %x"), p, *p++, *p++, *p++, *p++);
+        lcd.printf(PSTR("%2x %x %x %x %x"), p, *p, *(p+1), *(p+2), *(p+3));
+        p+=4;
       }
     }
   ptr += 4;
