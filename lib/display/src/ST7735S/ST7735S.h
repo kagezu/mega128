@@ -1,6 +1,6 @@
 #pragma once
 
-#include "display.config.h"
+#include "display/config.h"
 #include "rgb/rgb.h"
 
 // Команды дисплея

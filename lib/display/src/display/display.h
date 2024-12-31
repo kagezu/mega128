@@ -1,6 +1,6 @@
 #pragma once
 
-#include "display.config.h"
+#include "display/config.h"
 #include "print/print-font.h"
 #include "draw/draw.h"
 

@@ -1,14 +1,8 @@
+#pragma once
 #include <avr/pgmspace.h>
 
-#ifndef SYSTEM5x7_H
-#define SYSTEM5x7_H
-
-static const uint8_t system_5x7[] PROGMEM = {
-96,    // count char
-32,     // first char
-5,7,    // weight * height
-
 // font data
+static const uint8_t data_system_5x7[] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00,// (space)
   0x00, 0x00, 0x5F, 0x00, 0x00,// !
   0x00, 0x07, 0x00, 0x07, 0x00,// "
@@ -108,4 +102,11 @@ static const uint8_t system_5x7[] PROGMEM = {
 
 };
 
-#endif
+static const Font system_5x7 PROGMEM = {
+96,                       // count_char
+32,                       // first_char
+5,                        // weight
+7,                        // height
+0,                        // Моношрифт
+(uint16_t)data_system_5x7 // font data
+};

@@ -30,13 +30,12 @@ void PrintFont::letter(byte ch)
   if (_font.count_char <= ch) ch = 0;
 
   byte dx = _font.weight;
-  byte dy = _font.height;
   word source;
 
   if (_font.offset) {
-    word  charIndex = _font.offset + ch * 2;
-    source = pgm_read_word(charIndex);
-    dx = (pgm_read_word(charIndex + 2) - source) / _line;
+    word  index = _font.offset + ch * 2;
+    source = pgm_read_word(index);
+    dx = (pgm_read_word(index + 2) - source) / _line;
     source += _font.data;
   }
   else
@@ -46,9 +45,9 @@ void PrintFont::letter(byte ch)
     point_y += _interline;
     point_x = 0;
   }
-  if (point_y > MAX_Y - dy) point_x = point_y = 0;
+  if (point_y > MAX_Y - _font.height) point_x = point_y = 0;
   I_SAVE;
-  symbol((byte *)source, point_x, point_y, dx, dy);
+  symbol((byte *)source, point_x, point_y, dx, _font.height);
   I_REST;
   point_x += dx + _interval;
 }

@@ -1,7 +1,7 @@
 #ifndef DRAW_H
 #define DRAW_H
 
-#include "display.config.h"
+#include "display/config.h"
 #include "rgb/rgb.h"
 
 class  Draw {

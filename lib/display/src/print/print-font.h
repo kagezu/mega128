@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
-#include "display.config.h"
+#include "display/config.h"
 #include "print-format.h"
 #include "font/font.h"
 
@@ -9,11 +9,11 @@
 
 class PrintFont : public PrintFormat {
 private:
-  Font  _font;      // Шрифт
-  byte  _charSize;  // Размер символа в байтах
-  byte  _line;      // Высота символа в байтах
-  byte  _interline; // Расстояние между строками
-  byte  _interval;  // Расстояние между символами
+  Font  _font;          // Шрифт
+  byte  _charSize = 0;  // Размер символа в байтах
+  byte  _line = 0;      // Высота символа в байтах
+  byte  _interline = 0; // Расстояние между строками
+  byte  _interval = 0;  // Расстояние между символами
   byte  _tab_factor = FONT_TAB_FACTOR;
 
 public:

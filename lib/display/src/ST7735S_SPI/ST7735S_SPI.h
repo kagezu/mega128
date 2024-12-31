@@ -1,6 +1,6 @@
 #pragma once
 
-#include "display.config.h"
+#include "display/config.h"
 #include "rgb/rgb.h"
 
 #define SPI_WAIT  while (!(SPSR & _BV(SPIF)));
