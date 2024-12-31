@@ -15,7 +15,7 @@
 // #include "../lib/display/demo/screensaver.cpp"
 
 // Вывод памяти на экран
-// #include "../lib/display/demo/memory_scroll.cpp"
+#include "../lib/display/demo/memory_scroll.cpp"
 
 
 // -------------  libray XPage  -----------------
@@ -35,5 +35,5 @@
 
 // -------------  libray AVR OS  ----------------
 // Выделение памяти
-#include "../lib/avros/demo/test.cpp"
+// #include "../lib/avr/demo/test.cpp"
 

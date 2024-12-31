@@ -53,8 +53,10 @@ public:
 
 public:
   inline  void at(byte x, byte y) { cursorX = x; cursorY = y; }
-  inline void set_inter_line(byte interline) { _interline = FONT_HEIGHT + interline; }
+  inline void set_interline(byte interline) { _interline = FONT_HEIGHT + interline; }
   inline void set_interval(byte interval) { _interval = (FONT_WEIGHT & 0x7f) + interval; }
+  inline byte get_height() { return FONT_HEIGHT; }
+  inline byte get_weight() { return FONT_WEIGHT & 0x7f; }
 
   // Вертикальная табуляция / Перевод строки
   inline void LF() { cursorY += _interline; }

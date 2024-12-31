@@ -61,7 +61,7 @@ void Text::font(const byte *font)
   _line = (1 + ((FONT_HEIGHT - 1) >> 3));
   _charSize = (FONT_WEIGHT & 0x7f) * _line;
   _offset = (word)_font + FONT_OFFSET;
-  set_inter_line(2);
+  set_interline(2);
   set_interval(1);
 
   if (FONT_WEIGHT & 0x80)
