@@ -1,5 +1,4 @@
-#ifndef DISPLAY_CONFIG_H
-#define DISPLAY_CONFIG_H
+#pragma once
 #include "Arduino.h"
 
 //===================== Config =============================
@@ -21,8 +20,10 @@
 // #define FLIP_Y    false
 // #define EX_X_Y    true
 
-// Связь через SPI
-// #define LCD_SPI   true
+
+// #define LCD_SPI         // Подключает через SPI
+#define LCD_DRAW        // Подключает класс для рисования
+#define LCD_PRINT       // Подключает класс для вывода текста
 
 //==========================================================
 
@@ -104,5 +105,3 @@
 #define RGB_12 0x03 // 4x4x4 bit
 #define RGB_16 0x05 // 5x6x5 bit
 #define RGB_18 0x06 // 6x6x6 bit (24 bit transfer)
-
-#endif

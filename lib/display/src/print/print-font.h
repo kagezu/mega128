@@ -3,30 +3,18 @@
 #include <Arduino.h>
 #include "display.config.h"
 #include "print-format.h"
+#include "font/font.h"
 
-#define FONT_COUNT  pgm_read_byte(_font)
-#define FONT_FIRST  pgm_read_byte(_font+1)
-#define FONT_WEIGHT pgm_read_byte(_font+2)
-#define FONT_HEIGHT pgm_read_byte(_font+3)
-
-#define FONT_OFFSET         4
 #define FONT_TAB_FACTOR     2
-
-struct Font {
-  byte count;
-  byte first;
-  byte weight;
-  byte height;
-};
 
 class PrintFont : public PrintFormat {
 private:
-  word  _font;
-  word  _offset;
-  byte  _charSize;
-  byte  _line;
-  byte  _interline;
-  byte  _interval;
+  Font  _font;      // Шрифт
+  byte  _charSize;  // Размер символа в байтах
+  byte  _line;      // Высота символа в байтах
+  byte  _interline; // Расстояние между строками
+  byte  _interval;  // Расстояние между символами
+  byte  _tab_factor = FONT_TAB_FACTOR;
 
 public:
   byte point_x = 0;
@@ -34,7 +22,7 @@ public:
 
 public:
 
-  void font(const byte *font);
+  void font(const Font *);
 
   void letter(byte);
   void write(byte);
@@ -44,10 +32,10 @@ public:
 
 public:
   inline  void at(byte x, byte y) { point_x = x; point_y = y; }
-  inline void set_interline(byte interline) { _interline = FONT_HEIGHT + interline; }
-  inline void set_interval(byte interval) { _interval = (FONT_WEIGHT & 0x7f) + interval; }
-  inline byte get_height() { return FONT_HEIGHT; }
-  inline byte get_weight() { return FONT_WEIGHT & 0x7f; }
+  inline void set_interline(byte interline) { _interline = _font.height + interline; }
+  inline void set_interval(byte interval) { _interval = interval; }
+  inline byte get_height() { return _font.height; }
+  inline byte get_weight() { return _font.weight; }
 
   // Вертикальная табуляция / Перевод строки
   inline void LF() { point_y += _interline; }

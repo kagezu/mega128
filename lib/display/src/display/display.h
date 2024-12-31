@@ -2,6 +2,7 @@
 
 #include "display.config.h"
 #include "print/print-font.h"
+#include "draw/draw.h"
 
 #ifdef LCD_SPI
 #include "ST7735S_SPI/ST7735S_SPI.h"
@@ -15,7 +16,12 @@ class Display
 #else
   : public ST7735S
 #endif
+#ifdef LCD_PRINT
   , public PrintFont
+#endif
+#ifdef LCD_DRAW
+  , public Draw
+#endif
 {
 protected:
   RGB _color = RGB(255, 255, 255);

@@ -38,7 +38,7 @@ int main(void)
   //lcd.font(standard_5x7);
   //lcd.font(number_8x16);
   //lcd.font(number_15x31);
-  lcd.font(arial_14);
+  lcd.font(&arial_14);
   lcd.set_interline(0);
 
   // for (byte i = 32; i < 200; i++) {

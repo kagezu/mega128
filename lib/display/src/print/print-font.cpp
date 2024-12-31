@@ -1,5 +1,5 @@
-#include "print-font.h"
 #include <macros/context.h>
+#include "print-font.h"
 
 void PrintFont::write(byte ch)
 {
@@ -15,36 +15,32 @@ void PrintFont::write(byte ch)
   }
 }
 
-void PrintFont::font(const byte *font)
+void PrintFont::font(const Font *font)
 {
-  _font = (word)font;
-  _line = (1 + ((FONT_HEIGHT - 1) >> 3));
-  _charSize = (FONT_WEIGHT & 0x7f) * _line;
-  _offset = (word)_font + FONT_OFFSET;
+  memcpy_P(&_font, font, sizeof(Font));
+  _line = (1 + ((_font.height - 1) >> 3));
+  _charSize = _font.weight * _line;
   set_interline(2);
   set_interval(1);
-
-  if (FONT_WEIGHT & 0x80)
-    _offset += (FONT_COUNT + 1) * sizeof(word);
 }
 
 void PrintFont::letter(byte ch)
 {
-  ch -= FONT_FIRST;
-  if (FONT_COUNT <= ch) ch = 0;
+  ch -= _font.first_char;
+  if (_font.count_char <= ch) ch = 0;
 
-  byte dx = FONT_WEIGHT & 0x7f;
-  byte dy = FONT_HEIGHT;
+  byte dx = _font.weight;
+  byte dy = _font.height;
   word source;
 
-  if (FONT_WEIGHT & 0x80) {
-    word  charIndex = (word)_font + ch * sizeof(word) + FONT_OFFSET;
+  if (_font.offset) {
+    word  charIndex = _font.offset + ch * 2;
     source = pgm_read_word(charIndex);
     dx = (pgm_read_word(charIndex + 2) - source) / _line;
-    source += _offset;
+    source += _font.data;
   }
   else
-    source = _offset + ch * _charSize;
+    source = _font.data + ch * _charSize;
 
   if (point_x + dx > MAX_X) {
     point_y += _interline;
@@ -54,5 +50,5 @@ void PrintFont::letter(byte ch)
   I_SAVE;
   symbol((byte *)source, point_x, point_y, dx, dy);
   I_REST;
-  point_x += dx + 1;
+  point_x += dx + _interval;
 }
