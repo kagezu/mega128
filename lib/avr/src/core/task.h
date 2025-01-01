@@ -3,12 +3,12 @@
 
 class Task {
 protected:
-  volatile word _sp;
-  word _start;
-  word _end;
+  volatile uint16_t _sp;
+  uint16_t _start;
+  uint16_t _end;
 
 public:
-  Task(word start, word size)
+  Task(uint16_t start, uint16_t size)
     :_sp(0), _start(start), _end(start + size - 1)
   {}
 

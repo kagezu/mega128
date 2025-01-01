@@ -1,20 +1,20 @@
 #include "dyn-memory.h"
 
-DynMemory::DynMemory(word start, word length)
+DynMemory::DynMemory(uint16_t start, uint16_t length)
   :_stack(start + length)
 {
   _start = start;
   _stack.push(MemoryBlock(start, length - sizeof(MemoryBlock)));
 }
 
-word DynMemory::getSizeFree()
+uint16_t DynMemory::getSizeFree()
 {
   _count = 0;
   _stack.each(this->_sum);
-  return (word)_stack.head() - _start - _count;
+  return (uint16_t)_stack.head() - _start - _count;
 }
 
-uint8_t DynMemory::get(void **var, word size)
+uint8_t DynMemory::get(void **var, uint16_t size)
 {
   /*
   // Если нет места в куче, либо уже нет самой кучи
@@ -22,7 +22,7 @@ uint8_t DynMemory::get(void **var, word size)
     for (MemoryBlock *p = _stack; p != (MemoryBlock *)_over; p--) {
       // Если есть ранее высвобожденный блок с доситочным местом
       if (p->getSize() >= size && !p->getLink()) {
-        p->setLink(*(word *)var);
+        p->setLink(*(uint16_t *)var);
         // если новый размер меньше, происходит утечка памяти
         p->setSize(size);
         // признак повторного использования памяти
@@ -33,12 +33,12 @@ uint8_t DynMemory::get(void **var, word size)
     }
 */
 
-  word newBlock = _stack.top()->getStart() + size;
-  _stack.top()->setLink(*(word *)var);
+  uint16_t newBlock = _stack.top()->getStart() + size;
+  _stack.top()->setLink(*(uint16_t *)var);
   _stack.top()->setSize(size);
 
   // переопределение адреса и размера кучи
-  _stack.push(MemoryBlock(newBlock, (word)_stack.head() - newBlock));
+  _stack.push(MemoryBlock(newBlock, (uint16_t)_stack.head() - newBlock));
   return DYN_OK;
 }
 
@@ -46,7 +46,7 @@ void DynMemory::free(void **var)
 {
   // for (MemoryBlock *p = _stack; p != (MemoryBlock *)_over; p--)
     // Ищем указатель в стеке и удаляем его
-    // if (p->getLink() == *(word *)var) {
+    // if (p->getLink() == *(uint16_t *)var) {
       // p->free();
       // return;
     // }
@@ -56,7 +56,7 @@ void DynMemory::free(void *var)
 {
   // for (MemoryBlock *p = _stack; p != (MemoryBlock *)_over; p--)
     // Ищем указатель в стеке и удаляем его
-    // if (p->getStart() == (word)var) {
+    // if (p->getStart() == (uint16_t)var) {
       // p->free();
       // return;
     // }

@@ -45,7 +45,7 @@ namespace Core {
   void GCC_INLINE init()
   {
     for (byte i = 0; i < TASK_MAX_COUNT; i++) {
-      Task t((word)memory[i], TASK_STACK_SIZE);
+      Task t((uint16_t)memory[i], TASK_STACK_SIZE);
       tasks.write(t);
     }
     tasks.clear();

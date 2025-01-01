@@ -1,22 +1,20 @@
 #include <core/core.h>
 #include <display/display.h>
-#include "text/text.h"
 #include "font/arial_14.h"
 #include "font/standard_5x7.h"
 
 Display lcd;
-Text text(&lcd);
 
 void func()
 {
   byte *sp = (byte *)SP;
-  text.printf(PSTR("SP = %2x \n"), sp);
+  lcd.printf(PSTR("SP = %2x \n"), sp);
 }
 
 void func(byte x)
 {
   // byte *sp = (byte *)SP;
-  text.printf(PSTR("X = %x \n"), x);
+  lcd.printf(PSTR("X = %x \n"), x);
 }
 
 #pragma GCC optimize "O0"
@@ -24,8 +22,8 @@ int main()
 {
   sei();
 
-  text.font(standard_5x7);
-  text.set_inter_line(3);
+  lcd.font(&standard_5x7);
+  lcd.set_interline(3);
   lcd.clear(RGB(0, 0, 64));
   lcd.background(RGB(0, 0, 64));
   lcd.color(RGB(255, 255, 127));
@@ -47,12 +45,12 @@ int main()
     Core::await();
 
     I_SAVE;
-    text.printf(PSTR("\ft = %x %x %x %x %x   \n"), t1, t2, t3, t4, t5);
+    lcd.printf(PSTR("\ft = %x %x %x %x %x   \n"), t1, t2, t3, t4, t5);
     I_REST;
 
-    text.printf(PSTR("\nmain = %2x\n"), main);
-    // text.printf(PSTR("func = %2x\n"), func);
-    // text.printf(PSTR("async = %2x\n"), Core::async);
+    lcd.printf(PSTR("\nmain = %2x\n"), main);
+    // lcd.printf(PSTR("func = %2x\n"), func);
+    // lcd.printf(PSTR("async = %2x\n"), Core::async);
 
     // while (true);
   }

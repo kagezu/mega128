@@ -366,7 +366,7 @@ void ST7735S::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
 
   DISPLAY_CONNECT;
   set_addr(x0, y0, x1, y1);
-  word len = (x1 - x0 + 1) * (y1 - y0 + 1);
+  uint16_t len = (x1 - x0 + 1) * (y1 - y0 + 1);
   byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
   byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
   byte set = LCD_PORT;

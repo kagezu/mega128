@@ -22,7 +22,7 @@ void Display::pixel(byte x, byte y)
 #endif
 
 #if RGB_FORMAT == RGB_12
-  send_rgb((word)0);
+  send_rgb((uint16_t)0);
   send_rgb(_color);
 #elif RGB_FORMAT == RGB_16
   send_byte(0);
@@ -156,10 +156,10 @@ void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
 
   #if FLIP_Y
     byte bit = 1 << ((dy - 1) & 7);
-    data = pgm_read_byte((word)source + ((dy - 1) >> 3) * dx + i);
+    data = pgm_read_byte((uint16_t)source + ((dy - 1) >> 3) * dx + i);
     for (char j = dy - 1; j >= 0; j--) {
       if ((j & 7) == 7) {
-        data = pgm_read_byte((word)source + (j >> 3) * dx + i);
+        data = pgm_read_byte((uint16_t)source + (j >> 3) * dx + i);
         bit = 128;
       }
       if (data & bit) send_rgb(_color);
@@ -167,7 +167,7 @@ void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
       bit >>= 1;
     #else
     for (byte j = 0; j < dy; j++) {
-      if (!(j & 7)) data = pgm_read_byte((word)source + (j >> 3) * dx + i);
+      if (!(j & 7)) data = pgm_read_byte((uint16_t)source + (j >> 3) * dx + i);
       if (data & 1) send_rgb(_color);
       else send_rgb(_background);
       data >>= 1;
@@ -184,7 +184,7 @@ void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
   for (byte j = 0; j < dy; j++) {
   #endif
 
-    word offset = (word)source + (j >> 3) * dx;
+    uint16_t offset = (uint16_t)source + (j >> 3) * dx;
     byte bit = 1 << (j & 7);
 
   #if FLIP_X
@@ -197,13 +197,13 @@ void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
       if (data & bit) send_rgb(_color);
       else send_rgb(_background);
     }
-  }
+    }
 
 #endif
 
   DISPLAY_DISCONNECT;
   SREG = sreg;
-}
+  }
 
 // тестирование дисплея
 
@@ -214,15 +214,15 @@ void Display::demo(byte d)
   DISPLAY_CONNECT;
   set_addr(0, 0, LCD_MAX_X, LCD_MAX_Y);
   for (byte y = VIEWPORT_OFFSET; y < LCD_MAX_Y + VIEWPORT_OFFSET + 1; y++) {
-    word yy = y * y;
+    uint16_t yy = y * y;
 
     for (byte x = VIEWPORT_OFFSET; x < LCD_MAX_X + VIEWPORT_OFFSET + 1; x++) {
-      word xx = x * x;
+      uint16_t xx = x * x;
 
       byte e = d << 2;
-      word r = ((xx + yy) >> 6) + e;
-      word g = ((yy - xx) >> 6) + e;
-      word b = ((x * y) >> 6) - e;
+      uint16_t r = ((xx + yy) >> 6) + e;
+      uint16_t g = ((yy - xx) >> 6) + e;
+      uint16_t b = ((x * y) >> 6) - e;
 
       send_rgb(r, g, b);
     }
@@ -237,9 +237,9 @@ void Display::test(byte k)
   for (byte y = 0; y < LCD_MAX_Y + 1; y++)
     for (byte x = 0; x < LCD_MAX_X + 1; x++) {
 
-      // word r = x << 1;
-      // word g = y << 1;
-      // word b = k;
+      // uint16_t r = x << 1;
+      // uint16_t g = y << 1;
+      // uint16_t b = k;
 
       // send_rgb(RGB(r, g, b));
       // send_rgb(r, g, b);

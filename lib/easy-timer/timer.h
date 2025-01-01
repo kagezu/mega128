@@ -15,7 +15,7 @@
 #define F_CPU_DIV256    (F_CPU >> 8)
 
 // Установка частоты для таймера 0
-void timer0(word freq)
+void timer0(uint16_t freq)
 {
   if (freq < (F_CPU_DIV256 >> 8)) { T0_DIV_1024; OCR0A = ((F_CPU_DIV256 >> 2) / freq - 1); return; }
   if (freq < (F_CPU_DIV256 >> 6)) { T0_DIV_256; OCR0A = (F_CPU_DIV256 / freq - 1); return; }

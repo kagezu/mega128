@@ -18,7 +18,7 @@ protected:
   I _size = 0;
 
 public:
-  Stack(word sp) : _stack(sp - sizeof(T)) {}
+  Stack(uint16_t sp) : _stack(sp - sizeof(T)) {}
   ~Array() {}
 
   inline void clear() { _stack -= _size; _size = 0; }

@@ -2,9 +2,6 @@
 // ---------
 // #include "../lib/display/demo/sample.cpp"
 
-// ATmega128 only
-// #include "../lib/display/demo/drawing.cpp"
-
 // Линии и окружности
 // #include "../lib/display/demo/line.cpp"
 

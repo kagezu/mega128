@@ -23,8 +23,8 @@
 #define GAMSET 0x26    // Gamma curve select              byte   [ GC3 GC2 GC1 GC0 ]
 #define DISPOFF 0x28   // Display off
 #define DISPON 0x29    // Display on
-#define CASET 0x2a     // Column address set              start: dword      stop: dword
-#define RASET 0x2b     // Row address set                 start: dword      stop: dword
+#define CASET 0x2a     // Column address set              start: duint16_t      stop: duint16_t
+#define RASET 0x2b     // Row address set                 start: duint16_t      stop: duint16_t
 #define RAMWR 0x2c     // Memory write
 #define RAMRD 0x2e     // Memory read
 #define PTLAR 0x30     // Partial start/end address set

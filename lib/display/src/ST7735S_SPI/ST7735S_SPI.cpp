@@ -247,7 +247,7 @@ void ST7735S_SPI::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
 {
   DISPLAY_CONNECT;
 
-  word len = (x1 - x0 + 1) * (y1 - y0 + 1);
+  uint16_t len = (x1 - x0 + 1) * (y1 - y0 + 1);
   set_addr(x0, y0, x1, y1);
 
 #if RGB_FORMAT == RGB_12
@@ -259,8 +259,8 @@ void ST7735S_SPI::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
 
 #elif RGB_FORMAT == RGB_16
 
-  byte hByte = (word)color >> 8;
-  byte lByte = (word)color;
+  byte hByte = (uint16_t)color >> 8;
+  byte lByte = (uint16_t)color;
 
 #endif
 

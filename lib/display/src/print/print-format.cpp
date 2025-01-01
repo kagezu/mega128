@@ -25,19 +25,19 @@ void PrintFormat::printf(const char *string, ...)
             case 'u':
               switch (arg) {
                 case '0':
-                case '1': print((byte)va_arg(args, word)); break;
-                case '2': print((word)va_arg(args, word)); break;
+                case '1': print((byte)va_arg(args, uint16_t)); break;
+                case '2': print((uint16_t)va_arg(args, uint16_t)); break;
                 case '4': print((uint32_t)va_arg(args, uint32_t)); break;
               } break;
             case 'x':
               switch (arg) {
                 case '0':
-                case '1':  print_h((byte)va_arg(args, word)); break;
-                case '2':  print_h((word)va_arg(args, word)); break;
+                case '1':  print_h((byte)va_arg(args, uint16_t)); break;
+                case '2':  print_h((uint16_t)va_arg(args, uint16_t)); break;
                 case '4':  print_h((uint32_t)va_arg(args, uint32_t)); break;
                 case '8':  print_h((uint64_t)va_arg(args, uint64_t)); break;
               } break;
-            case 'p': print_h((word)va_arg(args, word)); break;
+            case 'p': print_h((uint16_t)va_arg(args, uint16_t)); break;
             case '%': write('%'); break;
           } break;
         }
@@ -66,7 +66,7 @@ void PrintFormat::print(int32_t number)
 void PrintFormat::print(int16_t number)
 {
   if (number < 0) { write('-'); number = -number; }
-  print((word)number);
+  print((uint16_t)number);
 }
 
 void PrintFormat::print(int8_t number)
@@ -90,9 +90,9 @@ void PrintFormat::print(uint32_t number)
   }
 }
 
-void PrintFormat::print(word number)
+void PrintFormat::print(uint16_t number)
 {
-  static const word mult[] PROGMEM = { 10000,1000,100,10,1 };
+  static const uint16_t mult[] PROGMEM = { 10000,1000,100,10,1 };
   byte out = 0;
 
   for (byte j = 0; j < 5; j++) {
@@ -146,9 +146,9 @@ void PrintFormat::print_h(uint32_t number)
   print_h(out.a);
 }
 
-void PrintFormat::print_h(word number)
+void PrintFormat::print_h(uint16_t number)
 {
-  union { word val; struct { byte low; byte high; }; } out;
+  union { uint16_t val; struct { byte low; byte high; }; } out;
   out.val = number;
   write('#');
   print_h(out.high);

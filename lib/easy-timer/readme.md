@@ -93,23 +93,15 @@ int main()
   T0_DIV_1024; // Подключить таймер 0, через пред-делитель f = F_CPU / 1024
   T0_CTC;      // Режим сравнения с регистром OCR0x
 
-#ifdef __AVR_ATmega328P__
   OCR0A = F_CPU / 1024 / 100 - 1; // f = 100 Hz
-  T0_COMPA_ON; // Включить прерывание при сравнении с OCR0A
-#elif __AVR_ATmega128__
-  OCR0 = F_CPU / 1024 / 100 - 1; // 100 Hz
-  T0_COMP_ON; // Включить прерывание при сравнении с OCR0
+  T0_COMPA_ON; // Включить прерывание при сравнении с OCR0A/OCR0
 }
 
-#ifdef __AVR_ATmega328P__
-ISR(TIMER0_COMPA_vect) // Прерывание при сравнении с OCR0A
-
-#elif __AVR_ATmega128__
-ISR(TIMER0_COMP_vect) // Прерывание при сравнении с OCR0
-#endif
-
+ISR(TIMER0_COMPA_vect) // Прерывание при сравнении с OCR0A/OCR0
 {
    // Код прерывания, вызываемого 100 раз в секунду
 }
+// Для ATmega128 OCR0A/OCR0B заменяются на OCR0,
+// так как там один регистр для сравнения
 
 ```
