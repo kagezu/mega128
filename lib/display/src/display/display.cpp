@@ -5,6 +5,7 @@
 void Display::pixel(byte x, byte y)
 {
   if (x > MAX_X || y > MAX_Y) return;
+  DISPLAY_CONNECT;
 
 #if FLIP_X
   x = MAX_X - x;
@@ -33,6 +34,7 @@ void Display::pixel(byte x, byte y)
   send_byte(0);
   send_rgb(_color);
 #endif
+
   DISPLAY_DISCONNECT;
 }
 
@@ -117,6 +119,10 @@ void Display::scan_bitmap(RGB *source)
 
 void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
 {
+  byte sreg = SREG;
+  cli();
+  DISPLAY_CONNECT;
+
   byte x1 = x + dx - 1;
   byte y1 = y + dy - 1;
 
@@ -196,6 +202,7 @@ void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
 #endif
 
   DISPLAY_DISCONNECT;
+  SREG = sreg;
 }
 
 // тестирование дисплея
@@ -204,6 +211,7 @@ void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
 
 void Display::demo(byte d)
 {
+  DISPLAY_CONNECT;
   set_addr(0, 0, LCD_MAX_X, LCD_MAX_Y);
   for (byte y = VIEWPORT_OFFSET; y < LCD_MAX_Y + VIEWPORT_OFFSET + 1; y++) {
     word yy = y * y;
@@ -224,6 +232,7 @@ void Display::demo(byte d)
 
 void Display::test(byte k)
 {
+  DISPLAY_CONNECT;
   set_addr(0, 0, LCD_MAX_X, LCD_MAX_Y);
   for (byte y = 0; y < LCD_MAX_Y + 1; y++)
     for (byte x = 0; x < LCD_MAX_X + 1; x++) {

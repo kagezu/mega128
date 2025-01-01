@@ -113,8 +113,6 @@ void ST7735S::send_command(byte command)
 
 void ST7735S::set_addr(byte x0, byte y0, byte x1, byte y1)
 {
-  DISPLAY_CONNECT; // CS Выбор дисплея
-
   send_command(CASET); // Column Address Set
   send_zero();
   send_byte(x0);
@@ -366,6 +364,7 @@ void ST7735S::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
   byte b = color.blue;
 #endif
 
+  DISPLAY_CONNECT;
   set_addr(x0, y0, x1, y1);
   word len = (x1 - x0 + 1) * (y1 - y0 + 1);
   byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
@@ -436,8 +435,7 @@ void ST7735S::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
     LCD_PORT = set;
   #endif
   }
-
-  DISPLAY_DISCONNECT
+  DISPLAY_DISCONNECT;
 };
 
 #endif

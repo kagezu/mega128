@@ -102,7 +102,6 @@ ST7735S_SPI::ST7735S_SPI()
 
   send_command(DISPON); // Display On
   DISPLAY_DISCONNECT
-
 }
 
 void ST7735S_SPI::send_command(byte command)
@@ -110,14 +109,13 @@ void ST7735S_SPI::send_command(byte command)
   SPI_WAIT;
   COMMAND_MODE; // Запись команды
   SPDR = command;
+  asm volatile("nop");
   SPI_WAIT;
   DATA_MODE // Запись данных
 };
 
 void ST7735S_SPI::set_addr(byte x0, byte y0, byte x1, byte y1)
 {
-  DISPLAY_CONNECT; // CS Выбор дисплея
-
   send_command(CASET); // Column Address Set
   SPDR = 0;
   send_byte(x0);
@@ -247,6 +245,8 @@ void ST7735S_SPI::send_rgb(byte r, byte g, byte b)
 
 void ST7735S_SPI::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
 {
+  DISPLAY_CONNECT;
+
   word len = (x1 - x0 + 1) * (y1 - y0 + 1);
   set_addr(x0, y0, x1, y1);
 

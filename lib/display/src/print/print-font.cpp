@@ -1,4 +1,3 @@
-#include <macros/context.h>
 #include "print-font.h"
 
 void PrintFont::write(byte ch)
@@ -46,8 +45,6 @@ void PrintFont::letter(byte ch)
     point_x = 0;
   }
   if (point_y > MAX_Y - _font.height) point_x = point_y = 0;
-  I_SAVE;
   symbol((byte *)source, point_x, point_y, dx, _font.height);
-  I_REST;
   point_x += dx + _interval;
 }
