@@ -83,8 +83,8 @@
 // Вторичные макросы, зависящие от настроек выше
 
 #define INIT_LCD                                          \
-  SET_BITS(PORT(LCD_DATA), LCD_RST | LCD_SDA | LCD_SCK)   \
-  SET_BITS(DDR(LCD_DATA), LCD_RST | LCD_SDA | LCD_SCK)    \
+  SET_BITS(PORT(LCD_DATA), LCD_RST | LCD_SDA | LCD_SCK);  \
+  SET_BITS(DDR(LCD_DATA), LCD_RST | LCD_SDA | LCD_SCK);   \
   SET_BITS(PORT(LCD_CONTROL), LCD_CS | LCD_RS);           \
   SET_BITS(DDR(LCD_CONTROL), LCD_CS | LCD_RS);
 
@@ -98,7 +98,7 @@
 #define DISPLAY_DISCONNECT  SET_BITS(PORT(LCD_CONTROL), LCD_CS);    // Снять выбор дисплея
 #define DATA_MODE           SET_BITS(PORT(LCD_CONTROL), LCD_RS);    // Запись данных
 #define DISPLAY_CONNECT     CLR_BITS(PORT(LCD_CONTROL), LCD_CS);    // Выбор дисплея
-#define COMMAND_MODE        CLR_BITS(PORT(LCD_CONTROL), LCD_RS) ;   // Запись команды
+#define COMMAND_MODE        CLR_BITS(PORT(LCD_CONTROL), LCD_RS);    // Запись команды
 
 #if EX_X_Y
 #define MAX_X     LCD_MAX_Y

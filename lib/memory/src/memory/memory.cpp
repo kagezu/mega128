@@ -29,22 +29,39 @@ void Memory::get(void **var, uint16_t size)
   I_REST;
 }
 
+void *Memory::get(uint16_t size)
+{
+  I_SAVE;
+  uint16_t heap = _stack.head()->get_size();
+  uint16_t start = _stack.head()->get_start() + size;
+  if (size + sizeof(MemoryBlock) > heap) throw PSTR("Memory::get() error");
+  _stack.head()->use();
+  _stack.head()->set_size(size);
+  _stack.push()->init(start, heap - size - sizeof(MemoryBlock));
+  I_REST;
+  return (void *)start;
+}
+
 void Memory::free(void **var)
 {
-  // for (MemoryBlock *p = _stack; p != (MemoryBlock *)_over; p--)
-    // Ищем указатель в стеке и удаляем его
-    // if (p->getLink() == *(uint16_t *)var) {
-      // p->free();
-      // return;
-    // }
+  I_SAVE;
+  _var = (uint16_t)var;
+  byte index = _stack.findindex(this->_find_link);
+  if (index) {
+    _stack.at(index)->free();
+    _union(index);
+  }
+  I_REST;
 }
 
 void Memory::free(void *var)
 {
-  // for (MemoryBlock *p = _stack; p != (MemoryBlock *)_over; p--)
-    // Ищем указатель в стеке и удаляем его
-    // if (p->getStart() == (uint16_t)var) {
-      // p->free();
-      // return;
-    // }
+  I_SAVE;
+  _var = (uint16_t)var;
+  byte index = _stack.findindex(this->_find_start);
+  if (index) {
+    _stack.at(index)->free();
+    _union(index);
+  }
+  I_REST;
 }

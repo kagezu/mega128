@@ -9,7 +9,7 @@
 + *head() <== [sp+1]
 + *top () <== [ sp ]
 + each() / find() / findindex()
-+ erase(I)
++ erase(I) / at(I)
 */
 template <typename T, typename I>
 class Stack {
@@ -55,7 +55,7 @@ public:
       if (callback(++ptr)) break;
       index--;
     }
-    return ptr;
+    return index ? ptr : nullptr;
   }
 
   void erase(I index)
@@ -69,6 +69,12 @@ public:
     }
     _stack++;
     _size--;
+  }
+
+  T *at(I index)
+  {
+    if (index > _size || index == 0) return nullptr;
+    return _stack + _size - index + 1;
   }
 
 };

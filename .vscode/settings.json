@@ -2,9 +2,7 @@
   "files.associations": {
     "*.php": "php",
     "*.js": "javascript",
-    "*.html": "html",
-    "wiring_private.h": "c",
-    "new": "cpp"
+    "*.html": "html"
   },
   "cSpell.caseSensitive": true,
   "cSpell.words": [

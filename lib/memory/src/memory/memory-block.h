@@ -45,6 +45,7 @@ public:
   bool is_locked() { return _status & (MEM_LOCK | MEM_FIXED); }
   bool is_used() { return _status; }
   bool is_link(uint16_t link_to_ptr) { return link_to_ptr == _link_to_ptr; }
+  bool is_start(uint16_t start) { return start == _start; }
 
   void lock() { _status |= MEM_LOCK; }
   void unlock() { _status &= ~MEM_LOCK; }

@@ -1,19 +1,12 @@
 #include "memory-block.h"
 #include "type/stack.h"
 
-#define MEM_ERROR     0
-#define MEM_OK        1
-#define MEM_RECIRCLE  2
-#define MEM_COLLECT   3
-
-
 class Memory {
 protected:
-  uint16_t    _start;
-  Stack<MemoryBlock, byte>   _stack;
+  uint16_t                  _start;
+  Stack<MemoryBlock, byte>  _stack;
 
 public:
-  Memory() : _stack(0) {}
   Memory(uint16_t start, uint16_t length);
 
 public:
@@ -27,9 +20,23 @@ public:
 
 private:
   static uint16_t _var;
-  static void _max(MemoryBlock *block)
+  static void _max(MemoryBlock *block) { _var = block->is_used() && block->get_size() > _var ? block->get_size() : _var; }
+  static bool _find_link(MemoryBlock *block) { return block->is_link(_var); }
+  static bool _find_start(MemoryBlock *block) { return block->is_start(_var); }
+
+  void _union(byte index)
   {
-    if (block->is_used())
-      _var = block->get_size() > _var ? block->get_size() : _var;
+    byte i = index - 1;
+    MemoryBlock *ptr = _stack.at(i);
+    if (ptr && !ptr->is_used()) {
+      ptr->set_size(ptr->get_size() + _stack.at(index)->get_size());
+      _stack.erase(index--);
+    }
+    i = index + 1;
+    ptr = _stack.at(i);
+    if (ptr && !ptr->is_used()) {
+      _stack.at(index)->set_size(ptr->get_size() + _stack.at(index)->get_size());
+      _stack.erase(i);
+    }
   }
 };
