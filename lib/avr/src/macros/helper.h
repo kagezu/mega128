@@ -17,6 +17,10 @@
 #define SET_PIN(port, pin, mode)      PORT(port) mode _BV(pin)
 #define GET_PIN(port, pin)            PIN(port) & _BV(pin)
 
-#define MAKE_BITS(target, set, clear) target = (target &~ clear) | set;
-#define SET_BITS(target, bits)        target |= bits;
-#define CLR_BITS(target, bits)        target &= ~bits;
+#define MAKE_BITS(target, set, clear) target = (target &~ clear) | set
+#define SET_BITS(target, bits)        target |= bits
+#define CLR_BITS(target, bits)        target &= ~bits
+
+
+#define I_SAVE byte _sreg = SREG; __asm__ __volatile__ ("cli ::")
+#define I_REST SREG = _sreg

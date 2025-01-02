@@ -2,14 +2,14 @@
 #pragma once
 #include <Arduino.h>
 
-#define I_SAVE  __asm__ __volatile__ ( \
+#define _I_SAVE  __asm__ __volatile__ ( \
 	    "in r0, __SREG__ \n\t" \
 			"cli             \n\t" \
 			"push r0         \n\t" \
 			:: \
 		)
 
-#define I_REST  __asm__ __volatile__ ( \
+#define _I_REST  __asm__ __volatile__ ( \
 			"pop r0               \n\t" \
 	    "out __SREG__, r0     \n\t" \
 			:: \

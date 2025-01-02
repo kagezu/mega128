@@ -14,7 +14,6 @@ protected:
   // byte _reserve;
 
 public:
-  MemoryBlock() {}
   void init(uint16_t start, uint16_t size = 0)
   {
     _start = start;
@@ -23,7 +22,7 @@ public:
   }
 
 public:
-  void used() { _status = MEM_USED | MEM_FIXED; }
+  void use() { _status = MEM_USED | MEM_FIXED; }
   void free() { _status = MEM_FREE; }
   void set_link(uint16_t link_to_ptr)
   {
@@ -44,6 +43,7 @@ public:
   uint16_t get_size() { return _size; }
 
   bool is_locked() { return _status & (MEM_LOCK | MEM_FIXED); }
+  bool is_used() { return _status; }
   bool is_link(uint16_t link_to_ptr) { return link_to_ptr == _link_to_ptr; }
 
   void lock() { _status |= MEM_LOCK; }

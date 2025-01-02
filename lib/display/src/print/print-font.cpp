@@ -33,8 +33,8 @@ void PrintFont::letter(byte ch)
 
   if (_font.offset) {
     uint16_t  index = _font.offset + ch * 2;
-    source = pgm_read_uint16_t(index);
-    dx = (pgm_read_uint16_t(index + 2) - source) / _line;
+    source = pgm_read_word(index);
+    dx = (pgm_read_word(index + 2) - source) / _line;
     source += _font.data;
   }
   else

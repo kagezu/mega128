@@ -4,12 +4,12 @@
 /*
 #### Stack<T, I> T - element, I - index
 + clear() / size()
-+ push() --> [ sp ]
-+ pop () <-- [++sp]
-+ top () <== [sp+1]
-+ head() <== [ sp ]
++ push(T) --> [ sp ]
++ *pop () <-- [++sp]
++ *head() <== [sp+1]
++ *top () <== [ sp ]
 + each() / find() / findindex()
-index = 0[] 1[A] 2[B] ...
++ erase(I)
 */
 template <typename T, typename I>
 class Stack {
@@ -19,14 +19,14 @@ protected:
 
 public:
   Stack(uint16_t sp) : _stack(sp - sizeof(T)) {}
-  ~Array() {}
 
-  inline void clear() { _stack -= _size; _size = 0; }
-  inline I size() { return _size; }
-  inline void push(T data) { *_stack++ = data; _size++; }
-  inline  T pop() { _size--; return *_stack--; }
-  inline  T *head() { return _stack; }
-  inline  T *top() { return _stack + 1; }
+  void clear() { _stack -= _size; _size = 0; }
+  I size() { return _size; }
+  void push(T data) { *_stack-- = data; _size++; }
+  T *push() { T ptr = _stack-- = data; _size++; }
+  T *pop() { _size--; return ++_stack; }
+  T *top() { return _stack; }
+  T *head() { return _stack + 1; }
 
 public:
   void each(callback(T *ptr))
@@ -58,11 +58,12 @@ public:
     return ptr;
   }
 
-  void erase(S index)
+  void erase(I index)
   {
     if (index > _size || index == 0) return;
-    T *ptr = _stack + index;
-    while (index--) {
+    T *ptr = _stack + _size - index + 1;
+    index -= _size;
+    while (index++) {
       *ptr = *(ptr - 1);
       ptr--;
     }
