@@ -20,26 +20,34 @@ uint16_t Memory::get_heap()
 void Memory::get(void **var, uint16_t size)
 {
   I_SAVE;
-  uint16_t heap = _stack.head()->get_size();
-  uint16_t start = _stack.head()->get_start() + size;
-  if (size + sizeof(MemoryBlock) > heap) throw PSTR("Memory::get() error");
-  _stack.head()->set_link((uint16_t)var);
-  _stack.head()->set_size(size);
-  _stack.push()->init(start, heap - size - sizeof(MemoryBlock));
+  _var = size;
+  _ptr = nullptr;
+  _stack.each(this->_near);
+  if (_ptr == nullptr) throw PSTR("Memory::get() error");
+  uint16_t heap = _ptr->get_size();
+  uint16_t start = _ptr->get_start() + size;
+  _ptr->set_link((uint16_t)var);
+  _ptr->set_size(size);
+  if (_ptr == _stack.head())
+    _stack.push()->init(start, heap - size - sizeof(MemoryBlock));
   I_REST;
 }
 
 void *Memory::get(uint16_t size)
 {
   I_SAVE;
-  uint16_t heap = _stack.head()->get_size();
-  uint16_t start = _stack.head()->get_start() + size;
-  if (size + sizeof(MemoryBlock) > heap) throw PSTR("Memory::get() error");
+  _var = size;
+  _ptr = nullptr;
+  _stack.each(this->_near);
+  if (_ptr == nullptr) throw PSTR("Memory::get() error");
+  uint16_t heap = _ptr->get_size();
+  uint16_t start = _ptr->get_start() + size;
   _stack.head()->use();
-  _stack.head()->set_size(size);
-  _stack.push()->init(start, heap - size - sizeof(MemoryBlock));
+  _ptr->set_size(size);
+  if (_ptr == _stack.head())
+    _stack.push()->init(start, heap - size - sizeof(MemoryBlock));
   I_REST;
-  return (void *)start;
+  return (void *)_ptr->get_start();
 }
 
 void Memory::free(void **var)

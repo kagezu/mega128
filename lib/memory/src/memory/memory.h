@@ -20,7 +20,15 @@ public:
 
 private:
   static uint16_t _var;
+  static MemoryBlock *_ptr;
   static void _max(MemoryBlock *block) { _var = block->is_used() && block->get_size() > _var ? block->get_size() : _var; }
+  static void _near(MemoryBlock *block)
+  {
+    if (!block->is_used() && block->get_size() >= _var) {
+      if (_ptr) _ptr = block->get_size() < _ptr->get_size() ? block : _ptr;
+      else _ptr = block;
+    }
+  }
   static bool _find_link(MemoryBlock *block) { return block->is_link(_var); }
   static bool _find_start(MemoryBlock *block) { return block->is_start(_var); }
 
