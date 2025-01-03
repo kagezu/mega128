@@ -3,22 +3,33 @@
 #include "font/arial_14.h"
 #include "font/standard_5x7.h"
 
-#define BUFFER_SIZE   1280
-#define FRAGMENTATION 128
+// Использовать класс Memory
+#define MEM_USE
 
-byte *ptr[FRAGMENTATION];
+#define FACTOR        11
+#define BUFFER_SIZE   160 * FACTOR
+#define FRAGMENTATION 25
+#define TEXT_X        40
+#define WEIGHT        32
+
+#ifdef MEM_USE
 byte test_block[BUFFER_SIZE];
 Memory mem((uint16_t)test_block, BUFFER_SIZE);
+#else
+byte test_block[1];
+#endif
+
+byte *ptr[FRAGMENTATION];
+byte s[FRAGMENTATION];
 Display lcd;
 
-void fill(byte *ptr, byte size)
+void fill(byte *ptr, byte size, byte filler)
 {
-  byte filler = rand();
   size >>= 1;
   while (size--) {
     *ptr = filler;
     ptr++;
-    *ptr = filler >> 8;
+    *ptr = filler;
     ptr++;
   }
 }
@@ -26,43 +37,17 @@ void fill(byte *ptr, byte size)
 void view()
 {
   uint16_t count = BUFFER_SIZE >> 1;
+  byte *ptr = test_block;
 
   DISPLAY_CONNECT;
-  lcd.set_addr(0, 0, 63, 159);
+  lcd.set_addr(0, 0, WEIGHT - 1, 159);
 
   while (count--) {
-    lcd.send_byte(test_block[count * 2]);
-    lcd.send_byte(test_block[count * 2 + 1]);
-    lcd.send_byte(test_block[count * 2]);
-    lcd.send_byte(test_block[count * 2 + 1]);
-    lcd.send_byte(test_block[count * 2]);
-    lcd.send_byte(test_block[count * 2 + 1]);
-    lcd.send_byte(test_block[count * 2]);
-    lcd.send_byte(test_block[count * 2 + 1]);
-    lcd.send_byte(test_block[count * 2]);
-    lcd.send_byte(test_block[count * 2 + 1]);
-    lcd.send_byte(test_block[count * 2]);
-    lcd.send_byte(test_block[count * 2 + 1]);
-    lcd.send_byte(test_block[count * 2]);
-    lcd.send_byte(test_block[count * 2 + 1]);
-    lcd.send_byte(test_block[count * 2]);
-    lcd.send_byte(test_block[count * 2 + 1]);
-    lcd.send_byte(test_block[count * 2]);
-    lcd.send_byte(test_block[count * 2 + 1]);
-    lcd.send_byte(test_block[count * 2]);
-    lcd.send_byte(test_block[count * 2 + 1]);
-    lcd.send_byte(test_block[count * 2]);
-    lcd.send_byte(test_block[count * 2 + 1]);
-    lcd.send_byte(test_block[count * 2]);
-    lcd.send_byte(test_block[count * 2 + 1]);
-    lcd.send_byte(test_block[count * 2]);
-    lcd.send_byte(test_block[count * 2 + 1]);
-    lcd.send_byte(test_block[count * 2]);
-    lcd.send_byte(test_block[count * 2 + 1]);
-    lcd.send_byte(test_block[count * 2]);
-    lcd.send_byte(test_block[count * 2 + 1]);
-    lcd.send_byte(test_block[count * 2]);
-    lcd.send_byte(test_block[count * 2 + 1]);
+    for (byte i = 0; i < (WEIGHT << 1) / FACTOR; i++) {
+      lcd.send_byte(*ptr); lcd.send_byte(*(ptr + 1));
+    }
+    ptr++;
+    ptr++;
   }
 
   DISPLAY_DISCONNECT;
@@ -77,25 +62,39 @@ int main()
   lcd.color(RGB(255, 255, 127));
 
   byte i = 0;
+  uint16_t total = 0;
   while (true) {
-    byte size = (rand() >> 8);
-    // mem.free(ptr[i]);
+    byte size = rand() >> 9;
+    byte filler = rand();
+
+    lcd.at(TEXT_X, 25);
+    lcd.printf(PSTR("i: %u  "), i);
+    lcd.at(TEXT_X, 35);
+    lcd.printf(PSTR("size: %2u "), s[i]);
+
+  #ifdef MEM_USE
+    lcd.at(TEXT_X, 45);
+    lcd.printf(PSTR("free: %2u "), mem.get_heap());
+  #endif
+
+  #ifdef MEM_USE
+    mem.free(ptr[i]);
+  #else
+    free(ptr[i]);
+  #endif
+    fill(ptr[i], s[i], 0);
+
+  #ifdef MEM_USE
     ptr[i] = (byte *)mem.get(size);
-    fill(ptr[i], size);
+  #else
+    ptr[i] = (byte *)malloc(size);
+  #endif
+    s[i] = size;
+    fill(ptr[i], s[i], filler);
 
-    lcd.at(70, 25);
-    lcd.printf(PSTR("%u    "), i);
-    lcd.at(70, 35);
-    lcd.printf(PSTR("%u    "), size);
-    lcd.at(70, 45);
-    lcd.printf(PSTR("%2x    "), ptr[i]);
-
-    lcd.at(70, 65);
-    lcd.printf(PSTR("%2x    "), mem._stack.head());
-    lcd.at(70, 75);
-    lcd.printf(PSTR("%2x    "), mem._stack.head()->get_start());
-    lcd.at(70, 85);
-    lcd.printf(PSTR("%2x    "), mem._stack.head()->get_size());
+    total += size;
+    lcd.at(TEXT_X, 85);
+    lcd.printf(PSTR("total: %2u "), total);
 
     view();
 

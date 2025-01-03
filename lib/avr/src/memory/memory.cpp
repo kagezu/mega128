@@ -15,7 +15,7 @@ uint16_t Memory::get_heap()
 {
   I_SAVE;
   _var = 0;
-  _stack.each(this->_max);
+  _stack.each(this->_sum);
   I_REST;
   return _var;
 }
@@ -38,7 +38,7 @@ void Memory::get(void **var, uint16_t size)
   I_REST;
 }
 
-void *Memory::get(uint16_t size)
+void *Memory::get(uint16_t size) // ok ?
 {
   I_SAVE;
   _var = size;
@@ -50,7 +50,7 @@ void *Memory::get(uint16_t size)
   _ptr->use();
   if (heap > size + MEM_BLOCK_MIN_SIZE && _stack.head()->get_size() > sizeof(MemoryBlock)) {
     _ptr->set_size(size);
-    _stack.insert_post(_ptr)->init(start + size, heap - size - sizeof(MemoryBlock));
+    _stack.insert_post(_ptr)->init(start + size, heap - size);
     _stack.head()->set_size(_stack.head()->get_size() - sizeof(MemoryBlock));
   }
   I_REST;
@@ -76,7 +76,9 @@ void Memory::free(void *var)
   byte index = _stack.findindex(this->_find_start);
   if (index && _stack.at(index)->is_used()) {
     _stack.at(index)->free();
-    _union(index);
+    byte del = _union(index);
+    if (del)
+      _stack.head()->set_size(_stack.head()->get_size() + (sizeof(MemoryBlock) << (del - 1)));
   }
   I_REST;
 }

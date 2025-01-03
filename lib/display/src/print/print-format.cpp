@@ -96,7 +96,7 @@ void PrintFormat::print(uint16_t number)
   byte out = 0;
 
   for (byte j = 0; j < 5; j++) {
-    byte m = pgm_read_byte(mult + j);
+    uint16_t m = pgm_read_word(mult + j);
     byte n = number / m;
     number %= m;
     // number -= m * n;
