@@ -1,6 +1,8 @@
 #include "memory-block.h"
 #include "type/stack.h"
 
+#define MEM_BLOCK_MIN_SIZE    16
+
 class Memory {
 protected:
   uint16_t                  _start;

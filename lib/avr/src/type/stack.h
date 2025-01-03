@@ -9,7 +9,7 @@
 + *head() <== [sp+1]
 + *top () <== [ sp ]
 + each() / find() / findindex()
-+ erase(I) / at(I)
++ erase(I) / insert_next(T*) / at(I)
 */
 template <typename T, typename I>
 class Stack {
@@ -69,6 +69,19 @@ public:
     }
     _stack++;
     _size--;
+  }
+
+  T *insert_post(T *ptr)
+  {
+    T *new_element = ptr - 1;
+    ptr = _stack;
+    while (ptr != new_element) {
+      *ptr = *(ptr + 1);
+      *ptr++;
+    }
+    _stack--;
+    _size++;
+    return new_element;
   }
 
   T *at(I index)

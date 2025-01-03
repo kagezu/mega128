@@ -22,14 +22,16 @@ void Memory::get(void **var, uint16_t size)
   I_SAVE;
   _var = size;
   _ptr = nullptr;
-  _stack.each(this->_near);
-  if (_ptr == nullptr) throw PSTR("Memory::get() error");
-  uint16_t heap = _ptr->get_size();
-  uint16_t start = _ptr->get_start() + size;
-  _ptr->set_link((uint16_t)var);
-  _ptr->set_size(size);
-  if (_ptr == _stack.head())
-    _stack.push()->init(start, heap - size - sizeof(MemoryBlock));
+  _stack.each(this->_near); // Поиск блока наиболее близкого размера
+  if (_ptr == nullptr) throw PSTR("Memory::get() error"); // Блока для выделения памяти не найдено
+  uint16_t heap = _ptr->get_size(); // Свободная память блока
+  _ptr->set_link((uint16_t)var); // Сохранение ссылки на указатель
+  _ptr->set_size(size); // Новый размер блока
+  // Дробим блок, если новый блок больше минимального и есть память на стек
+  if (heap > size + MEM_BLOCK_MIN_SIZE && _stack.head()->get_size() > sizeof(MemoryBlock)) {
+    _stack.insert_post(_ptr)->init(_ptr->get_start() + size, heap - size - sizeof(MemoryBlock)); // Новый блок
+    _stack.head()->set_size(_stack.head()->get_size() - sizeof(MemoryBlock)); // Уменьшаем память блока на вершине стека
+  }
   I_REST;
 }
 
@@ -41,13 +43,15 @@ void *Memory::get(uint16_t size)
   _stack.each(this->_near);
   if (_ptr == nullptr) throw PSTR("Memory::get() error");
   uint16_t heap = _ptr->get_size();
-  uint16_t start = _ptr->get_start() + size;
+  uint16_t start = _ptr->get_start();
   _stack.head()->use();
   _ptr->set_size(size);
-  if (_ptr == _stack.head())
-    _stack.push()->init(start, heap - size - sizeof(MemoryBlock));
+  if (heap > size + MEM_BLOCK_MIN_SIZE && _stack.head()->get_size() > sizeof(MemoryBlock)) {
+    _stack.insert_post(_ptr)->init(start + size, heap - size - sizeof(MemoryBlock));
+    _stack.head()->set_size(_stack.head()->get_size() - sizeof(MemoryBlock));
+  }
   I_REST;
-  return (void *)_ptr->get_start();
+  return (void *)start;
 }
 
 void Memory::free(void **var)
