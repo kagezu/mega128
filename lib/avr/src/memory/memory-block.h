@@ -25,8 +25,9 @@ public:
     *(uint16_t *)link_to_ptr = _start;
   }
   uint16_t size() { return _size; }
-  void size(uint16_t new_size) { _size = new_size; }
   uint16_t start() { return _start; }
+  uint16_t link() { return _link_to_ptr; }
+  void size(uint16_t new_size) { _size = new_size; }
   void start(uint16_t new_start)
   {
     _start = new_start;

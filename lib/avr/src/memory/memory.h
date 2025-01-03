@@ -42,23 +42,21 @@ private:
   static bool _find_link(MemoryBlock *block) { return block->cmp_link(_var); }
   static bool _find_start(MemoryBlock *block) { return block->cmp_start(_var); }
 
-  byte _union(byte index)
+  void _union(byte index)
   {
-    byte deleted = 0;
     byte i = index - 1;
     MemoryBlock *ptr = _stack.at(i);
     if (ptr && !ptr->is_used()) {
       ptr->size(ptr->size() + _stack.at(index)->size());
       _stack.erase(index--);
-      deleted++;
+      _stack.head()->size(_stack.head()->size() + sizeof(MemoryBlock)); // Возвращаем память стека
     }
     i = index + 1;
     ptr = _stack.at(i);
     if (ptr && !ptr->is_used()) {
       _stack.at(index)->size(ptr->size() + _stack.at(index)->size());
       _stack.erase(i);
-      deleted++;
+      _stack.head()->size(_stack.head()->size() + sizeof(MemoryBlock)); // Возвращаем память стека
     }
-    return deleted;
   }
 };

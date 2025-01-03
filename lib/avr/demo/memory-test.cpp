@@ -6,11 +6,11 @@
 // Использовать класс Memory
 #define MEM_USE
 
-#define FACTOR        11
+#define FACTOR        10
 #define BUFFER_SIZE   160 * FACTOR
-#define FRAGMENTATION 40
+#define FRAGMENTATION 30
 #define TEXT_X        40
-#define WEIGHT        32
+#define WEIGHT        30
 
 #ifdef MEM_USE
 byte test_block[BUFFER_SIZE];
@@ -63,13 +63,14 @@ int main()
   byte i = 0;
   uint32_t total = 0;
   while (true) {
-    byte size = rand() >> 9;
+    byte rnd = rand() >> 8;
+    byte size = (rnd * rnd >> 7) + 1;
     byte filler = rand();
 
     lcd.at(TEXT_X, 25);
     lcd.printf(PSTR("i: %u  "), i);
     lcd.at(TEXT_X, 35);
-    lcd.printf(PSTR("size: %2u "), s[i]);
+    lcd.printf(PSTR("size: %2u "), size);
 
   #ifdef MEM_USE
     lcd.at(TEXT_X, 45);
@@ -86,12 +87,16 @@ int main()
     fill(ptr[i], s[i], 0);
 
   #ifdef MEM_USE
-    mem.malloc((void **)&ptr[i], size);
+    if (mem.heap() > size + 6u) {
+      mem.malloc((void **)&ptr[i], size);
+      s[i] = size;
+      fill(ptr[i], s[i], filler);
+    }
   #else
     ptr[i] = (byte *)malloc(size);
-  #endif
     s[i] = size;
     fill(ptr[i], s[i], filler);
+  #endif
 
     total += size;
     lcd.at(TEXT_X, 85);
