@@ -43,12 +43,17 @@ void *Memory::get(uint16_t size) // ok ?
   I_SAVE;
   _var = size;
   _ptr = nullptr;
+  MemoryBlock *top = _stack.pop();
   _stack.each(this->_near);
-  if (_ptr == nullptr) while (1); // throw PSTR("Memory::get() error");
+  _stack.push();
+  if (_ptr == nullptr) {
+    if (top->get_size() >= size + sizeof(MemoryBlock)) _ptr = top;
+    else while (1); // throw PSTR("Memory::get() error");
+  }
   uint16_t heap = _ptr->get_size();
   uint16_t start = _ptr->get_start();
   _ptr->use();
-  if (heap > size + MEM_BLOCK_MIN_SIZE && _stack.head()->get_size() > sizeof(MemoryBlock)) {
+  if (heap > size + MEM_BLOCK_MIN_SIZE && top->get_size() > sizeof(MemoryBlock)) {
     _ptr->set_size(size);
     _stack.insert_post(_ptr)->init(start + size, heap - size);
     _stack.head()->set_size(_stack.head()->get_size() - sizeof(MemoryBlock));

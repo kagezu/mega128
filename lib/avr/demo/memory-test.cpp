@@ -62,7 +62,7 @@ int main()
   lcd.color(RGB(255, 255, 127));
 
   byte i = 0;
-  uint16_t total = 0;
+  uint32_t total = 0;
   while (true) {
     byte size = rand() >> 9;
     byte filler = rand();
@@ -94,7 +94,7 @@ int main()
 
     total += size;
     lcd.at(TEXT_X, 85);
-    lcd.printf(PSTR("total: %2u "), total);
+    lcd.printf(PSTR("total: %4u "), total);
 
     view();
 

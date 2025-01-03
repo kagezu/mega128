@@ -81,7 +81,7 @@ void PrintFormat::print(uint32_t number)
   byte out = 0;
 
   for (byte j = 0; j < 10; j++) {
-    byte m = pgm_read_byte(mult + j);
+    uint32_t m = pgm_read_dword(mult + j);
     byte n = number / m;
     number %= m;
     // number -= m * n;
