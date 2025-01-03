@@ -22,5 +22,5 @@
 #define CLR_BITS(target, bits)        target &= ~bits
 
 
-#define I_SAVE byte _sreg = SREG; __asm__ __volatile__ ("cli ::")
+#define I_SAVE byte _sreg = SREG; __asm__ __volatile__ ("cli" :: )
 #define I_REST SREG = _sreg

@@ -9,7 +9,7 @@
 
 class PrintFont : public PrintFormat {
 private:
-  Font  _font;          // Шрифт
+  Font  _font = {};     // Шрифт
   byte  _charSize = 0;  // Размер символа в байтах
   byte  _line = 0;      // Высота символа в байтах
   byte  _interline = 0; // Расстояние между строками

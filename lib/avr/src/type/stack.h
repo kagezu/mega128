@@ -18,18 +18,18 @@ protected:
   I _size = 0;
 
 public:
-  Stack(uint16_t sp) : _stack(sp - sizeof(T)) {}
+  Stack(uint16_t sp) : _stack((T *)(sp - sizeof(T))) {}
 
   void clear() { _stack -= _size; _size = 0; }
   I size() { return _size; }
   void push(T data) { *_stack-- = data; _size++; }
-  T *push() { T ptr = _stack-- = data; _size++; }
+  T *push() { T *ptr = _stack--; _size++; return ptr; }
   T *pop() { _size--; return ++_stack; }
   T *top() { return _stack; }
   T *head() { return _stack + 1; }
 
 public:
-  void each(callback(T *ptr))
+  void each(void callback(T *ptr))
   {
     I index = _size;
     T *ptr = _stack;
@@ -77,7 +77,7 @@ public:
     ptr = _stack;
     while (ptr != new_element) {
       *ptr = *(ptr + 1);
-      *ptr++;
+      ptr++;
     }
     _stack--;
     _size++;

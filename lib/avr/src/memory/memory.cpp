@@ -8,6 +8,9 @@ Memory::Memory(uint16_t start, uint16_t length)
   _stack.push()->init(start, length - 2 * sizeof(MemoryBlock));
 }
 
+uint16_t Memory::_var;
+MemoryBlock *Memory::_ptr;
+
 uint16_t Memory::get_heap()
 {
   I_SAVE;
@@ -23,7 +26,7 @@ void Memory::get(void **var, uint16_t size)
   _var = size;
   _ptr = nullptr;
   _stack.each(this->_near); // Поиск блока наиболее близкого размера
-  if (_ptr == nullptr) throw PSTR("Memory::get() error"); // Блока для выделения памяти не найдено
+  if (_ptr == nullptr) while (1); // throw PSTR("Memory::get() error"); // Блока для выделения памяти не найдено
   uint16_t heap = _ptr->get_size(); // Свободная память блока
   _ptr->set_link((uint16_t)var); // Сохранение ссылки на указатель
   _ptr->set_size(size); // Новый размер блока
@@ -41,12 +44,12 @@ void *Memory::get(uint16_t size)
   _var = size;
   _ptr = nullptr;
   _stack.each(this->_near);
-  if (_ptr == nullptr) throw PSTR("Memory::get() error");
+  if (_ptr == nullptr) while (1); // throw PSTR("Memory::get() error");
   uint16_t heap = _ptr->get_size();
   uint16_t start = _ptr->get_start();
-  _stack.head()->use();
-  _ptr->set_size(size);
+  _ptr->use();
   if (heap > size + MEM_BLOCK_MIN_SIZE && _stack.head()->get_size() > sizeof(MemoryBlock)) {
+    _ptr->set_size(size);
     _stack.insert_post(_ptr)->init(start + size, heap - size - sizeof(MemoryBlock));
     _stack.head()->set_size(_stack.head()->get_size() - sizeof(MemoryBlock));
   }
@@ -71,7 +74,7 @@ void Memory::free(void *var)
   I_SAVE;
   _var = (uint16_t)var;
   byte index = _stack.findindex(this->_find_start);
-  if (index) {
+  if (index && _stack.at(index)->is_used()) {
     _stack.at(index)->free();
     _union(index);
   }

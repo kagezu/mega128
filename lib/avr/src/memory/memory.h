@@ -3,8 +3,13 @@
 
 #define MEM_BLOCK_MIN_SIZE    16
 
+
+/**
+ #### Memory(uint16_t start, uint16_t length)
+ */
 class Memory {
-protected:
+public:
+  // protected:
   uint16_t                  _start;
   Stack<MemoryBlock, byte>  _stack;
 

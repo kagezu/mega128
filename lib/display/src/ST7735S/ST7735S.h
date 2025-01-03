@@ -70,7 +70,7 @@ public:
 private:
   void send_command(byte data);
 
-protected:
+public:
   void set_addr(byte x0, byte y0, byte x1, byte y1);
   void send_zero();
   void send_byte(byte data);
