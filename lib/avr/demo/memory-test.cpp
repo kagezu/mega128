@@ -8,7 +8,7 @@
 
 #define FACTOR        11
 #define BUFFER_SIZE   160 * FACTOR
-#define FRAGMENTATION 25
+#define FRAGMENTATION 40
 #define TEXT_X        40
 #define WEIGHT        32
 
@@ -36,7 +36,7 @@ void fill(byte *ptr, byte size, byte filler)
 
 void view()
 {
-  uint16_t count = BUFFER_SIZE >> 1;
+  uint16_t count = BUFFER_SIZE;
   byte *ptr = test_block;
 
   DISPLAY_CONNECT;
@@ -44,9 +44,8 @@ void view()
 
   while (count--) {
     for (byte i = 0; i < (WEIGHT << 1) / FACTOR; i++) {
-      lcd.send_byte(*ptr); lcd.send_byte(*(ptr + 1));
+      lcd.send_byte(*ptr);
     }
-    ptr++;
     ptr++;
   }
 
@@ -74,18 +73,20 @@ int main()
 
   #ifdef MEM_USE
     lcd.at(TEXT_X, 45);
-    lcd.printf(PSTR("free: %2u "), mem.get_heap());
+    lcd.printf(PSTR("free: %2u  "), mem.heap());
+    lcd.at(TEXT_X, 55);
+    lcd.printf(PSTR("free: %u %%  "), (byte)(((uint32_t)mem.heap() * 100) / (BUFFER_SIZE)));
   #endif
 
   #ifdef MEM_USE
-    mem.free(ptr[i]);
+    mem.free((void **)&ptr[i]);
   #else
     free(ptr[i]);
   #endif
     fill(ptr[i], s[i], 0);
 
   #ifdef MEM_USE
-    ptr[i] = (byte *)mem.get(size);
+    mem.malloc((void **)&ptr[i], size);
   #else
     ptr[i] = (byte *)malloc(size);
   #endif

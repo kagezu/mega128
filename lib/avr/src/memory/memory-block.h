@@ -1,53 +1,41 @@
 #include <Arduino.h>
 
-#define MEM_USED      128
-#define MEM_FIXED     64
-#define MEM_LOCK      32
-#define MEM_FREE      0
+#define MEM_FIXED 1
 
 class MemoryBlock {
 protected:
   uint16_t _link_to_ptr;
   uint16_t _start;
   uint16_t _size;
-  volatile byte _status;
-  // byte _reserve;
 
 public:
   void init(uint16_t start, uint16_t size = 0)
   {
+    _link_to_ptr = 0;
     _start = start;
     _size = size;
-    _status = MEM_FREE;
   }
 
 public:
-  void use() { _status = MEM_USED | MEM_FIXED; }
-  void free() { _status = MEM_FREE; }
-  void set_link(uint16_t link_to_ptr)
+  void free() { _link_to_ptr = 0; }
+  void use() { _link_to_ptr = MEM_FIXED; }
+  void use(uint16_t link_to_ptr)
   {
     _link_to_ptr = link_to_ptr;
     *(uint16_t *)link_to_ptr = _start;
-    _status = MEM_USED;
   }
-  void set_start(uint16_t start)
+  uint16_t size() { return _size; }
+  void size(uint16_t new_size) { _size = new_size; }
+  uint16_t start() { return _start; }
+  void start(uint16_t new_start)
   {
-    if (is_locked()) return;
-    _start = start;
-    if (_status & MEM_USED)
-      *(uint16_t *)_link_to_ptr = start;
+    _start = new_start;
+    if (_link_to_ptr > MEM_FIXED)
+      *(uint16_t *)_link_to_ptr = new_start;
   }
-  void set_size(uint16_t size) { _size = size; }
 
-  uint16_t get_start() { return _start; }
-  uint16_t get_size() { return _size; }
-
-  bool is_locked() { return _status & (MEM_LOCK | MEM_FIXED); }
-  bool is_used() { return _status; }
-  bool is_link(uint16_t link_to_ptr) { return link_to_ptr == _link_to_ptr; }
-  bool is_start(uint16_t start) { return start == _start; }
-
-  void lock() { _status |= MEM_LOCK; }
-  void unlock() { _status &= ~MEM_LOCK; }
-  void fixed() { _status |= MEM_FIXED; }
+  bool is_fixed() { return _link_to_ptr == MEM_FIXED; }
+  bool is_used() { return _link_to_ptr; }
+  bool cmp_link(uint16_t link_to_ptr) { return link_to_ptr == _link_to_ptr; }
+  bool cmp_start(uint16_t start) { return start == _start; }
 };
