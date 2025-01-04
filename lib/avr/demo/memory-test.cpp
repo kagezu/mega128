@@ -4,11 +4,11 @@
 #include "font/standard_5x7.h"
 
 // Использовать класс Memory
-#define MEM_USE
+// #define MEM_USE
 
-#define FACTOR        10
+#define FACTOR        11
 #define BUFFER_SIZE   160 * FACTOR
-#define FRAGMENTATION 30
+#define FRAGMENTATION 35
 #define TEXT_X        40
 #define WEIGHT        30
 
@@ -25,12 +25,14 @@ Display lcd;
 
 void fill(byte *ptr, byte size, byte filler)
 {
-  size >>= 1;
-  while (size--) {
-    *ptr = filler;
-    ptr++;
-    *ptr = filler;
-    ptr++;
+  if (ptr) {
+    size >>= 1;
+    while (size--) {
+      *ptr = filler;
+      ptr++;
+      *ptr = filler;
+      ptr++;
+    }
   }
 }
 
@@ -62,10 +64,13 @@ int main()
 
   byte i = 0;
   uint32_t total = 0;
+  uint32_t deny = 0;
+
   while (true) {
     byte rnd = rand() >> 8;
     byte size = (rnd * rnd >> 7) + 1;
     byte filler = rand();
+    i = rand() % FRAGMENTATION;
 
     lcd.at(TEXT_X, 25);
     lcd.printf(PSTR("i: %u  "), i);
@@ -79,28 +84,36 @@ int main()
     lcd.printf(PSTR("free: %u %%  "), (byte)(((uint32_t)mem.heap() * 100) / (BUFFER_SIZE)));
   #endif
 
-  #ifdef MEM_USE
-    mem.free((void **)&ptr[i]);
-  #else
-    free(ptr[i]);
-  #endif
     fill(ptr[i], s[i], 0);
 
   #ifdef MEM_USE
-    if (mem.heap() > size + 6u) {
+    if (1)
+      mem.free((void **)&ptr[i]);
+    else
+      mem.free(ptr[i]);
+  #else
+    free(ptr[i]);
+  #endif
+
+  #ifdef MEM_USE
+    if (1)
       mem.malloc((void **)&ptr[i], size);
-      s[i] = size;
-      fill(ptr[i], s[i], filler);
-    }
+    else
+      ptr[i] = mem.malloc(size);
   #else
     ptr[i] = (byte *)malloc(size);
+  #endif
+
     s[i] = size;
     fill(ptr[i], s[i], filler);
-  #endif
 
     total += size;
     lcd.at(TEXT_X, 85);
     lcd.printf(PSTR("total: %4u "), total);
+
+    if (ptr[i] == nullptr) deny += size;
+    lcd.at(TEXT_X, 95);
+    lcd.printf(PSTR("deny: %4u "), deny);
 
     view();
 
