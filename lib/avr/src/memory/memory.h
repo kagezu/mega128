@@ -15,9 +15,11 @@ protected:
   Stack<MemoryBlock, byte>  _stack;
 
 public:
-  Memory(uint16_t start, uint16_t length);
+  Memory() {}
+  Memory(uint16_t start, uint16_t length) { init(start, length); }
 
 public:
+  void init(uint16_t start, uint16_t length);
   uint16_t  heap();
   byte *malloc(uint16_t size);
   void  malloc(void **var, uint16_t size);

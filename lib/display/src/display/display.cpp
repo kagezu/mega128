@@ -197,13 +197,13 @@ void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
       if (data & bit) send_rgb(_color);
       else send_rgb(_background);
     }
-    }
+  }
 
 #endif
 
   DISPLAY_DISCONNECT;
   SREG = sreg;
-  }
+}
 
 // тестирование дисплея
 

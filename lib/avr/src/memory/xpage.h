@@ -1,19 +1,9 @@
-#ifndef XPAGE_H
-#define XPAGE_H
-
-#include "../xmem.config.h"
-#include "../dmem/dyn-memory.h"
-
-#if __AVR_ATmega128__
+#pragma once
+#include "config.h"
+#include "memory.h"
 
 #define XMEM_START      RAMEND  + 1
 #define XMEM_OVER       XRAMEND + 1
-
-#elif __AVR_ATmega328P__
-// Профиль используется для тестирования и совместимости
-#define XMEM_START      0x400
-#define XMEM_OVER       RAMEND  + 1
-#endif
 
 // Физически возможный минимальный размер страницы
 // Соответствует XMM[0-2] = 7 в регистре XMCRB
@@ -33,7 +23,7 @@
         _BV(bitMask == XMEM_0K ? 0 : 8 - bitMask) * XMEM_MIN_SIZE  \
         : XMEM_OVER - start
 
-class XPage : public DynMemory {
+class XPage : public Memory {
 private:
   uint8_t _xmm;           // Значение битов XMM[0-2] в регистре XMCRB
   uint8_t _highAddress;   // Биты A[23:16] физической памяти
@@ -49,18 +39,17 @@ public:
     uint16_t physicalAddress = 0, // Начало физ. памяти
     uint8_t bitMask = XMEM_60K,   // Всё доступное адресное пространство
     uint16_t start = XMEM_START   // Первый доступный адрес eXternal SRAM
-  )
-    :DynMemory(
-      start,
-      XMEM_SIZE(bitMask, start)
-    ),
+  ) :
     _xmm(bitMask),
     _highAddress(highByte(physicalAddress)),
     _lowAddress(lowByte(physicalAddress))
-  {}
+  {
+    init();
+    use();
+    Memory::init(start, XMEM_SIZE(bitMask, start));
+  }
 
 public:
   void use();
-  static void init();
+  void init();
 };
-#endif

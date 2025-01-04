@@ -4,10 +4,10 @@
 uint16_t Memory::_var;
 MemoryBlock *Memory::_ptr;
 
-Memory::Memory(uint16_t start, uint16_t length)
-  :_stack(start + length)
+void Memory::init(uint16_t start, uint16_t length)
 {
-  _stack.push()->init(start, length - 2 * sizeof(MemoryBlock));
+  _stack.init(start + length);
+  _stack.push()->init(start, length - sizeof(MemoryBlock));
   _status = MEM_FREE;
 }
 

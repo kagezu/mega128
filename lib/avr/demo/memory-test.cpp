@@ -4,13 +4,13 @@
 #include "font/standard_5x7.h"
 
 // Использовать класс Memory
-// #define MEM_USE
+#define MEM_USE
 
 #define FACTOR        11
 #define BUFFER_SIZE   160 * FACTOR
 #define FRAGMENTATION 35
 #define TEXT_X        40
-#define WEIGHT        30
+#define WEIGHT        33
 
 #ifdef MEM_USE
 byte test_block[BUFFER_SIZE];
@@ -116,10 +116,5 @@ int main()
     lcd.printf(PSTR("deny: %4u "), deny);
 
     view();
-
-    i++;
-    if (i == FRAGMENTATION) i = 0;
-
   }
-
 }
