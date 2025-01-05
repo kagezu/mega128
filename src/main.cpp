@@ -14,6 +14,9 @@
 // Вывод памяти на экран
 // #include "../lib/display/demo/memory_scroll.cpp"
 
+// Вывод памяти на экран
+#include "../lib/display/demo/print.cpp"
+
 
 // -------------  libray XPage  -----------------
 // Выделение памяти
@@ -32,5 +35,5 @@
 
 // -------------  libray AVR OS  ----------------
 // Выделение памяти
-#include "../lib/avr/demo/memory-test.cpp"
+// #include "../lib/avr/demo/memory-test.cpp"
 

@@ -35,7 +35,7 @@ public:
 
   // Реализуется в дочернем классе
 public:
-  virtual void pixel(byte, byte);
-  virtual void rect_fill(byte, byte, byte, byte);
+  virtual void pixel(byte, byte) = 0;
+  virtual void rect_fill(byte, byte, byte, byte) = 0;
 };
 #endif

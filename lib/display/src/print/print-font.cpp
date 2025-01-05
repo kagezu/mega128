@@ -10,6 +10,7 @@ void PrintFont::write(byte ch)
     case '\t': TAB(); break;
     case '\v': LF(); break;
     case '\e': escape(); break;
+    case '\0': point_x += _font.weight + _interval; break;
     default: if (ch < 0xd0) letter(ch);
   }
 }

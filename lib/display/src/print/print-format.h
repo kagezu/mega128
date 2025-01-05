@@ -7,13 +7,11 @@ public:
   PrintFormat() {};
 
   void printf(const char *string, ...);
-  void print(const char *);
+  void print(const char *, byte pos = 0);
   void print_pstr(const char *);
 
-  void print(byte);
-  void print(uint16_t);
-  void print(uint32_t);
-  void print(int8_t);
+  void print(uint16_t, byte pos = 0);
+  void print(uint32_t, byte pos = 0);
   void print(int16_t);
   void print(int32_t);
 

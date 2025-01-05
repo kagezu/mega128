@@ -5,7 +5,7 @@
 #include "print-format.h"
 #include "font/font.h"
 
-#define FONT_TAB_FACTOR     2
+#define FONT_TAB_FACTOR     3
 
 class PrintFont : public PrintFormat {
 private:
@@ -42,13 +42,13 @@ public:
   // Возврат каретки
   inline void CR() { point_x = 0; }
   // Табуляция
-  inline void TAB() { point_x = ((point_x / (_interval << FONT_TAB_FACTOR) + 1) * _interval) << FONT_TAB_FACTOR; }
+  inline void TAB() { point_x = ((point_x / (_interval << FONT_TAB_FACTOR) + 1) * (_font.weight + _interval)) << FONT_TAB_FACTOR; }
   // Шаг назад
-  inline void BS() { point_x -= _interval; if (point_x > MAX_X) point_x = 0; }
+  inline void BS() { point_x -= (_font.weight + _interval); if (point_x > MAX_X) point_x = 0; }
 
   // Escape (обратный вызов)
   inline void escape() {}
 
-  virtual void symbol(byte *source, byte point_x, byte point_y, byte dx, byte dy);
+  virtual void symbol(byte *source, byte point_x, byte point_y, byte dx, byte dy) = 0;
 
 };

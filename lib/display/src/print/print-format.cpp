@@ -1,5 +1,5 @@
 #include "print-format.h"
-#include <macros/context.h>
+#include <macros/accel.h>
 
 void PrintFormat::printf(const char *string, ...)
 {
@@ -11,23 +11,31 @@ void PrintFormat::printf(const char *string, ...)
     switch (ch) {
       case '%': {
           char arg = '0';
+          byte pos = 0;
           ch = pgm_read_byte(string++);
           if (ch > '/' && ch < ':') {
             arg = ch;
             ch = pgm_read_byte(string++);
           }
+          if (ch == '.') {
+            pos = 1;
+            ch = pgm_read_byte(string++);
+          }
           switch (ch) {
             case 'c': write((char)va_arg(args, int16_t)); break;
-            case 'd': print((int8_t)va_arg(args, int16_t)); break;
-            case 'i': print((int16_t)va_arg(args, int16_t)); break;
+            case 'i':
+              switch (arg) {
+                case '0':
+                case '2': print((int16_t)va_arg(args, int16_t)); break;
+                case '4': print((int32_t)va_arg(args, int32_t)); break;
+              } break;
             case 's': print((char *)va_arg(args, char *)); break;
             case 'S': print_pstr((char *)va_arg(args, char *)); break;
             case 'u':
               switch (arg) {
                 case '0':
-                case '1': print((byte)va_arg(args, uint16_t)); break;
-                case '2': print((uint16_t)va_arg(args, uint16_t)); break;
-                case '4': print((uint32_t)va_arg(args, uint32_t)); break;
+                case '2': print((uint16_t)va_arg(args, uint16_t), pos); break;
+                case '4': print((uint32_t)va_arg(args, uint32_t), pos); break;
               } break;
             case 'x':
               switch (arg) {
@@ -47,8 +55,10 @@ void PrintFormat::printf(const char *string, ...)
   va_end(args);
 }
 
-void PrintFormat::print(const char *string)
+void PrintFormat::print(const char *string, byte pos)
 {
+  if (pos)
+    while (pos--) write('\b');
   while (char ch = *string++) if ((byte)ch < 0xd0) write(ch);
 }
 
@@ -69,55 +79,53 @@ void PrintFormat::print(int16_t number)
   print((uint16_t)number);
 }
 
-void PrintFormat::print(int8_t number)
+void PrintFormat::print(uint32_t number, byte pos)
 {
-  if (number < 0) { write('-'); number = -number; }
-  print((byte)number);
+  char str[11];
+  char *ptr = &str[10];
+  *ptr = 0;
+
+  while (number > 9) {
+    byte mod;
+
+  #ifdef ACCEL
+    byte tmp;
+    div10_32bit(number, mod, tmp);
+  #else
+    mod = number % 10;
+    number /= 10;
+  #endif
+
+    *--ptr = mod + '0';
+    if (pos) pos++;
+  }
+  *--ptr = number + '0';
+  print(ptr, pos);
+
 }
 
-void PrintFormat::print(uint32_t number)
+void PrintFormat::print(uint16_t number, byte pos)
 {
-  static const uint32_t mult[] PROGMEM = { 1000000000,100000000,10000000,1000000,100000,10000,1000,100,10,1 };
-  byte out = 0;
+  char str[7];
+  char *ptr = &str[6];
+  *ptr = 0;
 
-  for (byte j = 0; j < 10; j++) {
-    uint32_t m = pgm_read_dword(mult + j);
-    byte n = number / m;
-    number %= m;
-    // number -= m * n;
-    if (n) out = 1;
-    if (out) write('0' + n);
+  while (number > 9) {
+    byte mod;
+
+  #ifdef ACCEL
+    byte tmp;
+    div10_16bit(number, mod, tmp);
+  #else
+    mod = number % 10;
+    number /= 10;
+  #endif
+
+    *--ptr = mod + '0';
+    if (pos) pos++;
   }
-}
-
-void PrintFormat::print(uint16_t number)
-{
-  static const uint16_t mult[] PROGMEM = { 10000,1000,100,10,1 };
-  byte out = 0;
-
-  for (byte j = 0; j < 5; j++) {
-    uint16_t m = pgm_read_word(mult + j);
-    byte n = number / m;
-    number %= m;
-    // number -= m * n;
-    if (n) out = 1;
-    if (out) write('0' + n);
-  }
-}
-
-void PrintFormat::print(byte number)
-{
-  static const byte mult[] PROGMEM = { 100,10,1 };
-  byte out = 0;
-
-  for (byte j = 0; j < 3; j++) {
-    byte m = pgm_read_byte(mult + j);
-    byte n = number / m;
-    number %= m;
-    // number -= m * n;
-    if (n) out = 1;
-    if (out) write('0' + n);
-  }
+  *--ptr = number + '0';
+  print(ptr, pos);
 }
 
 void PrintFormat::print_h(uint64_t number)
