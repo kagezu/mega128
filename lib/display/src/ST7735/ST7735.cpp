@@ -1,8 +1,110 @@
-#include "display.h"
+#include "ST7735.h"
 
-// Реализация виртуальных методов класса Draw
+ST7735::ST7735()
+{
+  INIT_LCD;
+  delayMicroseconds(15000); // Ждать стабилизации напряжений
+  DISPLAY_CONNECT;          // CS Выбор дисплея
 
-void Display::pixel(byte x, byte y)
+  send_command(SLPOUT);      // Проснуться
+  delayMicroseconds(15000); // Ждать стабилизации напряжений
+
+  send_command(FRMCTR1); // In normal mode (Full colors)
+  send_byte(0x05);
+  send_byte(0x3C);
+  send_byte(0x3C);
+
+  send_command(FRMCTR2); // In Idle mode (8-colors)
+  send_byte(0x05);
+  send_byte(0X3C);
+  send_byte(0X3C);
+
+  send_command(FRMCTR3); // In partial mode + Full colors
+  send_byte(0x05);
+  send_byte(0x3C);
+  send_byte(0x3C);
+  send_byte(0x05);
+  send_byte(0x3C);
+  send_byte(0x3C);
+
+  send_command(INVCTR); // Display inversion control
+  send_byte(0x03);
+
+  send_command(PWCTR1); // Power control setting
+  send_byte(0x28);
+  send_byte(0x08);
+  send_byte(0x04);
+
+  send_command(PWCTR2); // Power control setting
+  send_byte(0xC0);
+
+  send_command(PWCTR3); // In normal mode (Full colors)
+  send_byte(0x0D);
+  send_byte(0X00);
+
+  send_command(PWCTR4); // In Idle mode (8-colors)
+  send_byte(0x8D);
+  send_byte(0x2A);
+
+  send_command(PWCTR5); // In partial mode + Full colors
+  send_byte(0x8D);
+  send_byte(0xEE);
+
+  send_command(VMCTR1); // VCOM control 1
+  send_byte(0x1A);
+
+  send_command(0x17); // ?
+  send_byte(0x05);
+
+  send_command(MADCTL); // Memory Data Access Control
+  send_byte(0xD8);
+
+  send_command(GAMCTRP1); // Set Gamma adjustment (+ polarity)
+  send_byte(0x03);
+  send_byte(0x22);
+  send_byte(0x07);
+  send_byte(0x0A);
+  send_byte(0x2E);
+  send_byte(0x30);
+  send_byte(0x25);
+  send_byte(0x2A);
+  send_byte(0x28);
+  send_byte(0x26);
+  send_byte(0x2E);
+  send_byte(0x3A);
+  send_byte(0x00);
+  send_byte(0x01);
+  send_byte(0x03);
+  send_byte(0x13);
+
+  send_command(GAMCTRN1); // Set Gamma adjustment (- polarity)
+  send_byte(0x04);
+  send_byte(0x16);
+  send_byte(0x06);
+  send_byte(0x0D);
+  send_byte(0x2D);
+  send_byte(0x26);
+  send_byte(0x23);
+  send_byte(0x27);
+  send_byte(0x27);
+  send_byte(0x25);
+  send_byte(0x2D);
+  send_byte(0x3B);
+  send_byte(0x00);
+  send_byte(0x01);
+  send_byte(0x04);
+  send_byte(0x13);
+
+  send_command(COLMOD);
+  send_byte(RGB_FORMAT);
+
+  send_command(DISPON); // Display On
+  DISPLAY_DISCONNECT
+}
+
+// Реализация виртуальных методов класса GFX
+
+void ST7735::pixel(byte x, byte y)
 {
   if (x > MAX_X || y > MAX_Y) return;
   DISPLAY_CONNECT;
@@ -38,7 +140,7 @@ void Display::pixel(byte x, byte y)
   DISPLAY_DISCONNECT;
 }
 
-void Display::rect_fill(uint8_t x, uint8_t y, uint8_t x1, uint8_t y1)
+void ST7735::rect_fill(uint8_t x, uint8_t y, uint8_t x1, uint8_t y1)
 {
 #if FLIP_X
   uint8_t t = x;
@@ -59,65 +161,9 @@ void Display::rect_fill(uint8_t x, uint8_t y, uint8_t x1, uint8_t y1)
 #endif
 }
 
-/*
-void Display::scan_bitmap(uint8_t x, uint8_t y, uint8_t width, uint8_t height, RGB *source)
-{
-  set_addr(x, y, x + width - 1, y + height - 1);
-  uint16_t length = width * height;
-  while (length--)
-    send_rgb(*source++);
+// Реализация интерфейса PrintLCD
 
-  DISPLAY_DISCONNECT;
-}
-
-void Display::scan_bitmap(RGB *source)
-{
-  set_addr(0, 0, LCD_MAX_X, LCD_MAX_Y);
-
-  // 0°
-#if !FLIP_X && !FLIP_Y && !EX_X_Y
-  uint16_t length = (LCD_MAX_X + 1) * (LCD_MAX_Y + 1);
-  while (length--) send_rgb(*source++);
-#endif
-
-  // 180°
-#if FLIP_X && FLIP_Y && !EX_X_Y
-  uint16_t length = (LCD_MAX_X + 1) * (LCD_MAX_Y + 1);
-  source += length - 1;
-  while (length--) send_rgb(*source--);
-#endif
-
-  // 90°
-#if !FLIP_X && FLIP_Y && EX_X_Y
-  RGB *ptr;
-  source += LCD_MAX_X * (LCD_MAX_Y + 1);
-  for (byte j = 0; j < LCD_MAX_Y + 1; j++) {
-    ptr = source + j;
-    for (byte i = 0; i < LCD_MAX_X + 1; i++) {
-      send_rgb(*source);
-      ptr -= LCD_MAX_Y + 1;
-    }
-  }
-#endif
-
-  // 270°
-#if FLIP_X && !FLIP_Y && EX_X_Y
-  RGB *ptr;
-  source += LCD_MAX_Y;
-  for (byte j = 0; j < LCD_MAX_Y + 1; j++) {
-    ptr = source - j;
-    for (byte i = 0; i < LCD_MAX_X + 1; i++) {
-      send_rgb(*source);
-      ptr += LCD_MAX_Y + 1;
-    }
-  }
-#endif
-
-  DISPLAY_DISCONNECT;
-}
-*/
-
-void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
+void ST7735::symbol(byte *source, byte x, byte y, byte dx, byte dy)
 {
   byte sreg = SREG;
   cli();
@@ -197,19 +243,19 @@ void Display::symbol(byte *source, byte x, byte y, byte dx, byte dy)
       if (data & bit) send_rgb(_color);
       else send_rgb(_background);
     }
-  }
+    }
 
 #endif
 
   DISPLAY_DISCONNECT;
   SREG = sreg;
-}
+  }
 
 // тестирование дисплея
 
 #define VIEWPORT_OFFSET 30
 
-void Display::demo(byte d)
+void ST7735::demo(byte d)
 {
   DISPLAY_CONNECT;
   set_addr(0, 0, LCD_MAX_X, LCD_MAX_Y);
@@ -230,7 +276,7 @@ void Display::demo(byte d)
   DISPLAY_DISCONNECT
 }
 
-void Display::test(byte k)
+void ST7735::test(byte k)
 {
   DISPLAY_CONNECT;
   set_addr(0, 0, LCD_MAX_X, LCD_MAX_Y);

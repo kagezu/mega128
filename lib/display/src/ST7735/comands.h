@@ -1,13 +1,7 @@
 #pragma once
 
-#include "display/config.h"
-#include "rgb/rgb.h"
-
-#define SPI_WAIT  while (!(SPSR & _BV(SPIF)));
-
 // Команды дисплея
 
-#define NOP 0x00       // No Operation
 #define SWRESET 0x01   // Software reset
 #define RDDID 0x04     // Read Display ID
 #define RDDST 0x09     // Read Display Status
@@ -64,21 +58,3 @@
 #define GAMCTRN1 0xe1 // Set Gamma adjustment (- polarity)
 #define EXTCTRL 0xf0  // Extension Command Control
 #define VCOM4L 0xff   // Vcom 4 Level control
-
-class ST7735S_SPI {
-public:
-  ST7735S_SPI();
-
-private:
-  void send_command(byte data);
-
-protected:
-  void set_addr(byte x0, byte y0, byte x1, byte y1);
-  void send_byte(byte data);
-  void send_rgb(byte r, byte g, byte b);
-  void send_rgb(uint16_t data); // формат 0x0rgb / RGB_16
-  void send_rgb(uint32_t color);
-  void send_rgb(RGB color);
-
-  void rect(byte x0, byte y0, byte x1, byte y1, RGB color);
-};

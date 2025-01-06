@@ -28,10 +28,10 @@ int main(void)
       byte *p = ptr;
       for (byte i = 0; i < lcd.get_row(); i++) {
         lcd.at(0, i * (lcd.get_height()) + k);
-        lcd.printf(PSTR("%2x %x %x %x %x"), p, *p, *(p+1), *(p+2), *(p+3));
-        p+=4;
+        lcd.printf(PSTR("%2x %x %x %x %x"), p, *p, *(p + 1), *(p + 2), *(p + 3));
+        p += 4;
       }
     }
-  ptr += 4;
+    ptr += 4;
   }
 }

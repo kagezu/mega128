@@ -24,6 +24,6 @@ public:
   inline void println(T arg) { print(arg); write('\n'); }
 
 public:
-  virtual void write(byte);
+  virtual void write(byte) = 0;
 
 };
