@@ -1,13 +1,8 @@
 #pragma once
-#include "config.h"
-#include "ST7735_Soft.h"
+#include "display/config.h"
 #include "rgb/rgb.h"
+// #include "SSD1306_I2C.h"
 
-#ifdef LCD_SPI
-#include "ST7735/ST7735_SPI.h"
-#else
-#include "ST7735_Soft.h"
-#endif
 #ifdef LCD_PRINT
 #include "print/print-font.h"
 #endif
@@ -15,21 +10,17 @@
 #include "draw/draw.h"
 #endif
 
-class ST7735
-#ifdef LCD_SPI
-  : public ST7735_SPI
-#else
-  : public ST7735_Soft
-#endif
-#ifdef LCD_PRINT
-  , public PrintFont
-#endif
-#ifdef LCD_DRAW
-  , public Draw
-#endif
+class SSD1306
+  // : public SSD1306_I2C
+  // #ifdef LCD_PRINT
+  //   , public PrintFont
+  // #endif
+  // #ifdef LCD_DRAW
+  //   , public Draw
+  // #endif
 {
 public:
-ST7735();
+  SSD1306();
 
 private:
   RGB _color = RGB(255, 255, 255);
@@ -38,8 +29,8 @@ private:
 public:
   void color(RGB c) { _color = c; }
   void background(RGB b) { _background = b; }
-  void clear() { rect(0, 0, LCD_MAX_X, LCD_MAX_Y, _background); }
-  void clear(RGB color) { rect(0, 0, LCD_MAX_X, LCD_MAX_Y, color); }
+  // void clear() { rect(0, 0, LCD_MAX_X, LCD_MAX_Y, _background); }
+  // void clear(RGB color) { rect(0, 0, LCD_MAX_X, LCD_MAX_Y, color); }
 
   // Скринсейвер
   void demo(byte);
