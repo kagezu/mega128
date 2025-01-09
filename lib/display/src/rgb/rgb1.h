@@ -2,7 +2,7 @@
 
 class RGB {
 public:
-  byte data;
+  bool data;
 
 public:
   RGB() {}

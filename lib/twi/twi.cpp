@@ -8,7 +8,7 @@ volatile uint8_t *TWI_Master::_master_buffer;
 volatile uint16_t TWI_Master::_master_buffer_length;
 
 
-void TWI_Master::begin()
+void TWI_Master::init()
 {
   _state = TWI_IDLE;
   // установка частоты F = F_CPU/(( 4 ^ TWSR[0:1] ) * TWBR * 2 + 16 )
@@ -18,7 +18,7 @@ void TWI_Master::begin()
   TWCR = TWI_ENABLE | TWI_ACK | TWI_ISR; // Включаем модуль TWI
 }
 
-void TWI_Master::end(void)
+void TWI_Master::destroy(void)
 {
   TWCR &= ~(TWI_ENABLE | TWI_ISR | TWI_ACK); // Отключаем модуль TWI
   TWI_DDR &= ~(TWI_SDA | TWI_SCL); // Устанавливаем пины как input
@@ -68,12 +68,12 @@ void TWI_Master::write(byte data)
   _buffer[_index++] = data;
 }
 
-void TWI_Master::beginTransmission()
+void TWI_Master::begin()
 {
   while (_state);
 }
 
-void TWI_Master::endTransmission(void)
+void TWI_Master::end(void)
 {
   _state |= TWI_STOP;
   write(_buffer, _index);

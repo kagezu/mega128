@@ -63,14 +63,14 @@ public:
   static void send_next_byte(void);
 
 public:
-  void begin();
-  void end();
+  void init();
+  void destroy();
   void set_freq(uint32_t freq);
   void write(byte *, uint16_t);
   void write(byte);
-  void beginTransmission();
+  void begin();
 
 public:
   void set_address(byte address) { _address = address << 1; }
-  void endTransmission(void);
+  void end(void);
 };
