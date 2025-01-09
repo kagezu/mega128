@@ -1,6 +1,8 @@
 #include "SSD1306.h"
 #include "command.h"
 
+#ifdef _SSD1306_
+
 void SSD1306::init()
 {
   static const byte PROGMEM init[] = {
@@ -20,7 +22,7 @@ void SSD1306::init()
   sei();
   send_command(SetDisplayOFF);
   send_command_list(init, sizeof(init));
-  send_command(SetMultiplexRatio, 0x1f);
+  send_command(SetMultiplexRatio, LCD_MAX_Y);
   send_command(SetPrechargePeriod, 0xF1);
 
 #ifndef LCD_BREAK
@@ -63,5 +65,6 @@ void SSD1306::symbol(byte *source, byte x, byte y, byte dx, byte dy)
       if (data & bit) pixel(x + i, y + j);
     }
   }
-
 }
+
+#endif

@@ -1,6 +1,10 @@
 #pragma once
 
-#include "config.h"
+#include "display/config.h"
+
+#ifdef LCD_SOFT
+#ifdef _ST7735_ 
+
 #include "comands.h"
 #include "rgb/rgb.h"
 
@@ -16,3 +20,6 @@ public:
   void send_rgb(RGB color);
   void rect(byte x0, byte y0, byte x1, byte y1, RGB color);
 };
+
+#endif
+#endif

@@ -1,6 +1,8 @@
 #pragma once
 #include "display/config.h"
-#include "ST7735_Soft.h"
+
+#ifdef _ST7735_
+
 #include "rgb/rgb.h"
 
 
@@ -53,3 +55,5 @@ public:
   void pixel(byte, byte);
   void rect_fill(uint8_t x, uint8_t y, uint8_t x1, uint8_t y1);
 };
+
+#endif

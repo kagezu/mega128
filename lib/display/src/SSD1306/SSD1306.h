@@ -1,5 +1,7 @@
 #pragma once
 #include "display/config.h"
+#ifdef _SSD1306_
+
 #include "SSD1306_I2C.h"
 
 #ifdef LCD_PRINT
@@ -40,3 +42,5 @@ public:
   void pixel(byte, byte);
   void rect_fill(uint8_t x, uint8_t y, uint8_t x1, uint8_t y1);
 };
+
+#endif

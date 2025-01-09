@@ -1,4 +1,4 @@
-#include "display/display.h"
+#include "display.h"
 
 Display lcd;
 

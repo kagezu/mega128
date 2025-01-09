@@ -1,8 +1,9 @@
 #pragma once
+#include "display/config.h"
+#ifdef _SSD1306_
 
 #include <twi.h>
 #include "rgb/rgb.h"
-#include "display/config.h"
 
 class SSD1306_I2C {
 public:
@@ -20,3 +21,5 @@ protected:
 private:
   TWI_Master twi;
 };
+
+#endif

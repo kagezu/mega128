@@ -2,20 +2,20 @@
 
 // Выбор типа дисплея
 
-// #define _ST7735_
-#define _SSD1306_
+#define _ST7735_
+// #define _SSD1306_
 
 // Выбор интерфейса
 
 // #define LCD_SPI         // Подключает через SPI
-#define LCD_I2C         // Подключает через I2C
-// #define LCD_SOFT        // Программно
+// #define LCD_I2C         // Подключает через I2C
+#define LCD_SOFT        // Программно
 
 // Цветовая модель
 
-#define RGB_FORMAT RGB_1    // Монохроматический
+// #define RGB_FORMAT RGB_1    // Монохроматический
 // #define RGB_FORMAT RGB_12   // 4x4x4 bit
-// #define RGB_FORMAT RGB_16   // 5x6x5 bit
+#define RGB_FORMAT RGB_16   // 5x6x5 bit
 // #define RGB_FORMAT RGB_18   // 6x6x6 bit
 
 // Повороты дисплея

@@ -2,6 +2,8 @@
 #include "SSD1306_I2C.h"
 #include "command.h"
 
+#ifdef _SSD1306_
+
 SSD1306_I2C::SSD1306_I2C()
 {
   twi.init();
@@ -55,3 +57,5 @@ void SSD1306_I2C::update(void)
   twi.write(buffer, count);
   twi.end();
 }
+
+#endif

@@ -4,35 +4,6 @@
 
 //===================== Config =============================
 
-// Цветовая модель
-// RGB_12 4x4x4 bit / RGB_16 5x6x5 bit / RGB_18 6x6x6 bit
-
-#define RGB_FORMAT RGB_18
-
-// Таблица поворотов дисплея
-//    \   |   FLIP_X  |   FLIP_Y  |   EX_X_Y  |
-// ============================================
-//   0°   |   false   |   false   |   false   |
-//  90°   |   false   |   true    |   true    |
-// 180°   |   true    |   true    |   false   |
-// 270°   |   true    |   false   |   true    |
-
-// #define FLIP_X    false
-// #define FLIP_X    true
-
-// #define FLIP_Y    false
-// #define FLIP_Y    true
-
-// #define EX_X_Y    false
-// #define EX_X_Y    true
-
-
-// #define LCD_SPI         // Подключает через SPI
-#define LCD_DRAW        // Подключает класс для рисования
-#define LCD_PRINT       // Подключает класс для вывода текста
-
-//==========================================================
-
 // LCD_DATA     Порт для SDA, SCK, RST ( 8 если не используется )
 // LCD_CONTROL  Порт для CS, RS
 // LCD_CS       Выбор дисплея
