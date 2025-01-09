@@ -14,8 +14,8 @@ void SSD1306::init()
     SetNormalDisplay,
     DeactivateScroll
   };
-
-  clear();
+  for (int i = 0; i < 2000; i++)
+    clear();
   send_command(SetDisplayOFF);
   send_command_list(init, sizeof(init));
   send_command(SetMultiplexRatio, LCD_MAX_Y);
