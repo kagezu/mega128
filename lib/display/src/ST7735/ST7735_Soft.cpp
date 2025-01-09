@@ -2,6 +2,7 @@
 #include "ST7735_Soft.h"
 
 #ifndef LCD_SPI
+#ifdef _ST7735_ 
 
 void ST7735_Soft::send_command(byte command)
 {
@@ -337,4 +338,5 @@ void ST7735_Soft::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
   DISPLAY_DISCONNECT;
 };
 
+#endif
 #endif

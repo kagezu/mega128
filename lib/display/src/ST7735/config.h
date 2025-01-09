@@ -1,5 +1,6 @@
 #pragma once
 #include <macros/helper.h>
+#ifdef _ST7735_
 
 //===================== Config =============================
 
@@ -116,3 +117,5 @@
 #define RGB_12 0x03 // 4x4x4 bit
 #define RGB_16 0x05 // 5x6x5 bit
 #define RGB_18 0x06 // 6x6x6 bit (24 bit transfer)
+
+#endif

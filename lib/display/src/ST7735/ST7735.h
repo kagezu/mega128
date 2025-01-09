@@ -1,7 +1,8 @@
 #pragma once
-#include "config.h"
+#include "display/config.h"
 #include "ST7735_Soft.h"
 #include "rgb/rgb.h"
+
 
 #ifdef LCD_SPI
 #include "ST7735/ST7735_SPI.h"

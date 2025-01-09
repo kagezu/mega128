@@ -1,6 +1,8 @@
 #pragma once
 
-#if RGB_FORMAT == RGB_12
+#if RGB_FORMAT == RGB_1
+#include "rgb1.h"
+#elif RGB_FORMAT == RGB_12
 #include "rgb12.h"
 #elif RGB_FORMAT == RGB_16
 #include "rgb16.h"

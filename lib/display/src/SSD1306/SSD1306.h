@@ -1,7 +1,6 @@
 #pragma once
 #include "display/config.h"
-#include "rgb/rgb.h"
-// #include "SSD1306_I2C.h"
+#include "SSD1306_I2C.h"
 
 #ifdef LCD_PRINT
 #include "print/print-font.h"
@@ -11,7 +10,7 @@
 #endif
 
 class SSD1306
-  // : public SSD1306_I2C
+  : public SSD1306_I2C
   // #ifdef LCD_PRINT
   //   , public PrintFont
   // #endif
@@ -20,7 +19,7 @@ class SSD1306
   // #endif
 {
 public:
-  SSD1306();
+  // SSD1306_I2C();
 
 private:
   RGB _color = RGB(255, 255, 255);
@@ -40,6 +39,6 @@ public:
   void symbol(byte *source, byte x, byte y, byte dx, byte dy);
 
   // Реализация интерфейса GFX
-  void pixel(byte, byte);
+  void pixel(byte x, byte y) { SSD1306_I2C::pixel(x, y, _color); }
   void rect_fill(uint8_t x, uint8_t y, uint8_t x1, uint8_t y1);
 };

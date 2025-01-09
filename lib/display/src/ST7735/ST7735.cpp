@@ -1,5 +1,7 @@
 #include "ST7735.h"
 
+#ifdef _ST7735_
+
 ST7735::ST7735()
 {
   INIT_LCD;
@@ -293,3 +295,5 @@ void ST7735::test(byte k)
     }
   DISPLAY_DISCONNECT
 }
+
+#endif

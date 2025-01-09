@@ -1,6 +1,9 @@
 #include <avr/pgmspace.h>
 #include "ST7735_SPI.h"
 
+#ifdef LCD_SPI
+#ifdef _ST7735_ 
+
 #define SPI_WAIT  while (!(SPSR & _BV(SPIF)));
 
 void ST7735_SPI::send_command(byte command)
@@ -201,3 +204,6 @@ void ST7735_SPI::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
 
   DISPLAY_DISCONNECT
 };
+
+#endif
+#endif

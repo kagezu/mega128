@@ -1,6 +1,6 @@
 #pragma once
 
-#include "config.h"
+#include "display/config.h"
 #include "comands.h"
 #include "rgb/rgb.h"
 
