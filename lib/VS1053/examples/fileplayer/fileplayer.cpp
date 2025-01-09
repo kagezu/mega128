@@ -1,31 +1,11 @@
-/**
- * \file FilePlayer.ino
- *
- * \brief Example sketch of using the vs1053 Arduino driver, with flexible list of files and formats
- * \remarks comments are implemented with Doxygen Markdown format
- *
- * \author Bill Porter
- * \author Michael P. Flaga
- *
- * This sketch listens for commands from a serial terminal (such as the Serial
- * Monitor in the Arduino IDE). Listening for either a single character menu
- * commands or an numeric strings of an index. Pointing to a music file, found
- * in the root of the SdCard, to be played. A list of index's and corresponding
- * files in the root can be listed out using the 'l' (little L) command.
- *
- * This sketch allows the various file formats to be played: mp3, aac, wma, wav,
- * fla & mid.
- *
- * This sketch behaves nearly identical to vs1053_Library_Demo.ino, but has
- * extra complicated loop() as to recieve string of characters to create the
- * file index. As the Serial Monitor is typically default with no CR or LF, this
- * sketch uses intercharacter time out as to determine when a full string has
- * has been entered to be processed.
- */
+#include <display.h>
+#include "font/arial_14.h"
+#include "font/micro_5x6.h"
+#include "font/standard_5x8.h"
 
 #include <SPI.h>
 
- //Add the SdFat Libraries
+//Add the SdFat Libraries
 #include <SdFat.h>
 #include <FreeStack.h>
 
@@ -39,36 +19,13 @@
 #include <SimpleTimer.h>
 #endif
 
-/**
- * \brief Object instancing the SdFat library.
- *
- * principal object for handling all SdCard functions.
- */
+Display lcd;
 SdFat sd;
-
-/**
- * \brief Object instancing the vs1053 library.
- *
- * principal object for handling all the attributes, members and functions for the library.
- */
 vs1053 MP3player;
 int16_t last_ms_char; // milliseconds of last recieved character from Serial port.
 int8_t buffer_pos; // next position to recieve character from Serial port.
 
-//------------------------------------------------------------------------------
-/**
- * \brief Setup the Arduino Chip's feature for our use.
- *
- * After Arduino's kernel has booted initialize basic features for this
- * application, such as Serial port and MP3player objects with .begin.
- * Along with displaying the Help Menu.
- *
- * \note returned Error codes are typically passed up from MP3player.
- * Whicn in turns creates and initializes the SdCard objects.
- *
- * \see
- * \ref Error_Codes
- */
+
 char buffer[6]; // 0-35K+null
 
 uint32_t  millis_prv;
