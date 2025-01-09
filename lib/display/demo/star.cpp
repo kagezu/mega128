@@ -12,8 +12,6 @@ byte i;
 
 int main()
 {
-  TCCR0B = 1;
-  sei();
   display.font(&arial_14);
   display.init();
 

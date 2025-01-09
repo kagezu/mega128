@@ -16,6 +16,8 @@ void SSD1306::init()
   };
   for (int i = 0; i < 2000; i++)
     clear();
+  TCCR0B = 1;
+  sei();
   send_command(SetDisplayOFF);
   send_command_list(init, sizeof(init));
   send_command(SetMultiplexRatio, 0x1f);
@@ -34,6 +36,7 @@ void SSD1306::init()
 
 void SSD1306::pixel(byte x, byte y)
 {
+  if (x > MAX_X || y > MAX_Y) return;
   byte *pixel = &buffer[x + (y >> 3) * (LCD_MAX_X + 1)];
   byte bit = (1 << (y & 7));
   *pixel &= ~bit;

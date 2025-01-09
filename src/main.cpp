@@ -3,7 +3,7 @@
 // #include "../lib/display/demo/sample.cpp"
 
 // Линии и окружности
-// #include "../lib/display/demo/line.cpp"
+#include "../lib/display/demo/line.cpp"
 
 // Прямоугольники
 // #include "../lib/display/demo/rect.cpp"
@@ -15,7 +15,7 @@
 // #include "../lib/display/demo/memory_scroll.cpp"
 
 // Вывод памяти на экран
-#include "../lib/display/demo/star.cpp"
+// #include "../lib/display/demo/star.cpp"
 
 // Вывод памяти на экран
 // #include "../lib/display/demo/print.cpp"

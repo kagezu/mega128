@@ -10,7 +10,8 @@ Display lcd;
 
 int main(void)
 {
-  lcd.clear(0);
+  // lcd.init();
+  lcd.clear();
   lcd.color(RGB(0x80, 0xE0, 0xFF));
 
   // lcd.font(&micro_5x6);
@@ -19,12 +20,18 @@ int main(void)
   // lcd.font(&number_8x16);
   // lcd.font(&number_15x31);
   lcd.font(&arial_14);
-  lcd.set_interline(0);
+  lcd.set_interline(1);
 
   byte *ptr = (byte *)0x100;
 
   while (true) {
     for (char k = lcd.get_height() - 1; k >= 0; k--) {
+      // lcd.update();
+      // lcd.update();
+      // lcd.update();
+      // lcd.update();
+      // lcd.update();
+      // lcd.clear();
       byte *p = ptr;
       for (byte i = 0; i < lcd.get_row(); i++) {
         lcd.at(0, i * (lcd.get_height()) + k);
