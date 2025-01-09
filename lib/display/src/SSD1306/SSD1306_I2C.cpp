@@ -2,6 +2,12 @@
 #include "SSD1306_I2C.h"
 #include "command.h"
 
+SSD1306_I2C::SSD1306_I2C()
+{
+  twi.begin();
+  twi.set_address(LCD_I2C_ADDR);
+}
+
 void SSD1306_I2C::command(byte command)
 {
   twi.beginTransmission();
@@ -36,41 +42,6 @@ void SSD1306_I2C::command_list(const byte *c, byte n)
     twi.write(pgm_read_byte(c++));
 
   twi.endTransmission();
-}
-
-void SSD1306_I2C::begin(byte addr)
-{
-
-  twi.begin();
-  twi.set_address(addr);
-
-  delay(1000);
-
-  command(SetDisplayOFF);
-  static const byte PROGMEM init[] = {
-    SetDisplayClock, 0x80,
-    SetDisplayOffset, 0,
-    SetDisplayStartLine,
-    Set_0x8D, 0x14,
-    SetMemoryAddressingMode, 0,
-    SetVcomhDeselectLevel, 0x40,
-    EntireDisplayON,
-    SetNormalDisplay,
-    DeactivateScroll
-  };
-  command_list(init, sizeof(init));
-
-  command(SetMultiplexRatio, LCD_MAX_Y);
-  command(SetPrechargePeriod, 0xF1);
-
-  if ((LCD_MAX_X == 127) && (LCD_MAX_Y == 31))
-    command(SetPinsConfig, 0x02);
-  else if ((LCD_MAX_X == 127) && (LCD_MAX_Y == 63))
-    command(SetPinsConfig, 0x12);
-
-  command(SetDisplayON);
-
-  clear();
 }
 
 void SSD1306_I2C::pixel(int16_t x, int16_t y, RGB color)

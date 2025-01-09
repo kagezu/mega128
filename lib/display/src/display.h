@@ -1,6 +1,6 @@
 #pragma once
 
-#include "config.h"
+#include "display/config.h"
 
 #ifdef _ST7735_
 #define DISPLAY_MODEL ST7735

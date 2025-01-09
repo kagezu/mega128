@@ -18,14 +18,12 @@ class SSD1306
   //   , public Draw
   // #endif
 {
-public:
-  // SSD1306_I2C();
-
 private:
   RGB _color = RGB(255, 255, 255);
   RGB _background = 0;
 
 public:
+  void init();
   void color(RGB c) { _color = c; }
   void background(RGB b) { _background = b; }
   // void clear() { rect(0, 0, LCD_MAX_X, LCD_MAX_Y, _background); }

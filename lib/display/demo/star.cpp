@@ -1,6 +1,6 @@
-#include <SSD1306/SSD1306.h>
+#include <display.h>
 
-SSD1306 display;
+Display display;
 
 #define COUNT_STAR  50
 
@@ -11,7 +11,7 @@ int main()
 {
   TCCR0B = 1;
   sei();
-  display.begin(0x3C);
+  display.init();
   display.update();
   while (true) {
     for (char j = 0; j < 3; j++) {
