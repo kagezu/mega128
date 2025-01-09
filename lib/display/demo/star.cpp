@@ -18,10 +18,10 @@ int main()
   display.init();
 
   while (true) {
-    display.at(30, 8);
+    display.at(30, (MAX_Y - 14) >> 1);
     display.printf(PSTR("Hello World"));
-    for (char j = 0; j < 5; j++) {
-      byte x = rand() & 0x7f, y = rand() & 0x1f;
+    for (char j = 0; j < 20; j++) {
+      byte x = rand() & MAX_X, y = rand() & MAX_Y;
       display.color(black);
       display.pixel(cycle[i][0], cycle[i][1]);
       display.color(white);

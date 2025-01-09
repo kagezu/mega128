@@ -6,5 +6,6 @@
 #define LCD_MAX_Y     31
 
 #define LCD_I2C_ADDR  0x3C
+#define LCD_BREAK
 
 #endif

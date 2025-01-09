@@ -7,9 +7,9 @@ void SSD1306::init()
     SetDisplayClock, 0x80,
     SetDisplayOffset, 0,
     SetDisplayStartLine,
-    Set_0x8D, 0x14,
+    Set_0x8D, 0x14,//CHARGE_DCDC 0x10 off  0x14 on
     SetMemoryAddressingMode, 0,
-    SetVcomhDeselectLevel, 0x40,
+    SetVcomhDeselectLevel, 0x40,//	Устанавливаем питание светодиодов VcomH в значение выше чем по умолчанию (0x30), что увеличит яркость дисплея (допустимые значения: 0x00, 0x10, 0x20, 0x30, 0x40, 0x50, 0x60, 0x70).
     EntireDisplayON,
     SetNormalDisplay,
     DeactivateScroll
@@ -18,11 +18,14 @@ void SSD1306::init()
     clear();
   send_command(SetDisplayOFF);
   send_command_list(init, sizeof(init));
-  send_command(SetMultiplexRatio, LCD_MAX_Y);
+  send_command(SetMultiplexRatio, 0x1f);
   send_command(SetPrechargePeriod, 0xF1);
 
-  if (LCD_MAX_Y == 31) send_command(SetPinsConfig, 0x02);
-  else send_command(SetPinsConfig, 0x12);
+#ifndef LCD_BREAK
+  send_command(SetPinsConfig, 0x02);
+#else 
+  send_command(SetPinsConfig, 0x22);
+#endif
 
   send_command(SetDisplayON);
 
