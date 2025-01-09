@@ -26,6 +26,7 @@ public:
 
   void letter(byte);
   void write(byte);
+  void write(byte *, byte);
 
   byte get_row() { return MAX_Y / _interline; }
   byte get_col() { return MAX_X / _interval; }
@@ -50,5 +51,5 @@ public:
   inline void escape() {}
 
   virtual void symbol(byte *source, byte point_x, byte point_y, byte dx, byte dy) = 0;
-
+  virtual void clear();
 };

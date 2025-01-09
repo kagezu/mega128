@@ -76,7 +76,7 @@
 #define DISPLAY_CONNECT     CLR_BITS(PORT(LCD_CONTROL), LCD_CS);    // Выбор дисплея
 #define COMMAND_MODE        CLR_BITS(PORT(LCD_CONTROL), LCD_RS);    // Запись команды
 
-#if EX_X_Y
+#ifdef EX_X_Y
 #define MAX_X     LCD_MAX_Y
 #define MAX_Y     LCD_MAX_X
 #else

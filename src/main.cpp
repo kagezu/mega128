@@ -9,7 +9,7 @@
 // #include "../lib/display/demo/rect.cpp"
 
 // Скринсейвер
-#include "../lib/display/demo/screensaver.cpp"
+// #include "../lib/display/demo/screensaver.cpp"
 
 // Вывод памяти на экран
 // #include "../lib/display/demo/memory_scroll.cpp"
@@ -43,4 +43,5 @@
 // -------------  libray VS1053  -------------------
 // 
 // #include "../lib/VS1053/examples/demo/demo.cpp"
-// #include "../lib/VS1053/examples/fileplayer/fileplayer.cpp"
+
+#include "../lib/VS1053/examples/fileplayer/fileplayer.cpp"

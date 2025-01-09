@@ -115,11 +115,11 @@ void ST7735::pixel(byte x, byte y)
   x = MAX_X - x;
 #endif
 
-#if FLIP_Y
+#ifdef FLIP_Y
   y = MAX_Y - y;
 #endif
 
-#if EX_X_Y
+#ifdef EX_X_Y
   set_addr(y, x, y, x);
 #else
   set_addr(x, y, x, y);
@@ -144,19 +144,19 @@ void ST7735::pixel(byte x, byte y)
 
 void ST7735::rect_fill(uint8_t x, uint8_t y, uint8_t x1, uint8_t y1)
 {
-#if FLIP_X
+#ifdef FLIP_X
   uint8_t t = x;
   x = MAX_X - x1;
   x1 = MAX_X - t;
 #endif
 
-#if FLIP_Y
+#ifdef FLIP_Y
   uint8_t u = y;
   y = MAX_Y - y1;
   y1 = MAX_Y - u;
 #endif
 
-#if EX_X_Y
+#ifdef EX_X_Y
   rect(y, x, y1, x1, _color);
 #else
   rect(x, y, x1, y1, _color);
@@ -174,27 +174,27 @@ void ST7735::symbol(byte *source, byte x, byte y, byte dx, byte dy)
   byte x1 = x + dx - 1;
   byte y1 = y + dy - 1;
 
-#if FLIP_X
+#ifdef FLIP_X
   uint8_t t = x;
   x = MAX_X - x1;
   x1 = MAX_X - t;
 #endif
 
-#if FLIP_Y
+#ifdef FLIP_Y
   uint8_t u = y;
   y = MAX_Y - y1;
   y1 = MAX_Y - u;
 #endif
 
-#if EX_X_Y
+#ifdef EX_X_Y
   set_addr(y, x, y1, x1);
 #else
   set_addr(x, y, x1, y1);
 #endif
 
-#if EX_X_Y
+#ifdef EX_X_Y
 
-#if FLIP_X
+#ifdef FLIP_X
   for (char i = dx - 1; i >= 0; i--) {
   #else
   for (byte i = 0; i < dx; i++) {
@@ -202,7 +202,7 @@ void ST7735::symbol(byte *source, byte x, byte y, byte dx, byte dy)
 
     byte  data;
 
-  #if FLIP_Y
+  #ifdef FLIP_Y
     byte bit = 1 << ((dy - 1) & 7);
     data = pgm_read_byte((uint16_t)source + ((dy - 1) >> 3) * dx + i);
     for (char j = dy - 1; j >= 0; j--) {
@@ -226,7 +226,7 @@ void ST7735::symbol(byte *source, byte x, byte y, byte dx, byte dy)
 
 #else
 
-#if FLIP_Y
+#ifdef FLIP_Y
   for (char j = dy - 1; j >= 0; j--) {
   #else
   for (byte j = 0; j < dy; j++) {
@@ -235,7 +235,7 @@ void ST7735::symbol(byte *source, byte x, byte y, byte dx, byte dy)
     uint16_t offset = (uint16_t)source + (j >> 3) * dx;
     byte bit = 1 << (j & 7);
 
-  #if FLIP_X
+  #ifdef FLIP_X
     for (char i = dx - 1; i >= 0; i--) {
     #else
     for (byte i = 0; i < dx; i++) {

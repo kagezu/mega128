@@ -1,11 +1,12 @@
 #include "print-format.h"
 #include <macros/accel.h>
 
-void PrintFormat::printf(const char *string, ...)
+void PrintFormat::printf(const __FlashStringHelper *p, ...)
 {
+  PGM_P string = reinterpret_cast<PGM_P>(p);
   char ch;
   va_list args;
-  va_start(args, string);
+  va_start(args, p);
 
   while ((ch = pgm_read_byte(string++))) {
     switch (ch) {
@@ -65,6 +66,12 @@ void PrintFormat::print(const char *string, byte pos)
 void PrintFormat::print_pstr(const char *string)
 {
   while (char ch = pgm_read_byte(string++)) if ((byte)ch < 0xd0) write(ch);
+}
+
+void PrintFormat::print(const __FlashStringHelper *string)
+{
+  PGM_P ptr = reinterpret_cast<PGM_P>(string);
+  while (char ch = pgm_read_byte(ptr++)) if ((byte)ch < 0xd0) write(ch);
 }
 
 void PrintFormat::print(int32_t number)

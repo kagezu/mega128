@@ -17,7 +17,7 @@ int main(void)
 
   // lcd.font(&micro_5x6);
   // lcd.font(&system_5x7);
-  // lcd.font(&standard_5x7);
+  // lcd.font(&standard_5x8);
   // lcd.font(&number_8x16);
   // lcd.font(&number_15x31);
   lcd.font(&arial_14);
@@ -25,11 +25,11 @@ int main(void)
 
   byte x = 48;
 
-  lcd.printf(PSTR("\f"));
-  lcd.printf(PSTR("%2u \n"), x);
-  lcd.printf(PSTR("\t\t\t%2i \n"), -30000);
-  lcd.printf(PSTR("\t\t\t%.u....\n"), 30000);
-  lcd.printf(PSTR("\t\t\t%4.u \n"), 400000l);
+  lcd.print(F("\f123456789"));
+  lcd.printf(F("%2u \n"), x);
+  lcd.printf(F("\t\t\t%2i \n"), -30000);
+  lcd.printf(F("\t\t\t%.u....\n"), 30000);
+  lcd.printf(F("\t\t\t%4.u \n"), 400000l);
 
   while (true);
 }

@@ -3,7 +3,7 @@
 void PrintFont::write(byte ch)
 {
   switch (ch) {
-    case '\f': point_x = point_y = 0; break;  // Новая страница
+    case '\f': point_x = point_y = 0; clear(); break;  // Новая страница
     case '\n': LF(); CR(); break;   // Перевод строки с возвратом
     case '\r': CR(); break;
     case '\b': BS(); break;
@@ -13,6 +13,11 @@ void PrintFont::write(byte ch)
     case '\0': point_x += _font.weight + _interval; break;
     default: if (ch < 0xd0) letter(ch);
   }
+}
+
+void PrintFont::write(byte *ptr, byte count)
+{
+  while (count--) write(*ptr++);
 }
 
 void PrintFont::font(const Font *font)
@@ -45,7 +50,7 @@ void PrintFont::letter(byte ch)
     point_y += _interline;
     point_x = 0;
   }
-  if (point_y > MAX_Y - _font.height) point_x = point_y = 0;
+  if (point_y > MAX_Y - _font.height) { point_x = point_y = 0; clear(); }
   symbol((byte *)source, point_x, point_y, dx, _font.height);
   point_x += dx + _interval;
 }

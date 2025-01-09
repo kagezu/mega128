@@ -10,3 +10,7 @@
 #### Среда разработки:
 + PlatformIO - https://platformio.org
 + VSCode - https://code.visualstudio.com
+
+#### Стадия проекта
+
+Определение структуры, сопряжение со сторонними библиотеками
