@@ -12,7 +12,7 @@
 // #include "../lib/display/demo/screensaver.cpp"
 
 // Вывод памяти на экран
-// #include "../lib/display/demo/memory_scroll.cpp"
+#include "../lib/display/demo/memory_scroll.cpp"
 
 // Вывод памяти на экран
 // #include "../lib/display/demo/star.cpp"
@@ -22,9 +22,6 @@
 
 
 // -------------  libray XPage  -----------------
-// Выделение памяти
-// #include "../lib/xmem/demo/dynamic-memory.cpp"
-
 // Проверка памяти
 // #include "../lib/xmem/demo/memory-test.cpp"
 
@@ -44,4 +41,4 @@
 // 
 // #include "../lib/VS1053/examples/demo/demo.cpp"
 
-#include "../lib/VS1053/examples/fileplayer/fileplayer.cpp"
+// #include "../lib/VS1053/examples/fileplayer/fileplayer.cpp"

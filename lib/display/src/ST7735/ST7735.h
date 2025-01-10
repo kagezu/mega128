@@ -12,7 +12,7 @@
 #include "ST7735_Soft.h"
 #endif
 #ifdef LCD_PRINT
-#include "print/print-font.h"
+#include "print/print-format.h"
 #endif
 #ifdef LCD_DRAW
 #include "draw/draw.h"
@@ -25,7 +25,7 @@ class ST7735
   : public ST7735_Soft
 #endif
 #ifdef LCD_PRINT
-  , public PrintFont
+  , public PrintF
 #endif
 #ifdef LCD_DRAW
   , public Draw
@@ -49,7 +49,7 @@ public:
   void test(byte);
 
   // Реализация интерфейса PrintLCD
-  void symbol(byte *source, byte x, byte y, byte dx, byte dy);
+  void symbol(byte *, uint16_t, uint16_t, byte, byte);
 
   // Реализация интерфейса GFX
   void pixel(byte, byte);
