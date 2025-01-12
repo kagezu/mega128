@@ -1,5 +1,5 @@
 #pragma once
-#include <Arduino.h>
+#include <avr.h>
 
 /*
 #### Array<T, I> T элемент, I индекс

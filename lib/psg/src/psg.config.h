@@ -1,4 +1,4 @@
-#include <Arduino.h>
+#include <avr.h>
 #include <timer.h>
 
 #define   AY_PORT    PORTD

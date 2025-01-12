@@ -1,3 +1,4 @@
+#pragma once
 #include "memory-block.h"
 #include "type/stack.h"
 
@@ -45,3 +46,10 @@ private:
     }
   }
 };
+
+#ifdef USE_MALLOC
+extern Memory memory;
+void *malloc(size_t __size)  __attribute__((__malloc__));
+void free(void *__ptr);
+
+#endif

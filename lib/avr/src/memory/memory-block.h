@@ -1,4 +1,4 @@
-#include <Arduino.h>
+#include <avr.h>
 
 #define MEM_FIXED 1
 

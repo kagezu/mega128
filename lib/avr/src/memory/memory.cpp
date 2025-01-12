@@ -140,3 +140,20 @@ void Memory::_union(byte index)
     _stack.head()->size(_stack.head()->size() + sizeof(MemoryBlock)); // Возвращаем память стека
   }
 }
+
+
+#ifdef USE_MALLOC
+
+extern int __bss_end;
+Memory memory((int)&__bss_end, RAMEND - (int)&__bss_end);
+
+void *malloc(size_t __size)
+{
+  return memory.malloc(__size);
+}
+
+void free(void *__ptr)
+{
+  memory.free(__ptr);
+}
+#endif

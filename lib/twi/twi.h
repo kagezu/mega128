@@ -1,6 +1,6 @@
 
 #pragma once
-#include <Arduino.h>
+#include <avr.h>
 
 #ifdef  __AVR_ATmega328P__
 #define TWI_SDA     _BV(PC4)

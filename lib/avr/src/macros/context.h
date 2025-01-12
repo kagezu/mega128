@@ -1,6 +1,6 @@
 
 #pragma once
-#include <Arduino.h>
+#include <avr.h>
 
 #define _I_SAVE  __asm__ __volatile__ ( \
 	    "in r0, __SREG__ \n\t" \

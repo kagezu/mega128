@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arduino.h>
+#include <avr.h>
 #include "display/config.h"
 #include "print-format.h"
 #include "font/font.h"

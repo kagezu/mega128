@@ -1,4 +1,4 @@
-#include <Arduino.h>
+#include <avr.h>
 #include "shift.h"
 
 #define KEYS_OFFSET         4

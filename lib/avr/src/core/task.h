@@ -1,4 +1,4 @@
-#include <Arduino.h>
+#include <avr.h>
 #include <macros/attribute.h>
 
 class Task {
