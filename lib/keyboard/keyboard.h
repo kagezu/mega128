@@ -1,4 +1,4 @@
-#include <avr.h>
+#pragma once
 #include "shift.h"
 
 #define KEYS_OFFSET         4

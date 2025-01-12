@@ -1,8 +1,8 @@
 #include "timer.h"
 #include "AY/AY.h"
-#include "display/display.h"
+#include <display.h>
 #include "font/micro_5x6.h"
-#include "font/standard_5x7.h"
+#include "font/standard_5x8.h"
 #include "font/arial_14.h"
 #include "keyboard.h"
 
@@ -41,7 +41,7 @@ void printKey(uint64_t x)
     x >>= 1;
   }
   lcd.font(&arial_14);
-  lcd.printf(PSTR("  %s\n"), piano);
+  lcd.printf(F("  %s\n"), piano);
 }
 
 byte time, time2, fps;
@@ -66,18 +66,18 @@ int main()
     fps = ((fps << AVERAGE_FACTOR) - fps + 155 / time2) >> AVERAGE_FACTOR;
     time2 = 0;
 
-    lcd.font(&standard_5x7);
-    lcd.printf(PSTR("\fcpu %u%% | mem %u%% | fps %u \n\n"), time, memoryFree(), fps);
+    lcd.font(&standard_5x8);
+    lcd.printf(F("\fcpu %u%% | mem %u%% | fps %u \n\n"), time, memoryFree(), fps);
 
     lcd.font(&arial_14);
-    lcd.printf(PSTR("   Keyboard  60-keys\n"));
+    lcd.printf(F("   Keyboard  60-keys\n"));
 
     printKey(*(uint64_t *)key._on);
     printKey(*(uint64_t *)key._off);
 
     char v[] = "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
     for (byte i = 0; i < 3; i++)
-      lcd.printf(PSTR("   %s         \n"), &v[32 - (psg.volume[i] << 1)]);
+      lcd.printf(F("   %s         \n"), &v[32 - (psg.volume[i] << 1)]);
   }
 
 }

@@ -154,15 +154,15 @@ void ST7735_SPI::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
 
 #if RGB_FORMAT == RGB_12
 
-  byte hByte = color >> 4;
-  byte mByte = (color << 4) | ((color & 0xf00) >> 8);
-  byte lByte = color;
+  byte hbyte = color >> 4;
+  byte mbyte = (color << 4) | ((color & 0xf00) >> 8);
+  byte lbyte = color;
   len >>= 1;
 
 #elif RGB_FORMAT == RGB_16
 
-  byte hByte = (uint16_t)color >> 8;
-  byte lByte = (uint16_t)color;
+  byte hbyte = (uint16_t)color >> 8;
+  byte lbyte = (uint16_t)color;
 
 #endif
 
@@ -171,21 +171,21 @@ void ST7735_SPI::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
   #if RGB_FORMAT == RGB_12
 
     SPI_WAIT;
-    SPDR = hByte;
+    SPDR = hbyte;
     asm volatile("nop");
     SPI_WAIT;
-    SPDR = mByte;
+    SPDR = mbyte;
     asm volatile("nop");
     SPI_WAIT;
-    SPDR = lByte;
+    SPDR = lbyte;
 
   #elif RGB_FORMAT == RGB_16
 
     SPI_WAIT;
-    SPDR = hByte;
+    SPDR = hbyte;
     asm volatile("nop");
     SPI_WAIT;
-    SPDR = lByte;
+    SPDR = lbyte;
 
   #elif RGB_FORMAT == RGB_18
 

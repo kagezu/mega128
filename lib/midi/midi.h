@@ -1,6 +1,5 @@
 #pragma once
-#include <avr.h>
-#include <midi-types.h>
+#include "midi-types.h"
 
 class MIDI {
 public:

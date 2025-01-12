@@ -40,7 +40,7 @@ public:
 
   // Реализация интерфейса GFX
   void pixel(byte, byte);
-  void rect_fill(uint8_t x, uint8_t y, uint8_t x1, uint8_t y1);
+  void rect_fill(byte x, byte y, byte x1, byte y1);
 };
 
 #endif

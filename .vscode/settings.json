@@ -2,7 +2,8 @@
   "files.associations": {
     "*.php": "php",
     "*.js": "javascript",
-    "*.html": "html"
+    "*.html": "html",
+    "new": "cpp"
   },
   "cSpell.caseSensitive": true,
   "cSpell.words": [

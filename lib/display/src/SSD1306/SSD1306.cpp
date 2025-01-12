@@ -45,7 +45,7 @@ void SSD1306::pixel(byte x, byte y)
   *pixel |= _color ? bit : 0;
 }
 
-void SSD1306::rect_fill(uint8_t x, uint8_t y, uint8_t x1, uint8_t y1)
+void SSD1306::rect_fill(byte x, byte y, byte x1, byte y1)
 {
   for (byte xx = x; xx <= x1; xx++)
     for (byte yy = x; yy <= y1; yy++)

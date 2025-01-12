@@ -1,5 +1,5 @@
+#include <memory/allocate.h>
 #include <display.h>
-#include "memory/memory.h"
 #include "font/arial_14.h"
 #include "font/standard_5x8.h"
 

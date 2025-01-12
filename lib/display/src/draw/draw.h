@@ -1,6 +1,5 @@
-#ifndef DRAW_H
-#define DRAW_H
-
+#pragma once
+#include <Arduino.h>
 #include "display/config.h"
 #include "rgb/rgb.h"
 
@@ -38,4 +37,3 @@ public:
   virtual void pixel(byte, byte) = 0;
   virtual void rect_fill(byte, byte, byte, byte) = 0;
 };
-#endif

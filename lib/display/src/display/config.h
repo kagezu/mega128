@@ -21,10 +21,10 @@
 // Повороты дисплея
 //    \   |   FLIP_X  |   FLIP_Y  |   EX_X_Y  |
 // ============================================
-//   0°   |   false   |   false   |   false   |
-//  90°   |   false   |   true    |   true    |
-// 180°   |   true    |   true    |   false   |
-// 270°   |   true    |   false   |   true    |
+//   0°   |     -     |     -     |     -     |
+//  90°   |     -     |     +     |     +     |
+// 180°   |     +     |     +     |     -     |
+// 270°   |     +     |     -     |     +     |
 
 // #define FLIP_X
 // #define FLIP_Y
@@ -57,6 +57,6 @@
 
 // Заглушки
 
-#ifndef INIT_SPI
-#define INIT_SPI
-#endif
+// #ifndef INIT_SPI
+// #define INIT_SPI
+// #endif

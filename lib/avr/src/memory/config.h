@@ -1,4 +1,5 @@
-#include <avr.h>
+#pragma once
+#include <Arduino.h>
 
 #ifdef __AVR_ATmega128__
 #define XMEM_USE

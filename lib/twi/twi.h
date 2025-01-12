@@ -1,6 +1,6 @@
 
 #pragma once
-#include <avr.h>
+#include <Arduino.h>
 
 #ifdef  __AVR_ATmega328P__
 #define TWI_SDA     _BV(PC4)
@@ -47,7 +47,7 @@
 
 class TWI_Master {
 private:
-  static volatile uint8_t *_master_buffer;
+  static volatile byte *_master_buffer;
   static volatile uint16_t _master_index;
   static volatile uint16_t _master_buffer_length;
   static volatile byte _state;

@@ -1,11 +1,11 @@
 #pragma once
-#include <stdint.h>
+#include <Arduino.h>
 
 struct Font {
-  uint8_t count_char;
-  uint8_t first_char;
-  uint8_t weight;
-  uint8_t height;
+  byte count_char;
+  byte first_char;
+  byte weight;
+  byte height;
   uint16_t offset;
   uint16_t data;
 };

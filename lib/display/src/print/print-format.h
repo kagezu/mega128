@@ -1,8 +1,6 @@
 #pragma once
-
-#include <avr.h>
+#include <Arduino.h>
 #include "display/config.h"
-#include "print-format.h"
 #include "font/font.h"
 
 #define FONT_TAB_FACTOR     3

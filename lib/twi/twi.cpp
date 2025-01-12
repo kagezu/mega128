@@ -1,10 +1,10 @@
 #include "twi.h"
 
-volatile uint8_t TWI_Master::_state;
-volatile uint8_t TWI_Master::_master_address;
+volatile byte TWI_Master::_state;
+volatile byte TWI_Master::_master_address;
 volatile uint16_t TWI_Master::_master_index;
 
-volatile uint8_t *TWI_Master::_master_buffer;
+volatile byte *TWI_Master::_master_buffer;
 volatile uint16_t TWI_Master::_master_buffer_length;
 
 

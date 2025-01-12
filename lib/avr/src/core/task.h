@@ -1,4 +1,5 @@
-#include <avr.h>
+#pragma once
+#include <Arduino.h>
 #include <macros/attribute.h>
 
 class Task {

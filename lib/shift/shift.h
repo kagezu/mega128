@@ -1,5 +1,5 @@
 #pragma once
-#include <avr.h>
+#include <Arduino.h>
 
 // Регистры _SFR_MEM_ADDR(PORTx), _SFR_MEM_ADDR(DDRx), _SFR_MEM_ADDR(PINx)
 // Пины dat, clk ↑, rst (~LD / ~RESET)

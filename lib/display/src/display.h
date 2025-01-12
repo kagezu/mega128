@@ -1,5 +1,4 @@
 #pragma once
-
 #include "display/config.h"
 
 #ifdef _ST7735_

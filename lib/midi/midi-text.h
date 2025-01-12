@@ -1,5 +1,5 @@
 #pragma once
-#include <avr.h>
+#include <Arduino.h>
 
 static const char *MIDI_pgm[] PROGMEM = {
 "Instrument",

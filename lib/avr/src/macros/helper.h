@@ -1,5 +1,5 @@
 #pragma once
-#include <avr.h>
+#include <Arduino.h>
 
 // макрос конкатенации макросов
 #define CONCAT(x, y)      x ## y

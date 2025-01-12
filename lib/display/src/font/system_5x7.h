@@ -1,8 +1,8 @@
 #pragma once
-#include <avr/pgmspace.h>
+#include "font.h"
 
 // font data
-static const uint8_t data_system_5x7[] PROGMEM = {
+static const byte data_system_5x7[] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00,// (space)
   0x00, 0x00, 0x5F, 0x00, 0x00,// !
   0x00, 0x07, 0x00, 0x07, 0x00,// "

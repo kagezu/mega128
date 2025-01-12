@@ -6,14 +6,14 @@
  */
 
 #pragma once
-#include <inttypes.h>
+#include <Arduino.h>
 
-inline void __ADC(register uint8_t Rd, register uint8_t Rr)
+inline void __ADC(register byte Rd, register byte Rr)
 {
   __asm__ __volatile__("adc %0, %1" : "=r" (Rd) : "r" (Rr));
 }
 
-inline void __ADD(register uint8_t Rd, register uint8_t Rr)
+inline void __ADD(register byte Rd, register byte Rr)
 {
   __asm__ __volatile__("add %0, %1" : "=r" (Rd) : "r" (Rr));
 }
@@ -23,22 +23,22 @@ inline void __ADIW(register uint16_t Rdl, char K)
   __asm__ __volatile__("adiw %0, %1" : "=w" (Rdl) : "I" (K));
 }
 
-inline void __SUB(register uint8_t Rd, register uint8_t Rr)
+inline void __SUB(register byte Rd, register byte Rr)
 {
   __asm__ __volatile__("sub %0, %1" : "=r" (Rd) : "r" (Rr));
 }
 
-inline void __SUBI(register uint8_t Rd, uint8_t K)
+inline void __SUBI(register byte Rd, byte K)
 {
   __asm__ __volatile__("subi %0, %1" : "=d" (Rd) : "M" (K));
 }
 
-inline void __SBC(register uint8_t Rd, register uint8_t Rr)
+inline void __SBC(register byte Rd, register byte Rr)
 {
   __asm__ __volatile__("sbc %0, %1" : "=r" (Rd) : "r" (Rr));
 }
 
-inline void __SBCI(register uint8_t Rd, uint8_t K)
+inline void __SBCI(register byte Rd, byte K)
 {
   __asm__ __volatile__("sbci %0, %1" : "=d" (Rd) : "M" (K));
 }
@@ -48,102 +48,102 @@ inline void __SBIW(register uint16_t Rdl, char K)
   __asm__ __volatile__("sbiw %0, %1" : "=w" (Rdl) : "I" (K));
 }
 
-inline void __AND(register uint8_t Rd, register uint8_t Rr)
+inline void __AND(register byte Rd, register byte Rr)
 {
   __asm__ __volatile__("and %0, %1" : "=r" (Rd) : "r" (Rr));
 }
 
-inline void __ANDI(register uint16_t Rd, uint8_t K)
+inline void __ANDI(register uint16_t Rd, byte K)
 {
   __asm__ __volatile__("andi %0, %1" : "=d" (Rd) : "M" (K));
 }
 
-inline void __OR(register uint8_t Rd, register uint8_t Rr)
+inline void __OR(register byte Rd, register byte Rr)
 {
   __asm__ __volatile__("or %0, %1" : "=r" (Rd) : "r" (Rr));
 }
 
-inline void __ORI(register uint16_t Rd, uint8_t K)
+inline void __ORI(register uint16_t Rd, byte K)
 {
   __asm__ __volatile__("ori %0, %1" : "=d" (Rd) : "M" (K));
 }
 
-inline void __EOR(register uint8_t Rd, register uint8_t Rr)
+inline void __EOR(register byte Rd, register byte Rr)
 {
   __asm__ __volatile__("eor %0, %1" : "=r" (Rd) : "r" (Rr));
 }
 
-inline void __COM(register uint8_t Rd)
+inline void __COM(register byte Rd)
 {
   __asm__ __volatile__("com %0" : "=r" (Rd));
 }
 
-inline void __NEG(register uint8_t Rd)
+inline void __NEG(register byte Rd)
 {
   __asm__ __volatile__("neg %0" : "=r" (Rd));
 }
 
-inline void __SBR(register uint16_t Rd, uint8_t K)
+inline void __SBR(register uint16_t Rd, byte K)
 {
   __asm__ __volatile__("sbr %0, %1" : "=d" (Rd) : "M" (K));
 }
 
-inline void __CBR(register uint16_t Rd, uint8_t K)
+inline void __CBR(register uint16_t Rd, byte K)
 {
   __asm__ __volatile__("cbr %0, %1" : "=d" (Rd) : "M" (K));
 }
 
-inline void __INC(register uint8_t Rd)
+inline void __INC(register byte Rd)
 {
   __asm__ __volatile__("inc %0" : "=r" (Rd));
 }
 
-inline void __DEC(register uint8_t Rd)
+inline void __DEC(register byte Rd)
 {
   __asm__ __volatile__("dec %0" : "=r" (Rd));
 }
 
-inline void __TST(register uint8_t Rd)
+inline void __TST(register byte Rd)
 {
   __asm__ __volatile__("tst %0" : "=r" (Rd));
 }
 
-inline void __CLR(register uint8_t Rd)
+inline void __CLR(register byte Rd)
 {
   __asm__ __volatile__("clr %0" : "=r" (Rd));
 }
 
-inline void __SER(register uint8_t Rd)
+inline void __SER(register byte Rd)
 {
   __asm__ __volatile__("ser %0" : "=r" (Rd));
 }
 
-inline void __MUL(register uint8_t Rd, register uint8_t Rr)
+inline void __MUL(register byte Rd, register byte Rr)
 {
   __asm__ __volatile__("mul %0, %1" : "=r" (Rd) : "r" (Rr));
 }
 
-inline void __MULS(register uint8_t Rd, register uint8_t Rr)
+inline void __MULS(register byte Rd, register byte Rr)
 {
   __asm__ __volatile__("muls %0, %1" : "=r" (Rd) : "r" (Rr));
 }
 
-inline void __MULSU(register uint8_t Rd, register uint8_t Rr)
+inline void __MULSU(register byte Rd, register byte Rr)
 {
   __asm__ __volatile__("mulsu %0, %1" : "=r" (Rd) : "r" (Rr));
 }
 
-inline void __FMUL(register uint8_t Rd, register uint8_t Rr)
+inline void __FMUL(register byte Rd, register byte Rr)
 {
   __asm__ __volatile__("fmul %0, %1" : "=r" (Rd) : "r" (Rr));
 }
 
-inline void __FMULS(register uint8_t Rd, register uint8_t Rr)
+inline void __FMULS(register byte Rd, register byte Rr)
 {
   __asm__ __volatile__("fmuls %0, %1" : "=r" (Rd) : "r" (Rr));
 }
 
-inline void __FMULSU(register uint8_t Rd, register uint8_t Rr)
+inline void __FMULSU(register byte Rd, register byte Rr)
 {
   __asm__ __volatile__("fmulsu %0, %1" : "=r" (Rd) : "r" (Rr));
 }
@@ -158,32 +158,32 @@ inline void __FMULSU(register uint8_t Rd, register uint8_t Rr)
 #define __RET __asm__ __volatile__ ("ret")
 #define __RETI __asm__ __volatile__ ("reti")
 
-inline void __CPSE(register uint8_t Rd, register uint8_t Rr)
+inline void __CPSE(register byte Rd, register byte Rr)
 {
   __asm__ __volatile__("cpse %0, %1" : : "r" (Rd), "r" (Rr));
 }
 
-inline void __CP(register uint8_t Rd, register uint8_t Rr)
+inline void __CP(register byte Rd, register byte Rr)
 {
   __asm__ __volatile__("cp %0, %1" : : "r" (Rd), "r" (Rr));
 }
 
-inline void __CPC(register uint8_t Rd, register uint8_t Rr)
+inline void __CPC(register byte Rd, register byte Rr)
 {
   __asm__ __volatile__("cpc %0, %1" : : "r" (Rd), "r" (Rr));
 }
 
-inline void __CPI(register uint8_t Rd, uint8_t K)
+inline void __CPI(register byte Rd, byte K)
 {
   __asm__ __volatile__("cp %0, %1" : : "d" (Rd), "M" (K));
 }
 
-inline void __SBRC(register uint8_t Rd, char K)
+inline void __SBRC(register byte Rd, char K)
 {
   __asm__ __volatile__("sbrc %0, %1" : : "r" (Rd), "I" (K));
 }
 
-inline void __SBRS(register uint8_t Rd, char K)
+inline void __SBRS(register byte Rd, char K)
 {
   __asm__ __volatile__("sbrs %0, %1" : : "r" (Rd), "I" (K));
 }
@@ -229,32 +229,32 @@ inline void __CBI(char P, char K)
   __asm__ __volatile__("cbi %0, %1" : : "I" (P), "I" (K));
 }
 
-inline void __LSL(register uint8_t Rd)
+inline void __LSL(register byte Rd)
 {
   __asm__ __volatile__("lsl %0" : "=r" (Rd));
 }
 
-inline void __LSR(register uint8_t Rd)
+inline void __LSR(register byte Rd)
 {
   __asm__ __volatile__("lsr %0" : "=r" (Rd));
 }
 
-inline void __ROL(register uint8_t Rd)
+inline void __ROL(register byte Rd)
 {
   __asm__ __volatile__("rol %0" : "=r" (Rd));
 }
 
-inline void __ROR(register uint8_t Rd)
+inline void __ROR(register byte Rd)
 {
   __asm__ __volatile__("ror %0" : "=r" (Rd));
 }
 
-inline void __ASR(register uint8_t Rd)
+inline void __ASR(register byte Rd)
 {
   __asm__ __volatile__("asr %0" : "=r" (Rd));
 }
 
-inline void __SWAP(register uint8_t Rd)
+inline void __SWAP(register byte Rd)
 {
   __asm__ __volatile__("swap %0" : "=r" (Rd));
 }
@@ -269,12 +269,12 @@ inline void __BCLR(char s)
   __asm__ __volatile__("bclr %0" : : "I" (s));
 }
 
-inline void __BST(register uint8_t Rd, char b)
+inline void __BST(register byte Rd, char b)
 {
   __asm__ __volatile__("bst %0, %1" : "=r" (Rd) : "I" (b));
 }
 
-inline void __BLD(register uint8_t Rd, char b)
+inline void __BLD(register byte Rd, char b)
 {
   __asm__ __volatile__("bld %0, %1" : "=r" (Rd) : "I" (b));
 }
@@ -296,7 +296,7 @@ inline void __BLD(register uint8_t Rd, char b)
 #define __SEH __asm__ __volatile__ ("seh")
 #define __CLH __asm__ __volatile__ ("clh")
 
-inline void __MOV(register uint8_t Rd, register uint8_t Rr)
+inline void __MOV(register byte Rd, register byte Rr)
 {
   __asm__ __volatile__("mov %0, %1" : "=r" (Rd) : "r" (Rr));
 }
@@ -306,49 +306,49 @@ inline void __MOVW(register uint16_t Rd, register uint16_t Rr)
   __asm__ __volatile__("movw %0, %1" : "=w" (Rd) : "w" (Rr));
 }
 
-inline void __LDI(register uint8_t Rd, uint8_t K)
+inline void __LDI(register byte Rd, byte K)
 {
   __asm__ __volatile__("ldi %0, %1" : "=d" (Rd) : "M" (K));
 }
 
-inline void __LD(register uint8_t Rd, register uint16_t ptr)
+inline void __LD(register byte Rd, register uint16_t ptr)
 {
   __asm__ __volatile__("ld %0, %a1" : "=r" (Rd) : "e" (ptr));
 }
 
-inline void __LDP(register uint8_t Rd, register uint16_t ptr)
+inline void __LDP(register byte Rd, register uint16_t ptr)
 {
   __asm__ __volatile__("ld %0, %a1+" : "=r" (Rd) : "e" (ptr));
 }
 
-inline void __LDM(register uint8_t Rd, register uint16_t ptr)
+inline void __LDM(register byte Rd, register uint16_t ptr)
 {
   __asm__ __volatile__("ld %0, -%a1" : "=r" (Rd) : "e" (ptr));
 }
 
-inline void __LDD(register uint8_t Rd, register  uint16_t ptr, char q)
+inline void __LDD(register byte Rd, register  uint16_t ptr, char q)
 {
   __asm__ __volatile__("ldd %0, %a1+%2" : "=r" (Rd) : "b" (ptr), "I" (q));
 }
 
 #define __LDS(Rr, K) __asm__ __volatile__ ("lds %0, " #K : "=r" (Rr))
 
-inline void __ST(register uint16_t ptr, register uint8_t Rr)
+inline void __ST(register uint16_t ptr, register byte Rr)
 {
   __asm__ __volatile__("st %a0, %1" : "=e" (ptr) : "r" (Rr));
 }
 
-inline void __STP(register uint16_t ptr, register uint8_t Rr)
+inline void __STP(register uint16_t ptr, register byte Rr)
 {
   __asm__ __volatile__("st %a0+, %1" : "=e" (ptr) : "r" (Rr));
 }
 
-inline void __STM(register uint16_t ptr, register uint8_t Rr)
+inline void __STM(register uint16_t ptr, register byte Rr)
 {
   __asm__ __volatile__("st -%a0, %1" : "=e" (ptr) : "r" (Rr));
 }
 
-inline void __STD(register uint16_t ptr, char q, register uint8_t Rr)
+inline void __STD(register uint16_t ptr, char q, register byte Rr)
 {
   __asm__ __volatile__("std %a0+%2, %1" : "=b" (ptr) : "r" (Rr), "I" (q));
 }
@@ -360,12 +360,12 @@ inline void _LPM()
   __asm__ __volatile__("lpm");
 }
 
-inline void __LPMZ(register uint8_t Rd)
+inline void __LPMZ(register byte Rd)
 {
   __asm__ __volatile__("lpm %0, Z" : "=r" (Rd));
 }
 
-inline void __LPMZP(register uint8_t Rd)
+inline void __LPMZP(register byte Rd)
 {
   __asm__ __volatile__("lpm %0, Z+" : "=r" (Rd));
 }
@@ -375,22 +375,22 @@ inline void __SPM()
   __asm__ __volatile__("spm");
 }
 
-inline void __IN(register uint8_t Rd, char P)
+inline void __IN(register byte Rd, char P)
 {
   __asm__ __volatile__("in %0, %1" : "=r" (Rd) : "I" (P));
 }
 
-inline void __OUT(char P, register uint8_t Rd)
+inline void __OUT(char P, register byte Rd)
 {
   __asm__ __volatile__("out %1, %0" : "=r" (Rd) : "I" (P));
 }
 
-inline void __PUSH(register uint8_t Rd)
+inline void __PUSH(register byte Rd)
 {
   __asm__ __volatile__("push %0" : : "r" (Rd));
 }
 
-inline void __POP(register uint8_t Rd)
+inline void __POP(register byte Rd)
 {
   __asm__ __volatile__("pop %0" : "=r" (Rd));
 }

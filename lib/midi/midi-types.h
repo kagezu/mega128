@@ -1,7 +1,7 @@
 #pragma once
-#include <avr.h>
+#include <Arduino.h>
 
-enum MIDI_Message : uint8_t {
+enum MIDI_Message : byte {
   // Cannel message
 
   NoteOff = 0x80,
@@ -31,7 +31,7 @@ enum MIDI_Message : uint8_t {
   SystemReset = 0xFF
 };
 
-enum MIDI_Control : uint8_t {
+enum MIDI_Control : byte {
   BankSelect = 0,
   ModulationWheel = 1,
   BreathController = 2,

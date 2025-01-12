@@ -1,5 +1,5 @@
 #pragma once
-#include <avr.h>
+#include <Arduino.h>
 
 /*
 #### Stack<T, I> T - element, I - index

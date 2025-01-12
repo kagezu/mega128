@@ -1,4 +1,4 @@
-#include <avr.h>
+#pragma once
 #include <timer.h>
 
 #define   AY_PORT    PORTD

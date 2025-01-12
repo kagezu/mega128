@@ -142,16 +142,16 @@ void ST7735::pixel(byte x, byte y)
   DISPLAY_DISCONNECT;
 }
 
-void ST7735::rect_fill(uint8_t x, uint8_t y, uint8_t x1, uint8_t y1)
+void ST7735::rect_fill(byte x, byte y, byte x1, byte y1)
 {
 #ifdef FLIP_X
-  uint8_t t = x;
+  byte t = x;
   x = MAX_X - x1;
   x1 = MAX_X - t;
 #endif
 
 #ifdef FLIP_Y
-  uint8_t u = y;
+  byte u = y;
   y = MAX_Y - y1;
   y1 = MAX_Y - u;
 #endif
@@ -245,13 +245,13 @@ void ST7735::symbol(byte *source, uint16_t x, uint16_t y, byte dx, byte dy)
       if (data & bit) send_rgb(_color);
       else send_rgb(_background);
     }
-  }
+    }
 
 #endif
 
   DISPLAY_DISCONNECT;
   SREG = sreg;
-}
+  }
 
 // тестирование дисплея
 

@@ -11,8 +11,8 @@
 + **Shift**( PORTx, DDRx, PINx, dat, clk, rst/ld ) В конструктор передать адреса портов в/в и номера пинов
 + **reset**( boolean **)** - false = удерживать сброс **MC54/74HC164**
 + **load()** - загрузить через параллельный вход **MC54/74HC165**
-+ **readBytes**( uint8_t *buffer, uint8_t length ) - считать через последовательный вход
-+ **writeBytes**( uint8_t *buffer, uint8_t length **)** - записать через последовательный выход
++ **readbytes**( byte *buffer, byte length ) - считать через последовательный вход
++ **writebytes**( byte *buffer, byte length **)** - записать через последовательный выход
 
 #### <span style="color:green">Пример использования</span>
 
@@ -34,7 +34,7 @@ uint64_t keys;
 int main()
 {
   keyboard.load();
-  keyboard.readBytes((uint8_t *)&keys, sizeof(keys));
+  keyboard.readbytes((byte *)&keys, sizeof(keys));
   // ...
 }
 ```
