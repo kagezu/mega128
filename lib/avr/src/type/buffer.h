@@ -2,6 +2,7 @@
 #include <Arduino.h>
 
 /*
+#include <type/buffer.h>
 #### Buffer<T, S>
 + read() <-- -- [ tail ] ... [ head ] <-- write()
 + shift() <-- - [ tail ] ... [ head ] <--  push()
