@@ -22,7 +22,6 @@ void SPI_Master::init(uint16_t fq, byte mode)
   SPI_MASTER_PIN;
   SPCR = _BV(SPE) | _BV(MSTR) | mode | sck;
   SPSR = spi2x;
-  SPDR = 0;
 }
 
 void SPI_Master::send(byte data)
