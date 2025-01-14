@@ -8,16 +8,7 @@
 
 Display lcd;
 AY psg;
-Keyboard key(
-  _SFR_MEM_ADDR(PORTC),
-  _SFR_MEM_ADDR(DDRC),
-  _SFR_MEM_ADDR(PINC),
-  PC0,
-  PC1,
-  PC2,
-  PC3
-);
-
+KEYBOARD(key, C, PC0, PC1, PC2, PC3);
 
 // Функция, возвращающая количество свободного ОЗУ (RAM)
 byte memoryFree()

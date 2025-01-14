@@ -1,5 +1,6 @@
 #pragma once
 #include "shift.h"
+#include <macros/helper.h>
 
 #define KEYS_OFFSET         4
 #define KEYS_SIZE           8
@@ -8,6 +9,12 @@
 #define KEYS_MAX_SPEED      16
 #define KEYS_SPEED_FACTOR   0
 #define KEYS_MAX_DELAY      ( KEYS_MAX_SPEED << KEYS_SPEED_FACTOR ) - 1
+
+#define KEYBOARD(name, port, dat, clk, ld,  line)     \
+Keyboard name ( _SFR_MEM_ADDR(PORT(port)),            \
+                _SFR_MEM_ADDR(DDR(port)),             \
+                _SFR_MEM_ADDR(PIN(port)),             \
+                dat, clk, ld, line );
 
 class Keyboard : public Shift {
 private:
