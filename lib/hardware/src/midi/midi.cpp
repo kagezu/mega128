@@ -1,19 +1,19 @@
 #include "midi.h"
 
-void MIDI::_send_msg(byte msg, byte data1, byte data2)
+void MIDI::_send_midi(byte msg, byte data1, byte data2)
 {
   if (msg != _run_status) {
-    write(_run_status = msg);
+    send_midi(_run_status = msg, data1, data2);
   }
-  write(data1);
-  write(data2);
+  else
+    send_midi(data1, data2);
 }
 
-void MIDI::_send_msg(byte msg, byte data)
+void MIDI::_send_midi(byte msg, byte data)
 {
   if (msg != _run_status) {
-    write(_run_status = msg);
+    send_midi(_run_status = msg, data);
   }
-  write(data);
+  send_midi(data);
 }
 

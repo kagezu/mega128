@@ -37,3 +37,5 @@ byte SPI_Master::transfer(byte data)
   while (!(SPSR & _BV(SPIF)));
   return SPDR;
 }
+
+SPI_Master spi;

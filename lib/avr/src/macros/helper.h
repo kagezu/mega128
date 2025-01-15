@@ -24,3 +24,22 @@
 
 #define I_SAVE byte _sreg = SREG; __asm__ __volatile__ ("cli" :: )
 #define I_REST SREG = _sreg
+
+// Типы
+
+union dbyte {
+  uint16_t word;
+  uint8_t  byte[2];
+};
+
+union dword {
+  uint32_t dword;
+  uint16_t word;
+  uint8_t  byte[4];
+};
+
+
+// Функции
+
+void delay_us(uint16_t us);
+void delay_ms(uint16_t ms);

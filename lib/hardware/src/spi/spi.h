@@ -15,9 +15,6 @@ public:
   void end() { SPI_STOP; }
   void send(byte);
   byte transfer(byte);
-
-
-private:
-
-
 };
+
+extern SPI_Master spi;
