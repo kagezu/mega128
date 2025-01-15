@@ -1,4 +1,5 @@
-#include <psg.config.h>
+#pragma once
+#include "config.h"
 
 #define AY_MAX_FQ   100000
 

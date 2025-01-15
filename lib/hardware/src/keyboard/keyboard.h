@@ -1,12 +1,12 @@
 #pragma once
-#include "shift.h"
+#include "shift/shift.h"
 #include <macros/helper.h>
 
 #define KEYS_OFFSET         4
 #define KEYS_SIZE           8
 #define KEYS_COUNT          60
 #define KEYS_LOAD_DELAY     2
-#define KEYS_MAX_SPEED      16
+#define KEYS_MAX_SPEED      32
 #define KEYS_SPEED_FACTOR   0
 #define KEYS_MAX_DELAY      ( KEYS_MAX_SPEED << KEYS_SPEED_FACTOR ) - 1
 

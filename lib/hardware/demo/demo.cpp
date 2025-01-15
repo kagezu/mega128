@@ -1,7 +1,7 @@
 #include "data.h"
-#include <timer.h>
+#include <time/timer.h>
 #include <AY/AY.h>
-#include "display/display.h"
+#include <display/display.h>
 #include "font/micro_5x6.h"
 
 #define COMP(a,b) (a & b) == b

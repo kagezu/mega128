@@ -31,14 +31,12 @@
 // #include "../lib/psg/demo/demo.cpp"
 
 // Тест клавиатуры
-// #include "../lib/shift/demo/keybord.cpp"
+// #include "../lib/shift/demo/psg.cpp"
 
 // -------------  libray AVR OS  ----------------
 // Выделение памяти
-#include "../lib/avr/demo/memory-test.cpp"
+// #include "../lib/avr/demo/memory-test.cpp"
 
 // -------------  libray VS1053  -------------------
 // 
-// #include "../lib/VS1053/examples/demo/demo.cpp"
-
-// #include "../lib/VS1053/examples/fileplayer/fileplayer.cpp"
+#include "../lib/hardware/demo/vs1053.cpp"

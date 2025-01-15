@@ -27,8 +27,8 @@
 // 270°   |     +     |     -     |     +     |
 
 // #define FLIP_X
-// #define FLIP_Y
-// #define EX_X_Y
+#define FLIP_Y
+#define EX_X_Y
 
 // Подключаемые библиотеки
 

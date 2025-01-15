@@ -13,9 +13,9 @@ public:
   void pitch_bend(byte lsb = 0, byte msb = 0x20, byte ch = 0) { _send_midi(PitchBend | ch, lsb, msb); }
 
 protected:
-  virtual void send_midi(byte) = 0;
-  virtual void send_midi(byte, byte) = 0;
-  virtual void send_midi(byte, byte, byte) = 0;
+  // virtual void send_midi(byte) = 0;
+  // virtual void send_midi(byte, byte) = 0;
+  // virtual void send_midi(byte, byte, byte) = 0;
 
 private:
   byte _run_status = 0;
