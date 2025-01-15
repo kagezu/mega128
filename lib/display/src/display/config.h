@@ -2,7 +2,8 @@
 
 // Выбор типа дисплея
 
-#define _ST7735_
+// #define _ST7735_
+#define _ST7789_
 // #define _SSD1306_
 
 // Выбор интерфейса
@@ -15,8 +16,8 @@
 
 // #define RGB_FORMAT RGB_1    // Монохроматический
 // #define RGB_FORMAT RGB_12   // 4x4x4 bit
-#define RGB_FORMAT RGB_16   // 5x6x5 bit
-// #define RGB_FORMAT RGB_18   // 6x6x6 bit
+// #define RGB_FORMAT RGB_16   // 5x6x5 bit
+#define RGB_FORMAT RGB_18   // 6x6x6 bit
 
 // Повороты дисплея
 //    \   |   FLIP_X  |   FLIP_Y  |   EX_X_Y  |
@@ -40,6 +41,8 @@
 
 #if  defined(_ST7735_)
 #include <ST7735/config.h>
+#elif defined(_ST7789_)
+#include <ST7789/config.h>
 #elif defined(_SSD1306_)
 #include <SSD1306/config.h>
 #endif
@@ -54,9 +57,3 @@
 #define MAX_X     LCD_MAX_X
 #define MAX_Y     LCD_MAX_Y
 #endif
-
-// Заглушки
-
-// #ifndef INIT_SPI
-// #define INIT_SPI
-// #endif

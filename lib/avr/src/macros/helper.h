@@ -10,11 +10,12 @@
 #define PORT(x) CONCAT(PORT , x)
 #define PIN(x)  CONCAT(PIN  , x)
 
-#define IN(port, pin)    DDR(port)  &=~ _BV(pin)
-#define OUT(port, pin)   DDR(port)  |=  _BV(pin)
-#define SET(port, pin)   PORT(port) |=  _BV(pin)
-#define CLR(port, pin)   PORT(port) &=~ _BV(pin)
-#define GET(port, pin)   (PIN(port) &   _BV(pin))
+#define IN(port, pin)         DDR(port)  &=~ _BV(pin)
+#define OUT(port, pin)        DDR(port)  |=  _BV(pin)
+#define SET(port, pin)        PORT(port) |=  _BV(pin)
+#define CLR(port, pin)        PORT(port) &=~ _BV(pin)
+#define GET(port, pin)        (PIN(port)  &  _BV(pin))
+#define MASK(port, pin)                      _BV(pin)
 
 #define SET_BITS(target, bits)        target |=  (bits)
 #define CLR_BITS(target, bits)        target &= ~(bits)
@@ -26,6 +27,8 @@
 #define I_REST SREG = _sreg
 
 // Типы
+
+#define to_byte(w,x)  (((byte *)&w)[x])
 
 union dbyte {
   uint16_t word;

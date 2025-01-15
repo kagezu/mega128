@@ -60,6 +60,7 @@
 #define VCOM4L 0xff   // Vcom 4 Level control
 
 // Interface pixel format
-#define RGB_12 0x03 // 4x4x4 bit
-#define RGB_16 0x05 // 5x6x5 bit
-#define RGB_18 0x06 // 6x6x6 bit (24 bit transfer)
+#define RGB_12 0x53 // 4x4x4 bit
+#define RGB_16 0x55 // 5x6x5 bit
+#define RGB_18 0x66 // 6x6x6 bit
+#define RGB_24 0x67 // 6x6x6 bit (Усечённый)

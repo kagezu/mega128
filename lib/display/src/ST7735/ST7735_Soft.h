@@ -9,7 +9,7 @@
 #include "rgb/rgb.h"
 
 class ST7735_Soft {
-public:
+protected:
   void send_command(byte data);
   void set_addr(byte x0, byte y0, byte x1, byte y1);
   void send_zero();
