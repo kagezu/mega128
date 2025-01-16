@@ -14,7 +14,7 @@
 
 // Цветовая модель
 
-// #define RGB_FORMAT RGB_1    // Монохроматический
+// #define RGB_FORMAT RGB_M    // Монохроматический
 // #define RGB_FORMAT RGB_12   // 4x4x4 bit
 // #define RGB_FORMAT RGB_16   // 5x6x5 bit
 #define RGB_FORMAT RGB_18   // 6x6x6 bit
@@ -34,7 +34,7 @@
 // Подключаемые библиотеки
 
 // #define LCD_DRAW        // Подключает класс для рисования
-#define LCD_PRINT       // Подключает класс для вывода текста
+// #define LCD_PRINT       // Подключает класс для вывода текста
 
 
 // Подключение индивидуальных настроек дисплея

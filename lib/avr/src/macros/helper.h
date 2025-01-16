@@ -21,12 +21,7 @@
 #define CLR_BITS(target, bits)        target &= ~(bits)
 
 
-// Прерывания
-
-#define I_SAVE byte _sreg = SREG; __asm__ __volatile__ ("cli" :: )
-#define I_REST SREG = _sreg
-
-// Типы
+// Доступ к байтам
 
 #define to_byte(w,x)  (((byte *)&w)[x])
 
@@ -41,8 +36,16 @@ union dword {
   uint8_t  byte[4];
 };
 
-
 // Функции
 
 void delay_us(uint16_t us);
 void delay_ms(uint16_t ms);
+
+// Прочее
+
+#define I_SAVE byte _sreg = SREG; __asm__ __volatile__ ("cli" :: )
+#define I_REST SREG = _sreg
+
+#define SWAP(x, y)    { x^=y; y^=x; x^=y; }
+#define swap8(a, b)   { uint8_t _t = a; a = b; b = _t; }
+#define swap16(a, b)  { uint16_t _t = a; a = b; b = _t; }

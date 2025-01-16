@@ -2,6 +2,8 @@
 
 #define swap(a, b) { int16_t t = a; a = b; b = t; }
 
+// template<typename T>
+// void Draw::w_line(T x, T y, T x1)
 void Draw::w_line(byte x, byte y, byte x1)
 {
   // if (x > x1) swap(x, x1);
