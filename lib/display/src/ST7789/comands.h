@@ -58,9 +58,3 @@
 #define GAMCTRN1 0xe1 // Set Gamma adjustment (- polarity)
 #define EXTCTRL 0xf0  // Extension Command Control
 #define VCOM4L 0xff   // Vcom 4 Level control
-
-// Interface pixel format
-#define RGB_12 0x53 // 4x4x4 bit
-#define RGB_16 0x55 // 5x6x5 bit
-#define RGB_18 0x66 // 6x6x6 bit
-#define RGB_24 0x67 // 6x6x6 bit (Усечённый)

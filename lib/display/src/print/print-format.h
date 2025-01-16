@@ -3,7 +3,7 @@
 #include "display/config.h"
 #include "font/font.h"
 
-#define FONT_TAB_FACTOR     3
+#define FONT_TAB_FACTOR     1
 
 class PrintF {
 public:
@@ -47,7 +47,7 @@ private:
   void next_position();
   void LF() { point_y += _interline; }
   void CR() { point_x = 0; }
-  void TAB() { point_x = ((point_x / (_interval << FONT_TAB_FACTOR) + 1) * (_font.weight + _interval)) << FONT_TAB_FACTOR; }
+  void TAB() { point_x = ((point_x / ((_font.weight + _interval) << FONT_TAB_FACTOR) + 1) * (_font.weight + _interval)) << FONT_TAB_FACTOR; }
   void BS() { point_x -= (_font.weight + _interval); if (point_x > MAX_X) point_x = 0; }
   void escape() {}
 };

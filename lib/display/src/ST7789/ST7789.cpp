@@ -83,8 +83,6 @@ ST7789::ST7789()
   D_CS(SET);
 }
 
-#endif
-
 void ST7789::send_command(byte command)
 {
   D_RS(CLR);
@@ -254,13 +252,13 @@ void ST7789::symbol(byte *source, uint16_t x, uint16_t y, byte dx, byte dy)
       if (data & bit) send_rgb(_color);
       else send_rgb(_background);
     }
-  }
+    }
 
 #endif
 
   D_CS(SET);
   SREG = sreg;
-}
+  }
 
 void ST7789::bitmap(byte * source, uint16_t x, uint16_t y, uint16_t dx, uint16_t dy)
 {
@@ -321,3 +319,5 @@ void ST7789::demo(byte d)
   }
   D_CS(SET);
 }
+
+#endif

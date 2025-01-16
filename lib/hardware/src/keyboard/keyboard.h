@@ -5,7 +5,6 @@
 #define KEYS_OFFSET         4
 #define KEYS_SIZE           8
 #define KEYS_COUNT          60
-#define KEYS_LOAD_DELAY     2
 #define KEYS_MAX_SPEED      32
 #define KEYS_SPEED_FACTOR   0
 #define KEYS_MAX_DELAY      ( KEYS_MAX_SPEED << KEYS_SPEED_FACTOR ) - 1
@@ -46,9 +45,8 @@ public:
     char key = -1;
 
     load();
-    read_bytes(on, KEYS_SIZE);
     _MMIO_BYTE(_port) &= ~_line;
-    delayMicroseconds(KEYS_LOAD_DELAY);
+    read_bytes(on, KEYS_SIZE);
 
     load();
     read_bytes(off, KEYS_SIZE);

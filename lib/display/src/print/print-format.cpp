@@ -194,22 +194,18 @@ void PrintF::print_h(uint64_t number)
 
 void PrintF::print_h(uint32_t number)
 {
-  union { uint32_t val; struct { byte a; byte b; byte c; byte d; }; } out;
-  out.val = number;
   print('#');
-  print_h(out.d);
-  print_h(out.c);
-  print_h(out.b);
-  print_h(out.a);
+  print_h(to_byte(number, 3));
+  print_h(to_byte(number, 2));
+  print_h(to_byte(number, 1));
+  print_h(to_byte(number, 0));
 }
 
 void PrintF::print_h(uint16_t number)
 {
-  union { uint16_t val; struct { byte low; byte high; }; } out;
-  out.val = number;
   print('#');
-  print_h(out.high);
-  print_h(out.low);
+  print_h(to_byte(number, 1));
+  print_h(to_byte(number, 0));
 }
 
 void PrintF::print_h(byte number)

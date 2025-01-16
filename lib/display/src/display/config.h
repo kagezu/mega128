@@ -2,8 +2,8 @@
 
 // Выбор типа дисплея
 
-// #define _ST7735_
-#define _ST7789_
+#define _ST7735_
+// #define _ST7789_
 // #define _SSD1306_
 
 // Выбор интерфейса
@@ -15,9 +15,9 @@
 // Цветовая модель
 
 // #define RGB_FORMAT RGB_M    // Монохроматический
-// #define RGB_FORMAT RGB_12   // 4x4x4 bit
+#define RGB_FORMAT RGB_12   // 4x4x4 bit
 // #define RGB_FORMAT RGB_16   // 5x6x5 bit
-#define RGB_FORMAT RGB_18   // 6x6x6 bit
+// #define RGB_FORMAT RGB_18   // 6x6x6 bit
 
 // Повороты дисплея
 //    \   |   FLIP_X  |   FLIP_Y  |   EX_X_Y  |
@@ -28,8 +28,8 @@
 // 270°   |     +     |     -     |     +     |
 
 // #define FLIP_X
-// #define FLIP_Y
-// #define EX_X_Y
+#define FLIP_Y
+#define EX_X_Y
 
 // Подключаемые библиотеки
 

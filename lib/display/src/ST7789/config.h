@@ -34,5 +34,10 @@ DDR(D_DATA) = 0xFF;
 #define LCD_MAX_X 239
 #define LCD_MAX_Y 319
 
+// Interface pixel format
+#define RGB_12 0x53 // 4x4x4 bit
+#define RGB_16 0x55 // 5x6x5 bit
+#define RGB_18 0x66 // 6x6x6 bit
+#define RGB_24 0x67 // 6x6x6 bit (Усечённый)
 
 #endif

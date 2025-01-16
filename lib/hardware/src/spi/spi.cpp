@@ -22,20 +22,37 @@ void SPI_Master::init(uint16_t fq, byte mode)
   SPI_MASTER_PIN;
   SPCR = _BV(SPE) | _BV(MSTR) | mode | sck;
   SPSR = spi2x;
+  // SPDR = 0;
 }
 
 void SPI_Master::send(byte data)
 {
-  while (!(SPSR & _BV(SPIF)));
   SPDR = data;
+  asm volatile("nop");
+  while (!(SPSR & _BV(SPIF)));
 }
 
-byte SPI_Master::transfer(byte data)
+byte SPI_Master::read(byte data)
 {
   SPDR = data;
   asm volatile("nop");
   while (!(SPSR & _BV(SPIF)));
   return SPDR;
+}
+
+uint16_t SPI_Master::transfer(uint16_t data)
+{
+  dbyte buf;
+  buf.word = data;
+  SPDR = buf.byte[1];
+  asm volatile("nop");
+  while (!(SPSR & _BV(SPIF)));
+  buf.byte[1] = SPDR;
+  SPDR = buf.byte[0];
+  asm volatile("nop");
+  while (!(SPSR & _BV(SPIF)));
+  buf.byte[0] = SPDR;
+  return buf.word;
 }
 
 SPI_Master spi;

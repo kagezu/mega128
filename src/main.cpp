@@ -35,8 +35,8 @@
 
 // -------------  libray AVR OS  ----------------
 // Выделение памяти
-#include "../lib/avr/demo/memory-test.cpp"
+// #include "../lib/avr/demo/memory-test.cpp"
 
 // -------------  libray VS1053  -------------------
 // 
-// #include "../lib/hardware/demo/vs1053.cpp"
+#include "../lib/hardware/demo/vs1053.cpp"

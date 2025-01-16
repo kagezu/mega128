@@ -6,7 +6,7 @@
 #include "keyboard/keyboard.h"
 #include "midi/midi.h"
 
-#define F_SCAN  200
+#define F_SCAN  300
 
 Display lcd;
 KEYBOARD(key, D, PD3, PD4, PD5, PD0);
@@ -32,13 +32,15 @@ void printKey(uint64_t x)
     else piano[i] = ',';
     x >>= 1;
   }
+  // lcd.font(&arial_14);
   lcd.font(&arial_14);
   lcd.printf(F("  %s\n"), piano);
 }
 
-byte time = 0;
-byte fps = 10;
-byte time2 = F_SCAN;
+uint16_t time = 0;
+uint16_t fps = 10;
+uint16_t time2 = F_SCAN;
+uint16_t time3 = 0;
 
 int main()
 {
@@ -46,13 +48,17 @@ int main()
   T0_CTC;
   timer0(F_SCAN);
   T0_COMPA_ON;
-  midi.begin();
-  sei();
 
   lcd.set_interline(3);
   lcd.clear(RGB(0, 0, 64));
   lcd.background(RGB(0, 0, 64));
   lcd.color(RGB(255, 255, 127));
+
+  midi.init();
+  sei();
+
+  midi.pgm_change(1);
+
 
 #define AVERAGE_FACTOR  2
 
@@ -61,26 +67,47 @@ int main()
     time2 = 0;
 
     lcd.font(&standard_5x8);
-    lcd.printf(F("\fcpu %u%% | mem %u%% | fps %u \n\n"), time, memoryFree(), fps);
+    lcd.printf(F("\fcpu %u%%\t mem %u%% fps %u \n"), time, memoryFree(), fps);
 
-    lcd.font(&arial_14);
-    lcd.printf(F("   Keyboard  60-keys\n"));
+    // lcd.font(&arial_14);
+    // lcd.printf(F("   Keyboard  60-keys\n"));
 
     printKey(*(uint64_t *)key._on);
     printKey(*(uint64_t *)key._off);
-  }
 
+    // lcd.font(&standard_5x8);
+    // lcd.printf(F("MODE:   %2x \n"), midi.read_register(SCI_MODE));
+    // lcd.printf(F("STATUS: %2x \n"), midi.read_register(SCI_STATUS));
+    // lcd.printf(F("BASS:   %2x \n"), midi.read_register(SCI_BASS));
+    // lcd.printf(F("CLOCKF: %2x \n"), midi.read_register(SCI_CLOCKF));
+    // lcd.printf(F("VOL:    %2x \n"), midi.read_register(SCI_VOL));
+
+    // for (int m = 0; m < 16; m++) {
+    //   for (int n = 50; n < 90; n++) {
+    //     midi.note_on(m, n, 90);
+    //     delay_ms(100);
+    //     midi.note_off(m, n, 0);
+    //     delay_ms(100);
+    //   }
+    // }
+
+    time3++;
+    cli();
+    midi.pgm_change((time3 >> 7) & 127);
+    sei();
+  }
 }
+
 
 ISR(TIMER0_COMPA_vect)
 {
-  char k = key.tick();
+  char  k = key.tick();
 
   if (k + 1) {
     if (key._keys[(byte)k])
-      midi.note_on(k);//, 0, key._keys[(byte)k] << 2);
+      midi.note_on(95 - k, 0, key._keys[(byte)k] << 2);
     else
-      midi.note_off(k);//, 0);
+      midi.note_off(95 - k, 0);
   }
 
   time = TCNT0;

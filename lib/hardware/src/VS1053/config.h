@@ -28,7 +28,7 @@
 
 // Инициализируем на частоте не выше 12/7 MHz
 #define SCI_FQ_INIT       1000
-#define SCI_FQ_MAX        6000
+#define SCI_FQ_MAX        2000
 
 
 // -20 dB

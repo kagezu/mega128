@@ -14,7 +14,8 @@ public:
   void init(uint16_t fq = 0xffff, byte mode = SPI_MODE_0);
   void end() { SPI_STOP; }
   void send(byte);
-  byte transfer(byte);
+  byte read(byte);
+  uint16_t transfer(uint16_t);
 };
 
 extern SPI_Master spi;

@@ -1,6 +1,7 @@
 // #include <VS1053.h>
 #pragma once
 #include "config.h"
+#include "error.h"
 #include <spi/spi.h>
 
 // Константы
@@ -47,28 +48,32 @@
 #define SM_CLK_RANGE      0x8000
 
 
+#define END_PATCH         0xFFFF
+
 class VS1053 {
 public:
-  void begin();
-  void end();
+  void init();
   void set_volume(uint8_t, uint8_t);
   void set_volume(uint16_t);
   void set_volume(uint8_t);
   uint16_t get_volume();
+
+  uint16_t read_register(uint8_t);
+
+  void send_midi(byte);
+  void send_midi(byte, byte);
+  void send_midi(byte, byte, byte);
+
 
 protected:
   byte _left_channel;
   byte _right_channel;
 
 protected:
-  void send_midi(byte);
-  void send_midi(byte, byte);
-  void send_midi(byte, byte, byte);
+  void load_patch(const uint16_t *);
+
 
 private:
-  void init();
-  void load_patch(const uint16_t *);
-  uint16_t read_register(uint8_t);
   void write_register(uint8_t, uint8_t, uint8_t);
   void write_register(uint8_t, uint16_t);
 };

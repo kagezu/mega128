@@ -3,17 +3,14 @@
 #include "rtmidi.h"
 
 #define SCI_BEGIN           \
-if (X_RESET(GET)) return;   \
-while (!X_DREQ(GET));       \
-X_CS(CLR);                  \
+                 \
 X_DCS(CLR);
 
 #define SCI_END             \
 while (!X_DREQ(GET));       \
 X_DCS(SET);                 \
-X_CS(SET);
 
-void VS1053::begin()
+void VS1053::init()
 {
   X_DREQ(IN);
   X_CS(OUT);
@@ -22,44 +19,24 @@ void VS1053::begin()
 
   X_CS(SET);
   X_DCS(SET);
-  X_RESET(CLR);
-
-  init();
-}
-
-void VS1053::end()
-{
-  X_CS(SET);
-  X_DCS(SET);
-  X_RESET(CLR);
-}
-
-void VS1053::init()
-{
   X_RESET(CLR); // Сброс
   delay_ms(100);
   X_RESET(SET); // Отпускаем сброс
   spi.init(SCI_FQ_INIT);
   delay_ms(100);
-  // uint16_t data = read_register(SCI_MODE);
-  // if (data != (SM_LINE1 | SM_SDINEW)) return; // Статус отличен от начального
   write_register(SCI_CLOCKF, SC_MULT | SC_ADD);
-  delay_us(200); // Длительность установки множителя 1200 XTALI
-  // data = read_register(SCI_CLOCKF);
-  // if (data != SC_MULT | SC_ADD) return; // Не удалось установить множитель
-  spi.init(SCI_FQ_MAX); // Ускоряем SPI
+  // spi.init(SCI_FQ_MAX); // Ускоряем SPI
   set_volume(SCI_VOL_DEFAULT, SCI_VOL_DEFAULT);
   load_patch(rtmidi);
-  delay_ms(100);
 }
 
 void VS1053::load_patch(const uint16_t *data)
 {
-  uint16_t addr, val, rep, size = pgm_read_word(data++);
-  if (X_RESET(GET)) return;
+  uint16_t addr, val, rep;
 
-  while (size--) {
+  while (true) {
     addr = pgm_read_word(data++);
+    if (addr == END_PATCH) return;
     rep = pgm_read_word(data++);
 
     if (rep & 0x8000U) { // Заполняем одним значением
@@ -107,25 +84,28 @@ uint16_t VS1053::get_volume()
 
 uint16_t VS1053::read_register(uint8_t addr)
 {
-  dbyte result;
+  cli();
+  X_CS(CLR);
+  uint16_t result;
   SCI_BEGIN;
-  spi.transfer(SCI_READ);
-  spi.transfer(addr);
-  result.byte[1] = spi.transfer(0xFF);
-  while (!X_DREQ(GET));
-  result.byte[0] = spi.transfer(0xFF);
+  spi.send(SCI_READ);
+  spi.send(addr);
+  result = spi.transfer(0xFFFF);
   SCI_END;
-  return result.word;
+  X_CS(SET);
+  sei();
+  return result;
 }
 
 void VS1053::write_register(uint8_t addr, uint8_t high, uint8_t low)
 {
-  SCI_BEGIN;
-  spi.transfer(SCI_WRITE);
-  spi.transfer(addr);
-  spi.transfer(high);
-  spi.transfer(low);
+  SCI_BEGIN; X_CS(CLR);
+  spi.send(SCI_WRITE);
+  spi.send(addr);
+  spi.send(high);
+  spi.send(low);
   SCI_END;
+  X_CS(SET);
 }
 
 void VS1053::write_register(uint8_t addr, uint16_t data)
@@ -138,29 +118,29 @@ void VS1053::write_register(uint8_t addr, uint16_t data)
 void VS1053::send_midi(byte msg)
 {
   SCI_BEGIN;
-  spi.transfer(SCI_MIDI);
-  spi.transfer(msg);
+  spi.send(SCI_MIDI);
+  spi.send(msg);
   SCI_END;
 }
 
 void VS1053::send_midi(byte msg, byte data)
 {
   SCI_BEGIN;
-  spi.transfer(SCI_MIDI);
-  spi.transfer(msg);
-  spi.transfer(SCI_MIDI);
-  spi.transfer(data);
+  spi.send(SCI_MIDI);
+  spi.send(msg);
+  spi.send(SCI_MIDI);
+  spi.send(data);
   SCI_END;
 }
 
 void VS1053::send_midi(byte msg, byte data1, byte data2)
 {
   SCI_BEGIN;
-  spi.transfer(SCI_MIDI);
-  spi.transfer(msg);
-  spi.transfer(SCI_MIDI);
-  spi.transfer(data1);
-  spi.transfer(SCI_MIDI);
-  spi.transfer(data2);
+  spi.send(SCI_MIDI);
+  spi.send(msg);
+  spi.send(SCI_MIDI);
+  spi.send(data1);
+  spi.send(SCI_MIDI);
+  spi.send(data2);
   SCI_END;
 }
