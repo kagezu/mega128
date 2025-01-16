@@ -261,9 +261,45 @@ void ST7789::symbol(byte *source, uint16_t x, uint16_t y, byte dx, byte dy)
   D_CS(SET);
   SREG = sreg;
 }
+
+void ST7789::bitmap(byte * source, uint16_t x, uint16_t y, uint16_t dx, uint16_t dy)
+{
+  D_CS(CLR);
+
+  uint16_t xm = x + dx;
+  uint16_t ym = y + dy;
+
+  set_addr(x, y, xm * 5 - 1, ym - 1);
+
+  while (ym--) {
+    for (uint16_t i = 0; i < xm; i++) {
+      send_byte(*source);
+      send_byte(*(source + 1));
+      send_byte(*(source + 2));
+      send_byte(*source);
+      send_byte(*(source + 1));
+      send_byte(*(source + 2));
+      send_byte(*source);
+      send_byte(*(source + 1));
+      send_byte(*(source + 2));
+      send_byte(*source);
+      send_byte(*(source + 1));
+      send_byte(*(source + 2));
+      send_byte(*source);
+      send_byte(*(source + 1));
+      send_byte(*(source + 2));
+      source++;
+    }
+  }
+
+  D_CS(SET);
+}
+
+
 // тестирование дисплея
 
 #define VIEWPORT_OFFSET 30
+
 
 void ST7789::demo(byte d)
 {

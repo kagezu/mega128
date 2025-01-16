@@ -6,7 +6,7 @@
 // Использовать класс Memory напрямую
 #define MEM_USE
 
-#define FRAGMENTATION 25
+#define FRAGMENTATION 35
 #define WEIGHT        48
 #define TEXT_X        WEIGHT + 5
 
@@ -33,19 +33,9 @@ void view()
 {
   uint16_t count = buffer_size;
   byte *ptr = (byte *)0x100;
-  byte bpl = WEIGHT * MAX_Y / (count >> 1);
+  byte w = count / MAX_Y;
 
-  DISPLAY_CONNECT;
-  lcd.set_addr(0, 0, WEIGHT - 1, 159);
-
-  while (count--) {
-    for (byte i = 0; i < bpl; i++) {
-      lcd.send_byte(*ptr);
-    }
-    ptr++;
-  }
-
-  DISPLAY_DISCONNECT;
+  lcd.bitmap(ptr, 0, 0, w, MAX_Y);
 }
 
 int main()

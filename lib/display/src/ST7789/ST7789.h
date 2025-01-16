@@ -32,11 +32,12 @@ public:
   void background(RGB b) { _background = b; }
   void clear() { rect(0, 0, LCD_MAX_X, LCD_MAX_Y, _background); }
   void clear(RGB color) { rect(0, 0, LCD_MAX_X, LCD_MAX_Y, color); }
+  void bitmap(byte *, uint16_t, uint16_t, uint16_t, uint16_t);
 
   // Скринсейвер
   void demo(byte);
 
-  // Реализация интерфейса PrintLCD
+  // Реализация интерфейса PrintF
   void symbol(byte *, uint16_t, uint16_t, byte, byte);
 
   // Реализация интерфейса GFX
