@@ -30,8 +30,8 @@ public:
   void set_interval(byte interval) { _interval = interval; }
   byte get_height() { return _font.height; }
   byte get_weight() { return _font.weight; }
-  byte get_row() { return MAX_Y / _interline; }
-  byte get_col() { return MAX_X / (_interval + _font.weight); }
+  byte get_row() { return ((uint16_t)MAX_Y + 1) / _interline; }
+  byte get_col() { return ((uint16_t)MAX_X + 1) / (_interval + _font.weight); }
 
 private:
   Font  _font = {};     // Шрифт

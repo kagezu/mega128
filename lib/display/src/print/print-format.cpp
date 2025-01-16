@@ -216,6 +216,6 @@ void PrintF::print_h(byte number)
 {
   byte low = number & 0xf;
   byte high = number >> 4;
-  print(high > 9 ? high + '7' : high + '0');
-  print(low > 9 ? low + '7' : low + '0');
+  letter(high > 9 ? high + '7' : high + '0');
+  letter(low > 9 ? low + '7' : low + '0');
 }

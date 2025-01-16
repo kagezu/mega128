@@ -37,7 +37,7 @@ public:
   void demo(byte);
 
   // Реализация интерфейса PrintLCD
-  // void symbol(byte *, uint16_t, uint16_t, byte, byte);
+  void symbol(byte *, uint16_t, uint16_t, byte, byte);
 
   // Реализация интерфейса GFX
   // void pixel(uint16_t, uint16_t);
@@ -51,7 +51,7 @@ public:
   void send_rgb(byte r, byte g, byte b);
   // void send_rgb(uint16_t data); // формат 0x0rgb / RGB_16
   // void send_rgb(uint32_t color);
-  // void send_rgb(RGB color);
+  void send_rgb(RGB color);
   void rect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, RGB color);
 };
 

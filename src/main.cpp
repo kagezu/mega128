@@ -9,10 +9,10 @@
 // #include "../lib/display/demo/rect.cpp"
 
 // Скринсейвер
-#include "../lib/display/demo/screensaver.cpp"
+// #include "../lib/display/demo/screensaver.cpp"
 
 // Вывод памяти на экран
-// #include "../lib/display/demo/memory_scroll.cpp"
+#include "../lib/display/demo/memory_scroll.cpp"
 
 // Вывод памяти на экран
 // #include "../lib/display/demo/star.cpp"

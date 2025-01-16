@@ -28,7 +28,7 @@ int main()
 
   while (true) {
     lcd.at(30, (MAX_Y - lcd.get_height()) >> 1);
-    lcd.printf(PSTR("Hello World"));
+    lcd.printf(F("Hello World"));
     for (char j = 0; j < 20; j++) {
       byte x = rand() & MAX_X, y = rand() & MAX_Y;
       lcd.color(black);

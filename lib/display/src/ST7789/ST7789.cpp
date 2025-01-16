@@ -75,7 +75,7 @@ ST7789::ST7789()
   send_byte(0x20);
   send_byte(0x23);
 
-  send_command(INVON);		//	Inversion ON
+  send_command(INVOFF);		//	Inversion OFF
   send_command(SLPOUT);	//	Out of sleep mode
   send_command(NORON);		//	Normal Display on
   send_command(DISPON);	//	Main screen turned on	
@@ -125,13 +125,26 @@ void ST7789::set_addr(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
 
 void ST7789::send_rgb(byte r, byte g, byte b)
 {
-  PORT(D_DATA) = r;
+  PORT(D_DATA) = b;
   D_WR(SET);
   D_WR(CLR);
   PORT(D_DATA) = g;
   D_WR(SET);
   D_WR(CLR);
-  PORT(D_DATA) = b;
+  PORT(D_DATA) = r;
+  D_WR(SET);
+  D_WR(CLR);
+}
+
+void ST7789::send_rgb(RGB color)
+{
+  PORT(D_DATA) = color.blue;
+  D_WR(SET);
+  D_WR(CLR);
+  PORT(D_DATA) = color.green;
+  D_WR(SET);
+  D_WR(CLR);
+  PORT(D_DATA) = color.red;
   D_WR(SET);
   D_WR(CLR);
 }
@@ -144,14 +157,14 @@ void ST7789::rect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, RGB color)
   uint16_t y = y1 - y0;
   if (x > y) swap16(x, y);
   for (uint16_t i = 0; i <= x; i++)
-    for (uint16_t j = 0; i <= y; j++) {
-      PORT(D_DATA) = color.red;
+    for (uint16_t j = 0; j <= y; j++) {
+      PORT(D_DATA) = color.blue;
       D_WR(SET);
       D_WR(CLR);
       PORT(D_DATA) = color.green;
       D_WR(SET);
       D_WR(CLR);
-      PORT(D_DATA) = color.blue;
+      PORT(D_DATA) = color.red;
       D_WR(SET);
       D_WR(CLR);
     }
@@ -159,6 +172,95 @@ void ST7789::rect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, RGB color)
   D_CS(SET);
 }
 
+// PrintF
+
+void ST7789::symbol(byte *source, uint16_t x, uint16_t y, byte dx, byte dy)
+{
+  byte sreg = SREG;
+  cli();
+  D_CS(CLR);
+
+  uint16_t x1 = x + dx - 1;
+  uint16_t y1 = y + dy - 1;
+
+#ifdef FLIP_X
+  uint16_t t = x;
+  x = MAX_X - x1;
+  x1 = MAX_X - t;
+#endif
+
+#ifdef FLIP_Y
+  uint16_t u = y;
+  y = MAX_Y - y1;
+  y1 = MAX_Y - u;
+#endif
+
+#ifdef EX_X_Y
+  set_addr(y, x, y1, x1);
+#else
+  set_addr(x, y, x1, y1);
+#endif
+
+#ifdef EX_X_Y
+
+#ifdef FLIP_X
+  for (char i = dx - 1; i >= 0; i--) {
+  #else
+  for (byte i = 0; i < dx; i++) {
+  #endif
+
+    byte  data;
+
+  #ifdef FLIP_Y
+    byte bit = 1 << ((dy - 1) & 7);
+    data = pgm_read_byte((uint16_t)source + ((dy - 1) >> 3) * dx + i);
+    for (char j = dy - 1; j >= 0; j--) {
+      if ((j & 7) == 7) {
+        data = pgm_read_byte((uint16_t)source + (j >> 3) * dx + i);
+        bit = 128;
+      }
+      if (data & bit) send_rgb(_color);
+      else send_rgb(_background);
+      bit >>= 1;
+    #else
+    for (byte j = 0; j < dy; j++) {
+      if (!(j & 7)) data = pgm_read_byte((uint16_t)source + (j >> 3) * dx + i);
+      if (data & 1) send_rgb(_color);
+      else send_rgb(_background);
+      data >>= 1;
+    #endif
+
+    }
+    }
+
+#else
+
+#ifdef FLIP_Y
+  for (char j = dy - 1; j >= 0; j--) {
+  #else
+  for (byte j = 0; j < dy; j++) {
+  #endif
+
+    uint16_t offset = (uint16_t)source + (j >> 3) * dx;
+    byte bit = 1 << (j & 7);
+
+  #ifdef FLIP_X
+    for (char i = dx - 1; i >= 0; i--) {
+    #else
+    for (byte i = 0; i < dx; i++) {
+    #endif
+
+      byte data = pgm_read_byte(offset + i);
+      if (data & bit) send_rgb(_color);
+      else send_rgb(_background);
+    }
+  }
+
+#endif
+
+  D_CS(SET);
+  SREG = sreg;
+}
 // тестирование дисплея
 
 #define VIEWPORT_OFFSET 30
