@@ -163,25 +163,25 @@ void ST7735::rect_fill(byte x, byte y, byte x1, byte y1)
 #endif
 }
 
-// Реализация интерфейса PrintLCD
+// Реализация интерфейса PrintF
 
-void ST7735::symbol(byte *source, uint16_t x, uint16_t y, byte dx, byte dy)
+void ST7735::symbol(byte *source, byte x, byte y, byte dx, byte dy)
 {
   byte sreg = SREG;
   cli();
   DISPLAY_CONNECT;
 
-  uint16_t x1 = x + dx - 1;
-  uint16_t y1 = y + dy - 1;
+  byte x1 = x + dx - 1;
+  byte y1 = y + dy - 1;
 
 #ifdef FLIP_X
-  uint16_t t = x;
+  byte t = x;
   x = MAX_X - x1;
   x1 = MAX_X - t;
 #endif
 
 #ifdef FLIP_Y
-  uint16_t u = y;
+  byte u = y;
   y = MAX_Y - y1;
   y1 = MAX_Y - u;
 #endif
@@ -222,7 +222,7 @@ void ST7735::symbol(byte *source, uint16_t x, uint16_t y, byte dx, byte dy)
     #endif
 
     }
-    }
+  }
 
 #else
 
@@ -251,7 +251,7 @@ void ST7735::symbol(byte *source, uint16_t x, uint16_t y, byte dx, byte dy)
 
   DISPLAY_DISCONNECT;
   SREG = sreg;
-  }
+}
 
 // тестирование дисплея
 

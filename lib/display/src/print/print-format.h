@@ -5,6 +5,7 @@
 
 #define FONT_TAB_FACTOR     1
 
+template<typename I>
 class PrintF {
 public:
   PrintF() {};
@@ -12,6 +13,7 @@ public:
   void printf(const  __FlashStringHelper *, ...);
   void print(const __FlashStringHelper *);
   void print(const char *);
+  void print(char *);
   void print(uint16_t);
   void print(uint32_t);
   void print(int16_t);
@@ -22,10 +24,10 @@ public:
   void print_h(byte);
   void print(char);
   void letter(byte);
-  virtual void symbol(byte *, uint16_t, uint16_t, byte, byte) = 0;
+  virtual void symbol(byte *, I, I, byte, byte) = 0;
 
   void font(const Font *);
-  void at(uint16_t x, uint16_t y) { point_x = x; point_y = y; }
+  void at(I x, I y) { point_x = x; point_y = y; }
   void set_interline(byte interline) { _interline = _font.height + interline; }
   void set_interval(byte interval) { _interval = interval; }
   byte get_height() { return _font.height; }
@@ -40,11 +42,10 @@ private:
   byte  _interline = 0; // Расстояние между строками
   byte  _interval = 0;  // Расстояние между символами
   byte  _tab_factor = FONT_TAB_FACTOR;
-  uint16_t  point_x = 0;
-  uint16_t  point_y = 0;
+  I  point_x = 0;
+  I  point_y = 0;
 
 private:
-  void next_position();
   void LF() { point_y += _interline; }
   void CR() { point_x = 0; }
   void TAB() { point_x = ((point_x / ((_font.weight + _interval) << FONT_TAB_FACTOR) + 1) * (_font.weight + _interval)) << FONT_TAB_FACTOR; }

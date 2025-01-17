@@ -2,12 +2,12 @@
 #include "shift/shift.h"
 #include <macros/helper.h>
 
+#define F_SCAN              400
 #define KEYS_OFFSET         4
 #define KEYS_SIZE           8
 #define KEYS_COUNT          60
-#define KEYS_MAX_SPEED      32
-#define KEYS_SPEED_FACTOR   0
-#define KEYS_MAX_DELAY      ( KEYS_MAX_SPEED << KEYS_SPEED_FACTOR ) - 1
+#define KEYS_MAX_VELOCITY   127
+#define KEYS_FACTOR         3
 
 #define KEYBOARD(name, port, dat, clk, ld,  line)     \
 Keyboard name ( _SFR_MEM_ADDR(PORT(port)),            \
@@ -22,8 +22,8 @@ private:
 public:
   byte _on[KEYS_SIZE];
   byte _off[KEYS_SIZE];
-  byte _timer[KEYS_COUNT];
   byte _keys[KEYS_COUNT];
+  int16_t _timer[KEYS_COUNT];
 
   byte _old[KEYS_SIZE];
 
@@ -59,14 +59,15 @@ public:
       }
       else
         if (*on & mask) {
-          if (_timer[i] < 255) {
-            _keys[i] = KEYS_MAX_SPEED - (_timer[i] >> KEYS_SPEED_FACTOR);
-            _timer[i] = 255;
+          if (_timer[i] > 0) {
+            uint16_t speed = (KEYS_MAX_VELOCITY << KEYS_FACTOR) / _timer[i];
+            _keys[i] = speed > KEYS_MAX_VELOCITY ? KEYS_MAX_VELOCITY : speed;
+            _timer[i] = -1;
             key = i;
           }
         }
         else
-          if (_timer[i] < KEYS_MAX_DELAY) _timer[i]++;
+          if (_timer[i] + 1) _timer[i]++;
 
       mask <<= 1;
       if (!mask) { mask = 1; on++; off++; }

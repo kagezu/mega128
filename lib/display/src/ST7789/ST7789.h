@@ -2,6 +2,7 @@
 #include "comands.h"
 #include "display/config.h"
 #include "rgb/rgb.h"
+#include "interface/display-driver.h"
 
 #ifdef _ST7789_
 
@@ -12,9 +13,9 @@
 #include "draw/draw.h"
 #endif
 
-class ST7789
+class ST7789 : public DisplayDriver<uint16_t>
 #ifdef LCD_PRINT
-  : public PrintF
+  , public PrintF<uint16_t>
 #endif
 #ifdef LCD_DRAW
   , public Draw
@@ -44,7 +45,7 @@ public:
   // void pixel(uint16_t, uint16_t);
   // void rect_fill(uint16_t x, uint16_t y, uint16_t x1, uint16_t y1);
 
-  protected:
+protected:
   void send_command(byte data);
   void set_addr(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
   void send_byte(byte data);

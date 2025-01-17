@@ -28,12 +28,20 @@
 union dbyte {
   uint16_t word;
   uint8_t  byte[2];
+  struct {
+    uint8_t low;
+    uint8_t high;
+  };
 };
 
 union dword {
   uint32_t dword;
-  uint16_t word;
+  uint16_t word[2];
   uint8_t  byte[4];
+  struct {
+    uint16_t low;
+    uint16_t high;
+  };
 };
 
 // Функции

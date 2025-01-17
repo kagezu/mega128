@@ -1,5 +1,6 @@
 #pragma once
 #include "display/config.h"
+#include "interface/display-driver.h"
 
 #ifdef _ST7735_
 
@@ -18,21 +19,21 @@
 #include "draw/draw.h"
 #endif
 
-class ST7735
+class ST7735 : public DisplayDriver<byte>
 #ifdef LCD_SPI
-  : public ST7735_SPI
+  , public ST7735_SPI
 #else
-  : public ST7735_Soft
+  , public ST7735_Soft
 #endif
 #ifdef LCD_PRINT
-  , public PrintF
+  , public PrintF<byte>
 #endif
 #ifdef LCD_DRAW
   , public Draw
 #endif
 {
 public:
-ST7735();
+  ST7735();
 
 private:
   RGB _color = RGB(255, 255, 255);
@@ -48,10 +49,9 @@ public:
   void demo(byte);
   void test(byte);
 
-  // Реализация интерфейса PrintLCD
-  void symbol(byte *, uint16_t, uint16_t, byte, byte);
+  // void symbol(byte *, uint16_t, uint16_t, byte, byte);
+  void symbol(byte *, byte, byte, byte, byte);
 
-  // Реализация интерфейса GFX
   void pixel(byte, byte);
   void rect_fill(byte x, byte y, byte x1, byte y1);
 };
