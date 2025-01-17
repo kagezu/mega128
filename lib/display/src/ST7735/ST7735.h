@@ -1,12 +1,9 @@
 #pragma once
 #include "display/config.h"
 #include "interface/display-driver.h"
-
-#ifdef _ST7735_
-
 #include "rgb/rgb.h"
 
-
+#ifdef _ST7735_
 #ifdef LCD_SPI
 #include "ST7735/ST7735_SPI.h"
 #else

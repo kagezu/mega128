@@ -3,6 +3,7 @@
 #include "config.h"
 #include "error.h"
 #include <spi/spi.h>
+#include "midi/midi.h"
 
 // Константы
 ////////////////////////////////////////////////////////////////////////////////
@@ -47,10 +48,9 @@
 #define SM_LINE1          0x4000
 #define SM_CLK_RANGE      0x8000
 
-
 #define END_PATCH         0xFFFF
 
-class VS1053 {
+class VS1053 : public MIDI {
 public:
   void init();
 

@@ -8,13 +8,14 @@
 
 Display lcd;
 KEYBOARD(key, D, PD3, PD4, PD5, PD0);
-MIDI midi;
+VS1053 midi;
 
 // Функция, возвращающая количество свободного ОЗУ (RAM)
-byte memoryFree()
+byte memory_free()
 {
-  uint16_t freeValue = (RAMEND - (uint16_t)&freeValue);
-  return  100 - ((25 * freeValue) >> 9);
+  extern int __bss_end;
+  uint16_t free = RAMEND - (uint16_t)&__bss_end;
+  return  100 - ((25 * free) >> 9);
 }
 
 char piano[62];
@@ -38,7 +39,7 @@ uint16_t time = 0;
 uint16_t cpu = 0;
 uint16_t fps = 10;
 uint16_t time2 = F_SCAN;
-char  press = 0;
+const char *pgm_text;
 
 int main()
 {
@@ -53,7 +54,7 @@ int main()
   lcd.color(RGB(255, 255, 127));
 
   midi.init();
-  midi.pgm_change(1);
+  midi.pgm_change(0);
   sei();
 
 #define AVERAGE_FACTOR  4
@@ -64,37 +65,16 @@ int main()
     time2 = 0;
 
     lcd.font(&standard_5x8);
-    lcd.printf(F("\fcpu %u%%\t mem %u%% fps %u \n"), cpu, memoryFree(), fps);
+    lcd.printf(F("\fcpu %u%%\t mem %u%% fps %u \n"), cpu, memory_free(), fps);
 
-    printKey(*(uint64_t *)key._on);
-    printKey(*(uint64_t *)key._off);
+    printKey(key.get_on());
+    printKey(key.get_off());
     lcd.printf(F("\n"));
 
     lcd.font(&standard_5x8);
-    switch (press) {
-      case 58:
-        if (midi._pgm > 0)
-          midi.pgm_change(midi._pgm - 1);
-        lcd.print(F("                          \r"));
-        press = 0;
-        break;
-
-      case 56:
-        if (midi._pgm < 128)
-          midi.pgm_change(midi._pgm + 1);
-        lcd.print(F("                          \r"));
-        press = 0;
-        break;
-
-      case 53:
-        midi.set_master(midi.get_master() + 2);
-        press = 0;
-        break;
-
-      case 51:
-        midi.set_master(midi.get_master() - 2);
-        press = 0;
-        break;
+    if (pgm_text != midi.get_pgm_text()) {
+      lcd.print(F("                          \r"));
+      pgm_text = midi.get_pgm_text();
     }
 
     lcd.print(midi.get_pgm_text());
@@ -111,16 +91,7 @@ int main()
 
 ISR(TIMER0_COMPA_vect)
 {
-  char  k = key.tick();
-
-  if (k + 1) {
-    if (key._keys[(byte)k]) {
-      midi.note_on(95 - k, 0, key._keys[(byte)k]);
-      press = k;
-    }
-    else
-      midi.note_off(95 - k, 0);
-  }
+  key.tick();
 
   time = TCNT0;
   time2++;

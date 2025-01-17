@@ -45,7 +45,6 @@ uint16_t VS1053::read_register(uint8_t addr)
 {
   uint16_t result;
   cli();
-  X_DCS(SET);
   X_CS(CLR);
   spi.send(SCI_READ);
   spi.send(addr);
@@ -59,7 +58,6 @@ uint16_t VS1053::read_register(uint8_t addr)
 void VS1053::write_register(uint8_t addr, uint16_t data)
 {
   X_CS(CLR);
-  X_DCS(SET);
   spi.send(SCI_WRITE);
   spi.send(addr);
   spi.send(to_byte(data, 1));

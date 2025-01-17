@@ -1,7 +1,7 @@
 #include "allocate.h"
 
 extern int __bss_end;
-Memory memory((int)&__bss_end, RAMEND - (int)&__bss_end);
+Memory memory((int)&__bss_end, RAMEND - (int)&__bss_end + 1);
 
 void *malloc(size_t __size)
 {

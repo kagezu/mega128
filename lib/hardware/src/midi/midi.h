@@ -1,9 +1,8 @@
 #pragma once
 #include "midi-types.h"
 #include "midi-text.h"
-#include "VS1053/VS1053.h"
 
-class MIDI : public VS1053 {
+class MIDI {
 public:
   void note_off(byte note, byte ch = 0, byte velocity = 0x40) { _send_midi(NoteOff | ch, note, velocity); }
   void note_on(byte note, byte ch = 0, byte velocity = 0x40) { _send_midi(NoteOn | ch, note, velocity); }
@@ -17,8 +16,12 @@ public:
   const char *get_pgm_text() { return MIDI_pgm[_pgm]; }
   byte _pgm = 0;
 
-private:
+protected:
+  virtual void send_midi(byte) = 0;
+  virtual void send_midi(byte, byte) = 0;
+  virtual void send_midi(byte, byte, byte) = 0;
 
+private:
   byte _run_status = 0;
   void _send_midi(byte, byte, byte);
   void _send_midi(byte, byte);
