@@ -6,8 +6,8 @@
 
 #define CONCAT(x, y)  x ## y
 
-#define DDR(x)  CONCAT(DDR  , x)
 #define PORT(x) CONCAT(PORT , x)
+#define DDR(x)  CONCAT(DDR  , x)
 #define PIN(x)  CONCAT(PIN  , x)
 
 #define IN(port, pin)         DDR(port)  &=~ _BV(pin)

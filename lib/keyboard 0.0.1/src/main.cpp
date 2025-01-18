@@ -7,7 +7,7 @@
 #include "midi/midi.h"
 
 Display lcd;
-KEYBOARD(key, D, PD3, PD4, PD5, PD0);
+Keyboard key;
 VS1053 midi;
 
 // Функция, возвращающая количество свободного ОЗУ (RAM)

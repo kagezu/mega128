@@ -1,41 +1,29 @@
 #pragma once
-#include <core.h>
-#include "shift/shift.h"
+#include "config.h"
 #include "VS1053/VS1053.h"
-
-#define F_SCAN              400
-#define KEY_FIRST           36
-#define KEY_OFFSET          4
-#define KEY_SIZE            8
-#define KEY_COUNT           60
-#define KEY_MAX_VELOCITY    127
-#define KEY_FACTOR          3
-
-#define KEY_OFF             0
-#define KEY_ON              1
-
-#define KEYBOARD(name, port, dat, clk, ld,  line)     \
-Keyboard name ( _SFR_MEM_ADDR(PORT(port)),            \
-                _SFR_MEM_ADDR(DDR(port)),             \
-                _SFR_MEM_ADDR(PIN(port)),             \
-                dat, clk, ld, line );
 
 extern VS1053 midi;
 
-class Keyboard : public Shift {
+class Keyboard {
 private:
-  byte _line;
   byte _on[KEY_SIZE] = {};
   byte _off[KEY_SIZE] = {};
   byte _last[KEY_SIZE] = {};
   byte _timer[KEY_COUNT] = {};
 
 public:
-  Keyboard(byte port, byte ddr, byte pin, byte dat, byte clk, byte ld, byte line) :
-    Shift(port, ddr, pin, dat, clk, ld), _line(_BV(line))
+  Keyboard()
   {
-    _MMIO_BYTE(port) |= _BV(line);
-    _MMIO_BYTE(ddr) |= _BV(line);
+    CS0(OUT);
+    CS1(OUT);
+    QH(IN);
+    CLK(OUT);
+    LD(OUT);
+
+    CS0(SET);
+    CS1(SET);
+    CLK(CLR);
+    LD(SET);
   }
 
 public:
@@ -51,12 +39,12 @@ public:
     byte *last = _last;           // Последнее состояние клавиши
 
     load();
-    _MMIO_BYTE(_port) &= ~_line;
-    read_bytes(on, KEY_SIZE);
+    CS0(CLR);
+    read(on, KEY_SIZE);
 
     load();
-    read_bytes(off, KEY_SIZE);
-    _MMIO_BYTE(_port) |= _line;
+    read(off, KEY_SIZE);
+    CS0(SET);
 
     for (byte i = KEY_COUNT - 1; i < KEY_COUNT; i--) {
       if (*off & mask) { // Клавиша отпущена
@@ -89,6 +77,23 @@ public:
   }
 
 private:
+  void load() { LD(CLR); LD(SET); }
+
+  void read(byte *buffer, byte length)
+  {
+    byte data;
+    while (length--) {
+      byte i = 8;
+      while (i--) {
+        data >>= 1;
+        if (QH(GET)) data |= 0x80;
+        CLK(SET);
+        CLK(CLR);
+      }
+      *buffer++ = data;
+    }
+  }
+
   byte velocity(byte time)
   {
     uint16_t speed = (KEY_MAX_VELOCITY << KEY_FACTOR) / time;
