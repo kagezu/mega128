@@ -11,7 +11,7 @@
 
 
 // Частота сканирования
-#define F_SCAN              400
+#define F_SCAN              500
 // Максимальная скорость нажатия MIDI
 #define KEY_MAX_VELOCITY    127
 // 127 VELOCITY = ( 2 ^ KEY_FACTOR / F_SCAN ) секунд 

@@ -1,48 +1,49 @@
+// #include "type/buffer.h"
 #pragma once
 #include <Arduino.h>
 
 /*
 #include <type/buffer.h>
-#### Buffer<T, S>
+#### Buffer<T, I>
 + read() <-- -- [ tail ] ... [ head ] <-- write()
 + shift() <-- - [ tail ] ... [ head ] <--  push()
 + unshift() --> [ tail ] ... [ head ] -->   pop()
 + tail()  =  buffer [ tail ]
 + head()  =  buffer [ head ]
 */
-template <typename T, typename  S>
+template <typename T, typename  I>
 class Buffer {
 protected:
   T *_buffer;
-  S _head;    // Голова
-  S _tail;    // Хвост
-  S _size;    // Максимальный размер
-  S _heap;    // Размер кучи
+  I _head;    // Голова
+  I _tail;    // Хвост
+  I _size;    // Максимальный размер
+  I _heap;    // Размер кучи
 
 public:
-  Buffer(S size);
+  Buffer(I size);
   ~Buffer();
   void    clear();
 
-  inline  S     length();
-  inline  S     heap();
+  inline  I     length();
+  inline  I     heap();
   inline  T     tail();
   inline  T     head();
   inline  T     shift(); // Alis read()
 
   void    write(T data);
   T       read();
-  void    write(T *data, S length);
-  void    read(T *data, S length);
+  void    write(T *data, I length);
+  void    read(T *data, I length);
 
   T       pop();
-  S       unshift(T data);
-  S       push(T data);
+  I       unshift(T data);
+  I       push(T data);
 };
 
 // Конструктор
-template<typename T, typename S>
-Buffer<T, S>::Buffer(S size)
+template<typename T, typename I>
+Buffer<T, I>::Buffer(I size)
 {
   _buffer = (T *)malloc(size * sizeof(T));
   _size = size;
@@ -50,58 +51,58 @@ Buffer<T, S>::Buffer(S size)
 }
 
 // Деструктор
-template<typename T, typename S>
-Buffer<T, S>::~Buffer()
+template<typename T, typename I>
+Buffer<T, I>::~Buffer()
 {
   free(_buffer);
 }
 
 // Очищает буфер
-template<typename T, typename S>
-void Buffer<T, S>::clear()
+template<typename T, typename I>
+void Buffer<T, I>::clear()
 {
   _heap = _size;
   _head = _tail = 0;
 }
 
 // Текущий размер буфера
-template<typename T, typename S>
-inline S Buffer<T, S>::length()
+template<typename T, typename I>
+inline I Buffer<T, I>::length()
 {
   return _size - _heap;
 }
 
 // Свободный размер буфера
-template<typename T, typename S>
-inline S Buffer<T, S>::heap()
+template<typename T, typename I>
+inline I Buffer<T, I>::heap()
 {
   return _heap;
 }
 
 // Возвращает элемент с головы, без удаления, даже если буфер пуст
-template<typename T, typename S>
-inline T Buffer<T, S>::head()
+template<typename T, typename I>
+inline T Buffer<T, I>::head()
 {
   return _buffer[_head ? _head - 1 : _size - 1];
 }
 
 // Возвращает элемент с хвоста, без удаления, даже если буфер пуст
-template<typename T, typename S>
-inline T Buffer<T, S>::tail()
+template<typename T, typename I>
+inline T Buffer<T, I>::tail()
 {
   return _buffer[_tail];
 }
 
 // Возвращает элемент с хвоста либо пустой элемент, если буфер пуст
-template<typename T, typename S>
-inline T Buffer<T, S>::shift()
+template<typename T, typename I>
+inline T Buffer<T, I>::shift()
 {
   return read();
 }
 
 // Записывает элемент в буфер, если буфер не полон
-template<typename T, typename S>
-void Buffer<T, S>::write(T data)
+template<typename T, typename I>
+void Buffer<T, I>::write(T data)
 {
   if (!_heap) return;                       // Буфер полон
   _buffer[_head++] = data;
@@ -110,22 +111,22 @@ void Buffer<T, S>::write(T data)
 }
 
 // Возвращает элемент из буфера либо пустой элемент, если буфер пуст
-template<typename T, typename S>
-T Buffer<T, S>::read()
+template<typename T, typename I>
+T Buffer<T, I>::read()
 {
-  if (_heap == _size) return T(0);          // Буфер пуст
-  S index = _tail++;
+  if (_heap == _size) return T();          // Буфер пуст
+  I index = _tail++;
   _tail = _tail == _size ? 0 : _tail;
   _heap++;
   return _buffer[index];
 }
 
 // Записывает элементы в буфер до заполнения буфера, то что не влезло - обрезается
-template<typename T, typename S>
-void Buffer<T, S>::write(T *data, S length)
+template<typename T, typename I>
+void Buffer<T, I>::write(T *data, I length)
 {
   T *target = _buffer + _head;
-  S count = _size - _head;                  // Линейный размер пространства
+  I count = _size - _head;                  // Линейный размер пространства
   length = length > _heap ? _heap : length; // Размер перемещаемых данных ограничен кучей
   _heap -= length;                          // Уменьшаем кучу
   _head += length;                          // Двигаем голову
@@ -139,11 +140,11 @@ void Buffer<T, S>::write(T *data, S length)
 }
 
 // Возвращает элементы из буфера до опустошения
-template<typename T, typename S>
-void Buffer<T, S>::read(T *data, S length)
+template<typename T, typename I>
+void Buffer<T, I>::read(T *data, I length)
 {
   T *source = _buffer + _tail;
-  S count = _size - _tail;                  // Линейный размер пространства
+  I count = _size - _tail;                  // Линейный размер пространства
   length = length > _size - _heap
     ? _size - _heap : length;               // Размер перемещаемых данных ограничен их количеством
   _heap += length;                          // высвобождаем кучу
@@ -158,20 +159,20 @@ void Buffer<T, S>::read(T *data, S length)
 }
 
 // Добавляет элемент с головы, возвращает его индекс
-template<typename T, typename S>
-S Buffer<T, S>::push(T data)
+template<typename T, typename I>
+I Buffer<T, I>::push(T data)
 {
   if (!_heap) return -1;                 // Буфер полон
-  S index = _head;
+  I index = _head;
   _buffer[_head++] = data;
-  _head = _head == _size ? S(0) : _head;
+  _head = _head == _size ? I(0) : _head;
   _heap--;
   return index;
 }
 
 // Извлекает элемент с головы
-template<typename T, typename S>
-T Buffer<T, S>::pop()
+template<typename T, typename I>
+T Buffer<T, I>::pop()
 {
   if (_heap == _size) return 0;          // Буфер пуст
   if (_head == 0) _head = _size - 1;
@@ -180,8 +181,8 @@ T Buffer<T, S>::pop()
 }
 
 // Добавляет элемент в хвост, возвращает его индекс
-template<typename T, typename S>
-S Buffer<T, S>::unshift(T data)
+template<typename T, typename I>
+I Buffer<T, I>::unshift(T data)
 {
   if (!_heap) return -1;                 // Буфер полон
   if (_tail == 0) _tail = _size;
