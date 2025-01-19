@@ -1,7 +1,7 @@
 #include <type/array.h>
 #include <macros/attribute.h>
 #include <macros/context.h>
-#include <timer.h>
+#include "timer/timer.h"
 #include "task.h"
 
 #define TASK_STACK_SIZE   250

@@ -18,12 +18,13 @@ public:
     LD(SET);
   }
 
-  void clear_timer(byte i) { _timer[i] = 0; }
-  void increment_timer(byte i) { if (_timer[i] + 1) _timer[i]++; }
+  void clear_timer(byte i) { _timers[i] = 0; }
+  void increment_timer(byte i) { if (_timers[i] + 1) _timers[i]++; }
 
   byte *get_on() { return _on; }
   byte *get_off() { return _off; }
-  byte *get_last() { return _off; }
+  byte *get_last() { return _last; }
+  byte *get_timers() { return _timers; }
 
   void tick()
   {
@@ -38,15 +39,15 @@ public:
 
   byte velocity(byte i)
   {
-    uint16_t speed = (KEY_MAX_VELOCITY << KEY_FACTOR) / _timer[i];
+    uint16_t speed = (KEY_MAX_VELOCITY << KEY_FACTOR) / _timers[i];
     return speed > KEY_MAX_VELOCITY ? KEY_MAX_VELOCITY : speed;
   }
 
-  // private:
+private:
   byte _on[KEY_SIZE] = {};    // Все нажатые клавиши
   byte _off[KEY_SIZE] = {};   // Все отжатые клавиши
   byte _last[KEY_SIZE] = {};  // Последнее состояние клавиши
-  byte _timer[KEY_COUNT] = {};
+  byte _timers[KEY_COUNT] = {};
 
 private:
 

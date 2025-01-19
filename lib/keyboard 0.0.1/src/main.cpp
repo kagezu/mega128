@@ -108,6 +108,7 @@ void extra(byte i)
   }
 }
 
+
 ISR(TIMER0_COMPA_vect)
 {
   key.tick();
@@ -116,6 +117,7 @@ ISR(TIMER0_COMPA_vect)
   byte *on = key.get_on();      // Все нажатые клавиши
   byte *off = key.get_off();    // Все отжатые клавиши
   byte *last = key.get_last();  // Последнее состояние клавиши
+  byte *timer = key.get_timers();
 
   for (byte i = KEY_COUNT - 1; i < KEY_COUNT; i--) { // Порядок соответствующий сканированию
     if (*off & mask) { // Клавиша отпущена
@@ -123,7 +125,7 @@ ISR(TIMER0_COMPA_vect)
         midi.note_off(KEY_FIRST + i, 0, key.velocity(i));
         *last ^= mask; // Новое состояние: отжата
       }
-      key._timer[i] = 0;
+      *timer = 0;
       // key.clear_timer(i); // Сбрасываем счётчик
     }
     else {
@@ -133,13 +135,14 @@ ISR(TIMER0_COMPA_vect)
           *last |= mask; // Новое состояние: нажата
           extra(i); // test
         }
-        key._timer[i] = 0;
+        *timer = 0;
         // key.clear_timer(i); // Сбрасываем счётчик
       }
       else // Клавиша не прижата к контактам
-        // key.increment_timer(i);
-        if (key._timer[i] + 1) key._timer[i]++;
+        if (*timer + 1) (*timer)++;
+      // key.increment_timer(i);
     }
+    timer++;
     mask <<= 1; // Переходим к следующей клавише
     if (!mask) {// Переходим к следующему байту
       mask = 1;
