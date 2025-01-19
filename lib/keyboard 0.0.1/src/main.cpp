@@ -4,7 +4,7 @@
 #include "font/standard_5x8.h"
 #include "font/arial_14.h"
 #include "keyboard.h"
-#include "midi/midi.h"
+#include "VS1053/VS1053.h"
 
 Display lcd;
 Keyboard key;
@@ -88,7 +88,7 @@ int main()
   }
 }
 
-void extra(char i)
+void extra(byte i)
 {
   switch (i) {
     case 1:
@@ -112,31 +112,34 @@ ISR(TIMER0_COMPA_vect)
 {
   key.tick();
 
-  byte mask = _BV(KEY_OFFSET);
+  volatile byte mask = _BV(KEY_OFFSET);
   byte *on = key.get_on();      // Все нажатые клавиши
   byte *off = key.get_off();    // Все отжатые клавиши
   byte *last = key.get_last();  // Последнее состояние клавиши
 
-  for (char i = KEY_COUNT - 1; i > 0; i--) { // Порядок соответствующий сканированию
+  for (byte i = KEY_COUNT - 1; i < KEY_COUNT; i--) { // Порядок соответствующий сканированию
     if (*off & mask) { // Клавиша отпущена
       if (*last & mask) { // Ранее клавиша была нажата
         midi.note_off(KEY_FIRST + i, 0, key.velocity(i));
         *last ^= mask; // Новое состояние: отжата
       }
-      key.clear_timer(i); // Сбрасываем счётчик
+      key._timer[i] = 0;
+      // key.clear_timer(i); // Сбрасываем счётчик
     }
-    else
+    else {
       if (*on & mask) { // Клавиша нажата
         if (!(*last & mask)) { // Ранее клавиша была отпущена
           midi.note_on(KEY_FIRST + i, 0, vel = key.velocity(i)); // test
           *last |= mask; // Новое состояние: нажата
           extra(i); // test
         }
-        key.clear_timer(i); // Сбрасываем счётчик
+        key._timer[i] = 0;
+        // key.clear_timer(i); // Сбрасываем счётчик
       }
       else // Клавиша не прижата к контактам
-        key.increment_timer(i);
-
+        // key.increment_timer(i);
+        if (key._timer[i] + 1) key._timer[i]++;
+    }
     mask <<= 1; // Переходим к следующей клавише
     if (!mask) {// Переходим к следующему байту
       mask = 1;

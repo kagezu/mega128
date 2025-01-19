@@ -1,6 +1,5 @@
 #pragma once
 #include "config.h"
-#include "VS1053/VS1053.h"
 
 class Keyboard {
 
@@ -19,8 +18,8 @@ public:
     LD(SET);
   }
 
-  void clear_timer(byte i) { key._timer[i] = 0; }
-  void increment_timer(byte i) { if (key._timer[i] + 1) key._timer[i]++; }
+  void clear_timer(byte i) { _timer[i] = 0; }
+  void increment_timer(byte i) { if (_timer[i] + 1) _timer[i]++; }
 
   byte *get_on() { return _on; }
   byte *get_off() { return _off; }
@@ -43,7 +42,7 @@ public:
     return speed > KEY_MAX_VELOCITY ? KEY_MAX_VELOCITY : speed;
   }
 
-private:
+  // private:
   byte _on[KEY_SIZE] = {};    // Все нажатые клавиши
   byte _off[KEY_SIZE] = {};   // Все отжатые клавиши
   byte _last[KEY_SIZE] = {};  // Последнее состояние клавиши

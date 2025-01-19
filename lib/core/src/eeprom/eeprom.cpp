@@ -1,3 +1,4 @@
+/*
 #include "eeprom.h"
 #include "type/buffer.h"
 #include "macros/attribute.h"
@@ -56,3 +57,5 @@ ISR(EE_READY_vect)
 {
   eeprom_write_buffer();
 }
+
+*/

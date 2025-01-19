@@ -4,46 +4,46 @@
 
 /*
 #include <type/buffer.h>
-#### Buffer<T, I>
+#### Buffer<T, S>
 + read() <-- -- [ tail ] ... [ head ] <-- write()
 + shift() <-- - [ tail ] ... [ head ] <--  push()
 + unshift() --> [ tail ] ... [ head ] -->   pop()
 + tail()  =  buffer [ tail ]
 + head()  =  buffer [ head ]
 */
-template <typename T, typename  I>
+template <typename T, typename  S>
 class Buffer {
 protected:
   T *_buffer;
-  I _head;    // Голова
-  I _tail;    // Хвост
-  I _size;    // Максимальный размер
-  I _heap;    // Размер кучи
+  S _head;    // Голова
+  S _tail;    // Хвост
+  S _size;    // Максимальный размер
+  S _heap;    // Размер кучи
 
 public:
-  Buffer(I size);
+  Buffer(S size);
   ~Buffer();
   void    clear();
 
-  inline  I     length();
-  inline  I     heap();
+  inline  S     length();
+  inline  S     heap();
   inline  T     tail();
   inline  T     head();
   inline  T     shift(); // Alis read()
 
   void    write(T data);
   T       read();
-  void    write(T *data, I length);
-  void    read(T *data, I length);
+  void    write(T *data, S length);
+  void    read(T *data, S length);
 
   T       pop();
-  I       unshift(T data);
-  I       push(T data);
+  S       unshift(T data);
+  S       push(T data);
 };
 
 // Конструктор
-template<typename T, typename I>
-Buffer<T, I>::Buffer(I size)
+template<typename T, typename S>
+Buffer<T, S>::Buffer(S size)
 {
   _buffer = (T *)malloc(size * sizeof(T));
   _size = size;
@@ -51,58 +51,58 @@ Buffer<T, I>::Buffer(I size)
 }
 
 // Деструктор
-template<typename T, typename I>
-Buffer<T, I>::~Buffer()
+template<typename T, typename S>
+Buffer<T, S>::~Buffer()
 {
   free(_buffer);
 }
 
 // Очищает буфер
-template<typename T, typename I>
-void Buffer<T, I>::clear()
+template<typename T, typename S>
+void Buffer<T, S>::clear()
 {
   _heap = _size;
   _head = _tail = 0;
 }
 
 // Текущий размер буфера
-template<typename T, typename I>
-inline I Buffer<T, I>::length()
+template<typename T, typename S>
+inline S Buffer<T, S>::length()
 {
   return _size - _heap;
 }
 
 // Свободный размер буфера
-template<typename T, typename I>
-inline I Buffer<T, I>::heap()
+template<typename T, typename S>
+inline S Buffer<T, S>::heap()
 {
   return _heap;
 }
 
 // Возвращает элемент с головы, без удаления, даже если буфер пуст
-template<typename T, typename I>
-inline T Buffer<T, I>::head()
+template<typename T, typename S>
+inline T Buffer<T, S>::head()
 {
   return _buffer[_head ? _head - 1 : _size - 1];
 }
 
 // Возвращает элемент с хвоста, без удаления, даже если буфер пуст
-template<typename T, typename I>
-inline T Buffer<T, I>::tail()
+template<typename T, typename S>
+inline T Buffer<T, S>::tail()
 {
   return _buffer[_tail];
 }
 
 // Возвращает элемент с хвоста либо пустой элемент, если буфер пуст
-template<typename T, typename I>
-inline T Buffer<T, I>::shift()
+template<typename T, typename S>
+inline T Buffer<T, S>::shift()
 {
   return read();
 }
 
 // Записывает элемент в буфер, если буфер не полон
-template<typename T, typename I>
-void Buffer<T, I>::write(T data)
+template<typename T, typename S>
+void Buffer<T, S>::write(T data)
 {
   if (!_heap) return;                       // Буфер полон
   _buffer[_head++] = data;
@@ -111,22 +111,22 @@ void Buffer<T, I>::write(T data)
 }
 
 // Возвращает элемент из буфера либо пустой элемент, если буфер пуст
-template<typename T, typename I>
-T Buffer<T, I>::read()
+template<typename T, typename S>
+T Buffer<T, S>::read()
 {
   if (_heap == _size) return T();          // Буфер пуст
-  I index = _tail++;
+  S index = _tail++;
   _tail = _tail == _size ? 0 : _tail;
   _heap++;
   return _buffer[index];
 }
 
 // Записывает элементы в буфер до заполнения буфера, то что не влезло - обрезается
-template<typename T, typename I>
-void Buffer<T, I>::write(T *data, I length)
+template<typename T, typename S>
+void Buffer<T, S>::write(T *data, S length)
 {
   T *target = _buffer + _head;
-  I count = _size - _head;                  // Линейный размер пространства
+  S count = _size - _head;                  // Линейный размер пространства
   length = length > _heap ? _heap : length; // Размер перемещаемых данных ограничен кучей
   _heap -= length;                          // Уменьшаем кучу
   _head += length;                          // Двигаем голову
@@ -140,11 +140,11 @@ void Buffer<T, I>::write(T *data, I length)
 }
 
 // Возвращает элементы из буфера до опустошения
-template<typename T, typename I>
-void Buffer<T, I>::read(T *data, I length)
+template<typename T, typename S>
+void Buffer<T, S>::read(T *data, S length)
 {
   T *source = _buffer + _tail;
-  I count = _size - _tail;                  // Линейный размер пространства
+  S count = _size - _tail;                  // Линейный размер пространства
   length = length > _size - _heap
     ? _size - _heap : length;               // Размер перемещаемых данных ограничен их количеством
   _heap += length;                          // высвобождаем кучу
@@ -159,20 +159,20 @@ void Buffer<T, I>::read(T *data, I length)
 }
 
 // Добавляет элемент с головы, возвращает его индекс
-template<typename T, typename I>
-I Buffer<T, I>::push(T data)
+template<typename T, typename S>
+S Buffer<T, S>::push(T data)
 {
   if (!_heap) return -1;                 // Буфер полон
-  I index = _head;
+  S index = _head;
   _buffer[_head++] = data;
-  _head = _head == _size ? I(0) : _head;
+  _head = _head == _size ? S(0) : _head;
   _heap--;
   return index;
 }
 
 // Извлекает элемент с головы
-template<typename T, typename I>
-T Buffer<T, I>::pop()
+template<typename T, typename S>
+T Buffer<T, S>::pop()
 {
   if (_heap == _size) return 0;          // Буфер пуст
   if (_head == 0) _head = _size - 1;
@@ -181,8 +181,8 @@ T Buffer<T, I>::pop()
 }
 
 // Добавляет элемент в хвост, возвращает его индекс
-template<typename T, typename I>
-I Buffer<T, I>::unshift(T data)
+template<typename T, typename S>
+S Buffer<T, S>::unshift(T data)
 {
   if (!_heap) return -1;                 // Буфер полон
   if (_tail == 0) _tail = _size;
