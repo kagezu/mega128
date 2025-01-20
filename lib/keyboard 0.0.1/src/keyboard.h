@@ -1,8 +1,8 @@
 #pragma once
 #include "config.h"
+#include "type/buffer.h"
 
 class Keyboard {
-
 public:
   Keyboard()
   {
@@ -18,15 +18,10 @@ public:
     LD(SET);
   }
 
-  void clear_timer(byte i) { _timers[i] = 0; }
-  void increment_timer(byte i) { if (_timers[i] + 1) _timers[i]++; }
+  uint64_t get_on() { return *(uint64_t *)_on; }
+  uint64_t get_off() { return *(uint64_t *)_off; }
 
-  byte *get_on() { return _on; }
-  byte *get_off() { return _off; }
-  byte *get_last() { return _last; }
-  byte *get_timers() { return _timers; }
-
-  void tick()
+  void scan()
   {
     load();
     CS0(CLR);
@@ -37,20 +32,62 @@ public:
     CS0(SET);
   }
 
-  byte velocity(byte i)
+  void key_detect()
   {
-    uint16_t speed = (KEY_MAX_VELOCITY << KEY_FACTOR) / _timers[i];
-    return speed > KEY_MAX_VELOCITY ? KEY_MAX_VELOCITY : speed;
+    byte mask = _BV(KEY_OFFSET);
+    byte *on = _on;      // Все нажатые клавиши
+    byte *off = _off;    // Все отжатые клавиши
+    byte *last = _last;  // Последнее состояние клавиши
+    byte *timer = _timer;
+    Key key;
+
+    for (char i = KEY_COUNT - 1; i >= 0; i--) { // Порядок соответствующий сканированию
+      if (*off & mask) { // Клавиша отпущена
+        if (*last & mask) { // Ранее клавиша была нажата
+          key.num = i | KEY_OFF_PREFIX;
+          key.value = velocity(*timer);
+          KeyBuffer.write(key);
+          *last ^= mask; // Новое состояние: отжата
+        }
+        *timer = 0;
+      }
+      else {
+        if (*on & mask) { // Клавиша нажата
+          if (!(*last & mask)) { // Ранее клавиша была отпущена
+            key.num = i;
+            key.value = velocity(*timer);
+            KeyBuffer.write(key);
+            *last |= mask; // Новое состояние: нажата
+          }
+          *timer = 0;
+        }
+        else // Клавиша не прижата к контактам
+          if (*timer + 1) (*timer)++;
+      }
+      // Переходим к следующей клавише
+      timer++;
+      mask <<= 1;
+      // Переходим к следующему байту
+      if (!mask) {
+        mask = 1;
+        on++;
+        off++;
+        last++;
+      }
+    }
   }
 
 private:
   byte _on[KEY_SIZE] = {};    // Все нажатые клавиши
   byte _off[KEY_SIZE] = {};   // Все отжатые клавиши
   byte _last[KEY_SIZE] = {};  // Последнее состояние клавиши
-  byte _timers[KEY_COUNT] = {};
+  byte _timer[KEY_COUNT] = {};
 
-private:
-
+  byte velocity(byte timer)
+  {
+    uint16_t speed = (KEY_MAX_VELOCITY << KEY_FACTOR) / timer;
+    return speed > KEY_MAX_VELOCITY ? KEY_MAX_VELOCITY : speed;
+  }
   void load() { LD(CLR); LD(SET); }
   void read(byte *buffer, byte length)
   {

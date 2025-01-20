@@ -25,4 +25,16 @@
 #define KEY_SIZE            8
 // Количество клавиш
 #define KEY_COUNT           60
+// Размер буфера нажатий
+#define  KEY_BUFFER_SIZE    5
 
+#define  KEY_MASK_PREFIX    0xC0
+#define  KEY_ON_PREFIX      0x00
+#define  KEY_OFF_PREFIX     0x40
+
+struct Key {
+  byte num;
+  char value;
+};
+
+extern Buffer<Key, byte> KeyBuffer;

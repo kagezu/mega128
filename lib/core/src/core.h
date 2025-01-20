@@ -4,3 +4,4 @@
 #include "macros/helper.h"
 #include "type/buffer.h"
 #include "memory/allocate.h"
+#include "eeprom/eeprom.h"
