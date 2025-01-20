@@ -5,7 +5,7 @@
 | MK | MP3 Shild | SD | Keyboard | Display |
 | **PD0** (out)|        || LN0  ||
 | PD1 |        ||      ||
-| **PD2** | X_DREQ ||      ||
+| **PD2** (in)| X_DREQ ||      ||
 | **PD3** (in)|        || QH   ||
 | **PD4** (out)|        || CLK  ||
 | **PD5** (out)|        || ~LD  ||

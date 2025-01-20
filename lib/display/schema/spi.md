@@ -1,4 +1,4 @@
-## ST7735S_SPI
+# ST7735S_SPI
 
 Типовая схема подключения при использовании SPI.
 Выводы настраиваются в файле [display.config.h](../src/display.config.h)
@@ -10,4 +10,3 @@
 | SDA | PB2 | PB3     |
 | SCK | PB1 | PB5     |
 | RST |RESET| RESET   |
-

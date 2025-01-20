@@ -5,7 +5,6 @@
 #include "font/arial_14.h"
 #include "keyboard.h"
 #include "VS1053/VS1053.h"
-#include "EEPROM.h"
 
 Display lcd;
 Keyboard keyboard;
@@ -43,8 +42,6 @@ uint16_t time2 = F_SCAN / fps;
 const char *pgm_text;
 byte vel;
 
-byte EEMEM pgm0;
-
 void init_main()
 {
   T0_DIV_1024;
@@ -57,18 +54,8 @@ void init_main()
   lcd.background(RGB(0, 0, 64));
   lcd.color(RGB(255, 255, 127));
   midi.init();
+  midi.pgm_change(54);
   sei();
-
-  byte pgm = 0;
-
-#define EEP_VERSION   1
-  if (EEP_VERSION != EEPROM[0x1FF]) {
-    EEPROM[0x1FF] = EEP_VERSION;
-    EEPROM.write(pgm0, pgm);
-  };
-  pgm = EEPROM.read(pgm0);
-
-  midi.pgm_change(pgm);
 }
 
 int main()
@@ -101,8 +88,6 @@ int main()
       midi.get_master() & 1 ? 5 : 0
     );
     lcd.printf(F("\tvelocity: %u   \n"), vel);
-    lcd.printf(F("\teeprom version: %x   \n"), *(EEPROM[0x1FF]));
-
   }
 }
 
@@ -112,12 +97,10 @@ void extra(byte i)
     case 1:
       if (midi._pgm > 0)
         midi.pgm_change(midi._pgm - 1);
-      EEPROM.write(pgm0, midi._pgm);
       break;
     case 3:
       if (midi._pgm < 128)
         midi.pgm_change(midi._pgm + 1);
-      EEPROM.write(pgm0, midi._pgm);
       break;
     case 6:
       midi.set_master(midi.get_master() + 1);
