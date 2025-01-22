@@ -20,7 +20,7 @@ void VS1053::init()
   X_RESET(SET); // Отпускаем сброс
   spi.init(SCI_FQ_INIT);
   delay_ms(100);
-  write_register(SCI_CLOCKF, SC_MULT | SC_ADD);
+  write_register(SCI_CLOCKF, SC_MULT | SC_ADD | SC_FREQ);
   spi.init(SCI_FQ_MAX); // Ускоряем SPI
   set_master(SCI_VOL_DEFAULT);
   load_patch(rtmidi);

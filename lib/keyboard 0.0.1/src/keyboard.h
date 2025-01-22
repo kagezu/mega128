@@ -45,7 +45,7 @@ public:
       if (*off & mask) { // Клавиша отпущена
         if (*last & mask) { // Ранее клавиша была нажата
           key.num = i | KEY_OFF_PREFIX;
-          key.value = velocity(*timer);
+          key.value = get_velocity(*timer);
           KeyBuffer.write(key);
           *last ^= mask; // Новое состояние: отжата
         }
@@ -55,7 +55,7 @@ public:
         if (*on & mask) { // Клавиша нажата
           if (!(*last & mask)) { // Ранее клавиша была отпущена
             key.num = i;
-            key.value = velocity(*timer);
+            key.value = get_velocity(*timer);
             KeyBuffer.write(key);
             *last |= mask; // Новое состояние: нажата
           }
@@ -83,9 +83,10 @@ private:
   byte _last[KEY_SIZE] = {};  // Последнее состояние клавиши
   byte _timer[KEY_COUNT] = {};
 
-  byte velocity(byte timer)
+  byte get_velocity(byte timer)
   {
-    uint16_t speed = (KEY_MAX_VELOCITY << KEY_FACTOR) / timer;
+    // uint16_t speed = (KEY_MAX_VELOCITY << KEY_FACTOR) / timer;
+    uint16_t speed = KEY_MAX_VELOCITY - timer;
     return speed > KEY_MAX_VELOCITY ? KEY_MAX_VELOCITY : speed;
   }
   void load() { LD(CLR); LD(SET); }

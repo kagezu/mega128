@@ -29,6 +29,9 @@
 // 3 0x1800 + 2.0
 
 #define SC_ADD            0x0800
+// Частота кварца в кГц
+#define SC_FQ_CRYSTAL     12000
+#define SC_FREQ           ((SC_FQ_CRYSTAL - 8000) >> 2)
 
 // Инициализация SPI, в килогерцах
 #define SCI_FQ_INIT       1000

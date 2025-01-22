@@ -1,7 +1,6 @@
 // #include <VS1053.h>
 #pragma once
 #include "config.h"
-#include "error.h"
 #include <spi/spi.h>
 #include "midi/midi.h"
 
