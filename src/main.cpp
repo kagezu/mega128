@@ -39,4 +39,8 @@
 
 // -------------  libray VS1053  -------------------
 // 
-#include "../lib/keyboard 0.0.1/src/main.cpp"
+#include "../lib/keyboard/src/main.cpp"
+
+// -------------  libray VS1053  -------------------
+// 
+// #include "../lib/framework/demo/framework.cpp"

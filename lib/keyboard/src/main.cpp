@@ -5,6 +5,7 @@
 #include "font/arial_14.h"
 #include "keyboard.h"
 #include "VS1053/VS1053.h"
+#include "velocity.h"
 
 Display lcd;
 Keyboard keyboard;
@@ -40,7 +41,7 @@ uint16_t cpu = 0;
 uint16_t fps = 10;
 uint16_t time2 = F_SCAN / fps;
 const char *pgm_text;
-byte vel;
+byte vel, tms;
 
 void init_main()
 {
@@ -87,7 +88,8 @@ int main()
       midi.get_master() >> 1,
       midi.get_master() & 1 ? 5 : 0
     );
-    lcd.printf(F("\tvelocity: %u   \n"), vel);
+    lcd.printf(F("\tvelocity: %u  %2u ms   \n"), vel, (tms << 1) + (tms >> 1));
+
   }
 }
 
@@ -119,13 +121,14 @@ ISR(TIMER0_COMPA_vect)
     Key key = KeyBuffer.read();
     switch (key.num & KEY_MASK_PREFIX) {
       case KEY_ON_PREFIX:
-        midi.note_on(key.num + KEY_FIRST, 0, key.value);
-        vel = key.value;
+        tms = key.value;
+        vel = pgm_read_byte(&velocity[tms]);
+        midi.note_on(key.num + KEY_FIRST, 0, vel);
         extra(key.num);
         break;
 
       case KEY_OFF_PREFIX:
-        midi.note_off((key.num & ~KEY_MASK_PREFIX) + KEY_FIRST, 0, key.value);
+        midi.note_off((key.num & ~KEY_MASK_PREFIX) + KEY_FIRST, 0, pgm_read_byte(&velocity[key.value]));
         break;
     }
   }
