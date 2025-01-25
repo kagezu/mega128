@@ -250,19 +250,9 @@ void ST7735_Soft::send_rgb(byte r, byte g, byte b)
 
 void ST7735_Soft::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
 {
-#if RGB_FORMAT == RGB_12
-  byte r = (uint16_t)color << 4;
-  byte g = (uint16_t)color;
-  byte b = (uint16_t)color >> 4;
-#elif RGB_FORMAT == RGB_16
-  byte r = (uint16_t)color << 3;
-  byte g = (uint16_t)color >> 3;
-  byte b = (uint16_t)color >> 8;
-#elif RGB_FORMAT == RGB_18
-  byte r = color.red;
-  byte g = color.green;
-  byte b = color.blue;
-#endif
+  byte r = color.red();
+  byte g = color.green();
+  byte b = color.blue();
 
   DISPLAY_CONNECT;
   set_addr(x0, y0, x1, y1);
