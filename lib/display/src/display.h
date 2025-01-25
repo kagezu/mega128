@@ -1,5 +1,12 @@
 #pragma once
-#include "display/config.h"
+
+#ifdef EX_X_Y
+#define MAX_X     LCD_MAX_Y
+#define MAX_Y     LCD_MAX_X
+#else
+#define MAX_X     LCD_MAX_X
+#define MAX_Y     LCD_MAX_Y
+#endif
 
 #ifdef _ST7735_
 #define DISPLAY_MODEL ST7735

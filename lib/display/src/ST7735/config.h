@@ -1,6 +1,5 @@
 #pragma once
 #include <macros/helper.h>
-#ifdef _ST7735_
 
 //===================== Config =============================
 
@@ -75,18 +74,3 @@
 #define DATA_MODE           SET_BITS(PORT(LCD_CONTROL), LCD_RS);    // Запись данных
 #define DISPLAY_CONNECT     CLR_BITS(PORT(LCD_CONTROL), LCD_CS);    // Выбор дисплея
 #define COMMAND_MODE        CLR_BITS(PORT(LCD_CONTROL), LCD_RS);    // Запись команды
-
-#ifdef EX_X_Y
-#define MAX_X     LCD_MAX_Y
-#define MAX_Y     LCD_MAX_X
-#else
-#define MAX_X     LCD_MAX_X
-#define MAX_Y     LCD_MAX_Y
-#endif
-
-// Interface pixel format
-#define RGB_12 0x03 // 4x4x4 bit
-#define RGB_16 0x05 // 5x6x5 bit
-#define RGB_18 0x06 // 6x6x6 bit (24 bit transfer)
-
-#endif

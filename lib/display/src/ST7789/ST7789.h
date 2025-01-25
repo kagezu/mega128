@@ -1,8 +1,7 @@
 #pragma once
 #include "comands.h"
-#include "display/config.h"
+// #include "display/config.h"
 #include "rgb/rgb.h"
-#include "interface/display-driver.h"
 
 #ifdef _ST7789_
 

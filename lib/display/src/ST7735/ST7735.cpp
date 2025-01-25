@@ -1,4 +1,4 @@
-#include "ST7735.h"
+// #include "ST7735.h"
 
 #ifdef _ST7735_
 
@@ -222,7 +222,7 @@ void ST7735::symbol(byte *source, byte x, byte y, byte dx, byte dy)
     #endif
 
     }
-  }
+    }
 
 #else
 
@@ -251,7 +251,7 @@ void ST7735::symbol(byte *source, byte x, byte y, byte dx, byte dy)
 
   DISPLAY_DISCONNECT;
   SREG = sreg;
-}
+  }
 
 // тестирование дисплея
 

@@ -5,7 +5,7 @@
 #include "keyboard.h"
 #include "VS1053/VS1053.h"
 #include "velocity.h"
-#include "display.h"
+// #include "display.h"
 
 Display lcd;
 Keyboard keyboard;

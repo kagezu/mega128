@@ -61,6 +61,11 @@ public:
             KeyBuffer.write(key);
             *last |= mask; // Новое состояние: нажата
           }
+          // else {
+          //   key.num = i;
+          //   key.value = *timer;
+          //   KeyBuffer.write(key);
+          // }
           *timer = 0;
         }
         else // Клавиша не прижата к контактам
