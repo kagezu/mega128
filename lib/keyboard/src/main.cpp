@@ -5,7 +5,6 @@
 #include "keyboard.h"
 #include "VS1053/VS1053.h"
 #include "velocity.h"
-// #include "display.h"
 
 Display lcd;
 Keyboard keyboard;
@@ -33,7 +32,7 @@ void printKey(uint64_t x)
     x >>= 1;
   }
   lcd.font(&arial_14);
-  lcd.printf(F("  %s\n"), piano);
+  lcd.printf(P("  %s\n"), piano);
 }
 
 uint16_t time = 0;
@@ -70,25 +69,25 @@ int main()
     time2 = 0;
 
     lcd.font(&standard_5x8);
-    lcd.printf(F("\fcpu %u%%\t mem %u%% fps %u  \n"), cpu, memory_free(), fps);
+    lcd.printf(P("\fcpu %u%%\t mem %u%% fps %u  \n"), cpu, memory_free(), fps);
 
     printKey(keyboard.get_on());
     printKey(keyboard.get_off());
-    lcd.printf(F("\n"));
+    lcd.printf(P("\n"));
 
     lcd.font(&standard_5x8);
     if (pgm_text != midi.get_pgm_text()) {
-      lcd.print(F("                          \r"));
+      lcd.print(P("                          \r"));
       pgm_text = midi.get_pgm_text();
     }
 
-    lcd.printf(F("%u %S\n"), midi._pgm + 1, pgm_text);
+    lcd.printf(P("%u %S\n"), midi._pgm + 1, pgm_text);
     lcd.printf(
-      F("\n  master: -%2u.%u dB  \n"),
+      P("\n  master: -%2u.%u dB  \n"),
       midi.get_master() >> 1,
       midi.get_master() & 1 ? 5 : 0
     );
-    lcd.printf(F("\tvelocity: %u  %2u ms   \n"), vel, (tms << 1) + (tms >> 1));
+    lcd.printf(P("\tvelocity: %u  %2u ms   \n"), vel, (tms << 1) + (tms >> 1));
 
   }
 }

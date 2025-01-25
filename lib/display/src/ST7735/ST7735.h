@@ -27,7 +27,7 @@ class ST7735
   : public ST7735_Soft
 #endif
 #ifdef LCD_PRINT
-  , public PrintF<byte>
+  , public PrintF
 #endif
 #ifdef LCD_DRAW
   , public Draw
@@ -51,7 +51,7 @@ public:
   void test(byte);
 
   // void symbol(byte *, uint16_t, uint16_t, byte, byte);
-  void symbol(byte *, byte, byte, byte, byte);
+  void symbol(byte *, uint16_t, uint16_t, byte, byte);
 
   void pixel(byte, byte);
   void rect_fill(byte x, byte y, byte x1, byte y1);
@@ -221,23 +221,23 @@ void ST7735::rect_fill(byte x, byte y, byte x1, byte y1)
 
 // Реализация интерфейса PrintF
 
-void ST7735::symbol(byte *source, byte x, byte y, byte dx, byte dy)
+void ST7735::symbol(byte *source, uint16_t x, uint16_t y, byte dx, byte dy)
 {
   byte sreg = SREG;
   cli();
   DISPLAY_CONNECT;
 
-  byte x1 = x + dx - 1;
-  byte y1 = y + dy - 1;
+  uint16_t x1 = x + dx - 1;
+  uint16_t y1 = y + dy - 1;
 
 #ifdef FLIP_X
-  byte t = x;
+  uint16_t t = x;
   x = MAX_X - x1;
   x1 = MAX_X - t;
 #endif
 
 #ifdef FLIP_Y
-  byte u = y;
+  uint16_t u = y;
   y = MAX_Y - y1;
   y1 = MAX_Y - u;
 #endif
@@ -278,7 +278,7 @@ void ST7735::symbol(byte *source, byte x, byte y, byte dx, byte dy)
     #endif
 
     }
-  }
+    }
 
 #else
 
@@ -301,7 +301,7 @@ void ST7735::symbol(byte *source, byte x, byte y, byte dx, byte dy)
       if (data & bit) send_rgb(_color);
       else send_rgb(_background);
     }
-    }
+  }
 
 #endif
 

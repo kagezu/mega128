@@ -51,6 +51,8 @@ void delay_ms(uint16_t ms);
 
 // Прочее
 
+#define P(x) PSTR(x)
+
 #define I_SAVE byte _sreg = SREG; __asm__ __volatile__ ("cli" :: )
 #define I_REST SREG = _sreg
 

@@ -5,13 +5,11 @@
 
 #define FONT_TAB_FACTOR     1
 
-template<typename I>
 class PrintF {
 public:
   PrintF() {};
 
-  void printf(const  __FlashStringHelper *, ...);
-  void print(const __FlashStringHelper *);
+  void printf(const char *, ...);
   void print(const char *);
   void print(char *);
   void print(uint16_t);
@@ -24,10 +22,10 @@ public:
   void print_h(byte);
   void print(char);
   void letter(byte);
-  virtual void symbol(byte *, I, I, byte, byte) = 0;
+  virtual void symbol(byte *, uint16_t, uint16_t, byte, byte) = 0;
 
   void font(const Font *);
-  void at(I x, I y) { point_x = x; point_y = y; }
+  void at(uint16_t x, uint16_t y) { point_x = x; point_y = y; }
   void set_interline(byte interline) { _interline = _font.height + interline; }
   void set_interval(byte interval) { _interval = interval; }
   byte get_height() { return _font.height; }
@@ -42,8 +40,8 @@ private:
   byte  _interline = 0; // Расстояние между строками
   byte  _interval = 0;  // Расстояние между символами
   byte  _tab_factor = FONT_TAB_FACTOR;
-  I  point_x = 0;
-  I  point_y = 0;
+  uint16_t point_x = 0;
+  uint16_t point_y = 0;
 
 private:
   void LF() { point_y += _interline; }
@@ -54,8 +52,8 @@ private:
 };
 
 
-template<typename I>
-void PrintF<I>::font(const Font *font)
+
+void PrintF::font(const Font *font)
 {
   memcpy_P(&_font, font, sizeof(Font));
   _line = (1 + ((_font.height - 1) >> 3));
@@ -64,8 +62,8 @@ void PrintF<I>::font(const Font *font)
   set_interval(1);
 }
 
-template<typename I>
-void PrintF<I>::letter(byte ch)
+
+void PrintF::letter(byte ch)
 {
   ch -= _font.first_char;
   if (_font.count_char <= ch) ch = 0;
@@ -92,8 +90,8 @@ void PrintF<I>::letter(byte ch)
   point_x += dx + _interval;
 }
 
-template<typename I>
-void PrintF<I>::print(char ch)
+
+void PrintF::print(char ch)
 {
   switch (ch) {
     case '\f': point_x = point_y = 0; break;  // Новая страница
@@ -108,13 +106,12 @@ void PrintF<I>::print(char ch)
   }
 }
 
-template<typename I>
-void PrintF<I>::printf(const __FlashStringHelper *p, ...)
+
+void PrintF::printf(const char *string, ...)
 {
-  PGM_P string = reinterpret_cast<PGM_P>(p);
   char ch;
   va_list args;
-  va_start(args, p);
+  va_start(args, string);
 
   while ((ch = pgm_read_byte(string++))) {
     switch (ch) {
@@ -135,7 +132,7 @@ void PrintF<I>::printf(const __FlashStringHelper *p, ...)
                 case '4': print((int32_t)va_arg(args, int32_t)); break;
               } break;
             case 's': print((char *)va_arg(args, char *)); break;
-            case 'S': print((__FlashStringHelper *)va_arg(args, char *)); break;
+            case 'S': print((const char *)va_arg(args, char *)); break;
             case 'u':
               switch (arg) {
                 case '0':
@@ -160,41 +157,34 @@ void PrintF<I>::printf(const __FlashStringHelper *p, ...)
   va_end(args);
 }
 
-template<typename I>
-void PrintF<I>::print(char *string)
+
+void PrintF::print(char *string)
 {
   while (char ch = *string++) if ((byte)ch < 0xd0) print(ch);
 }
 
-template<typename I>
-void PrintF<I>::print(const __FlashStringHelper *string)
-{
-  PGM_P ptr = reinterpret_cast<PGM_P>(string);
-  while (char ch = pgm_read_byte(ptr++)) if ((byte)ch < 0xd0) print(ch);
-}
 
-template<typename I>
-void PrintF<I>::print(const char *string)
+void PrintF::print(const char *string)
 {
   while (char ch = pgm_read_byte(string++)) if ((byte)ch < 0xd0) print(ch);
 }
 
-template<typename I>
-void PrintF<I>::print(int32_t number)
+
+void PrintF::print(int32_t number)
 {
   if (number < 0) { print('-'); number = -number; }
   print((uint32_t)number);
 }
 
-template<typename I>
-void PrintF<I>::print(int16_t number)
+
+void PrintF::print(int16_t number)
 {
   if (number < 0) { print('-'); number = -number; }
   print((uint16_t)number);
 }
 
-template<typename I>
-void PrintF<I>::print(uint32_t number)
+
+void PrintF::print(uint32_t number)
 {
   char str[11];
   char *ptr = &str[10];
@@ -218,8 +208,8 @@ void PrintF<I>::print(uint32_t number)
 
 }
 
-template<typename I>
-void PrintF<I>::print(uint16_t number)
+
+void PrintF::print(uint16_t number)
 {
   char str[7];
   char *ptr = &str[6];
@@ -242,8 +232,8 @@ void PrintF<I>::print(uint16_t number)
   print(ptr);
 }
 
-template<typename I>
-void PrintF<I>::print_h(uint64_t number)
+
+void PrintF::print_h(uint64_t number)
 {
   union { uint64_t val; struct { byte a; byte b; byte c; byte d; byte e; byte f; byte g; byte h; }; } out;
   out.val = number;
@@ -258,8 +248,8 @@ void PrintF<I>::print_h(uint64_t number)
   print_h(out.a);
 }
 
-template<typename I>
-void PrintF<I>::print_h(uint32_t number)
+
+void PrintF::print_h(uint32_t number)
 {
   print('#');
   print_h(to_byte(number, 3));
@@ -268,16 +258,16 @@ void PrintF<I>::print_h(uint32_t number)
   print_h(to_byte(number, 0));
 }
 
-template<typename I>
-void PrintF<I>::print_h(uint16_t number)
+
+void PrintF::print_h(uint16_t number)
 {
   print('#');
   print_h(to_byte(number, 1));
   print_h(to_byte(number, 0));
 }
 
-template<typename I>
-void PrintF<I>::print_h(byte number)
+
+void PrintF::print_h(byte number)
 {
   byte low = number & 0xf;
   byte high = number >> 4;
