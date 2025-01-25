@@ -6,13 +6,15 @@
 
 Display lcd;
 
-class EventMidi : public Event {
-public:
-  byte key;
-  byte chanel;
-  byte velocity;
-
-  EventMidi() { type = 0; }
+union EventMidi {
+  Event evt;
+  struct {
+    byte type;
+    byte key;
+    byte chanel;
+    byte velocity;
+  };
+  // EventMidi() { type = 0; }
 };
 
 int main()
@@ -27,6 +29,7 @@ int main()
 
   evt.type = 1;
   evt.key = 2;
+  evt.evt.type = 0;
 
 
 

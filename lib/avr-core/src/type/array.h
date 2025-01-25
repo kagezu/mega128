@@ -240,12 +240,23 @@ public:
   }
 
   // Перебор элементов
-  void forEach(void callback(T *))
+  void each(void callback(T *))
   {
     I i = _size;
     _count = _tail;
     while (i--) {
       callback(&_array[_index[_count]]);
+      _inc_count();
+    }
+  }
+
+  // Перебор элементов c параметром
+  void each(void callback(T *, void *), void *arg)
+  {
+    I i = _size;
+    _count = _tail;
+    while (i--) {
+      callback(&_array[_index[_count]], arg);
       _inc_count();
     }
   }

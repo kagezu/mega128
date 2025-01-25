@@ -2,7 +2,6 @@
 #pragma once
 #include "core.h"
 
-class  Event {
-public:
+struct  Event {
   byte type;
 };

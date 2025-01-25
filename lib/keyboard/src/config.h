@@ -34,3 +34,19 @@ struct Key {
 };
 
 extern Buffer<Key, byte> KeyBuffer;
+
+// // Дисплей
+
+// // Выбор типа дисплея
+// #define _ST7735_
+// #define LCD_SOFT        // Программно
+// #define RGB_FORMAT RGB_12   // 4x4x4 bit
+
+// // #define FLIP_X
+// #define FLIP_Y
+// #define EX_X_Y
+
+// // #define LCD_DRAW        // Подключает класс для рисования
+// #define LCD_PRINT       // Подключает класс для вывода текста
+
+// #include "display.h"
