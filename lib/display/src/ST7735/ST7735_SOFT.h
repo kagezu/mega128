@@ -1,8 +1,10 @@
 #pragma once
-
+#include <core.h>
+#include "display/default.h"
 #include "comands.h"
+#include "rgb/rgb.h"
 
-class ST7735_Soft {
+class ST7735_SOFT {
 protected:
   void send_command(byte data);
   void set_addr(byte x0, byte y0, byte x1, byte y1);
@@ -15,14 +17,14 @@ protected:
   void rect(byte x0, byte y0, byte x1, byte y1, RGB color);
 };
 
-void ST7735_Soft::send_command(byte command)
+void ST7735_SOFT::send_command(byte command)
 {
   COMMAND_MODE; // Запись команды
   send_byte(command);
   DATA_MODE // Запись данных
 };
 
-void ST7735_Soft::set_addr(byte x0, byte y0, byte x1, byte y1)
+void ST7735_SOFT::set_addr(byte x0, byte y0, byte x1, byte y1)
 {
   send_command(CASET); // Column Address Set
   send_zero();
@@ -39,7 +41,7 @@ void ST7735_Soft::set_addr(byte x0, byte y0, byte x1, byte y1)
   send_command(RAMWR); // Memory Write
 };
 
-void ST7735_Soft::send_zero()
+void ST7735_SOFT::send_zero()
 {
   LCD_PORT &= ~LCD_SDA;
 
@@ -64,7 +66,7 @@ void ST7735_Soft::send_zero()
   LCD_PORT = set;
 };
 
-void ST7735_Soft::send_byte(byte data)
+void ST7735_SOFT::send_byte(byte data)
 {
   byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
   byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
@@ -90,7 +92,7 @@ void ST7735_Soft::send_byte(byte data)
 };
 
 #if RGB_FORMAT == RGB_12
-void ST7735_Soft::send_rgb(uint16_t data)
+void ST7735_SOFT::send_rgb(uint16_t data)
 {
   byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
   byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
@@ -125,7 +127,7 @@ void ST7735_Soft::send_rgb(uint16_t data)
 };
 
 #elif RGB_FORMAT == RGB_16
-void ST7735_Soft::send_rgb(uint16_t data)
+void ST7735_SOFT::send_rgb(uint16_t data)
 {
   byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
   byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
@@ -169,18 +171,18 @@ void ST7735_Soft::send_rgb(uint16_t data)
 };
 
 #elif RGB_FORMAT == RGB_18
-void ST7735_Soft::send_rgb(uint16_t data) // формат 0x0rgb
+void ST7735_SOFT::send_rgb(uint16_t data) // формат 0x0rgb
 {
   send_rgb((data >> 4) & 0xf0, data & 0xf0, data << 4);
 }
 #endif
 
-void ST7735_Soft::send_rgb(uint32_t color)
+void ST7735_SOFT::send_rgb(uint32_t color)
 {
   send_rgb(color >> 16, color >> 8, color);
 }
 
-void ST7735_Soft::send_rgb(RGB color)
+void ST7735_SOFT::send_rgb(RGB color)
 {
 #if RGB_FORMAT == RGB_12 || RGB_FORMAT == RGB_16
   send_rgb((uint16_t)color);
@@ -189,7 +191,7 @@ void ST7735_Soft::send_rgb(RGB color)
 #endif
 }
 
-void ST7735_Soft::send_rgb(byte r, byte g, byte b)
+void ST7735_SOFT::send_rgb(byte r, byte g, byte b)
 {
   byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
   byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
@@ -259,7 +261,7 @@ void ST7735_Soft::send_rgb(byte r, byte g, byte b)
 #endif
 };
 
-void ST7735_Soft::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
+void ST7735_SOFT::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
 {
   byte r = color.red();
   byte g = color.green();

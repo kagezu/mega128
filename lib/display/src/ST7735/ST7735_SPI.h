@@ -1,5 +1,5 @@
 #pragma once
-#include "display/config.h"
+#include "display/default.h"
 
 #ifdef LCD_SPI
 #ifdef _ST7735_ 

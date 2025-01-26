@@ -1,5 +1,5 @@
 #pragma once
-#include "display/config.h"
+#include "display/default.h"
 #ifdef _SSD1306_
 
 #include "SSD1306_I2C.h"

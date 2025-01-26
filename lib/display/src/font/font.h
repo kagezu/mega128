@@ -1,5 +1,5 @@
 #pragma once
-#include <Arduino.h>
+#include <core.h>
 
 struct Font {
   byte count_char;

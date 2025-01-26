@@ -1,7 +1,10 @@
 #pragma once
-#include <core.h>
-#include "display/config.h"
 #include "font/font.h"
+
+#ifndef MAX_X
+#define MAX_X 0
+#define MAX_Y 0
+#endif
 
 #define FONT_TAB_FACTOR     1
 
@@ -22,7 +25,6 @@ public:
   void print_h(byte);
   void print(char);
   void letter(byte);
-  virtual void symbol(byte *, uint16_t, uint16_t, byte, byte) = 0;
 
   void font(const Font *);
   void at(uint16_t x, uint16_t y) { point_x = x; point_y = y; }
@@ -32,6 +34,13 @@ public:
   byte get_weight() { return _font.weight; }
   byte get_row() { return ((uint16_t)MAX_Y + 1) / _interline; }
   byte get_col() { return ((uint16_t)MAX_X + 1) / (_interval + _font.weight); }
+
+  virtual void symbol(byte *, uint16_t, uint16_t, byte, byte) = 0;
+  // inline  virtual uint16_t min_x() = 0;
+  // inline  virtual uint16_t min_y() = 0;
+  // inline  virtual uint16_t max_x() = 0;
+  // inline  virtual uint16_t max_y() = 0;
+
 
 private:
   Font  _font = {};     // Шрифт

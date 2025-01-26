@@ -1,6 +1,5 @@
 #pragma once
-#include <Arduino.h>
-#include "rgb/rgb.h"
+#include <core.h>
 
 
 #ifndef MAX_X

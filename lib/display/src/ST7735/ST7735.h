@@ -1,37 +1,25 @@
 #pragma once
+#include "display/default.h"
 #include "config.h"
-
-// Interface pixel format
-#define RGB_12 0x03 // 4x4x4 bit
-#define RGB_16 0x05 // 5x6x5 bit
-#define RGB_18 0x06 // 6x6x6 bit (24 bit transfer)
-
-#include "rgb/rgb.h"
+#include "print/print-format.h"
+#include "draw/draw.h"
 
 #ifdef LCD_SPI
 #include "ST7735/ST7735_SPI.h"
-#else
-#include "ST7735_Soft.h"
 #endif
-#ifdef LCD_PRINT
-#include "print/print-format.h"
-#endif
-#ifdef LCD_DRAW
-#include "draw/draw.h"
+#ifdef LCD_SOFT
+#include "ST7735_SOFT.h"
 #endif
 
 class ST7735
 #ifdef LCD_SPI
   : public ST7735_SPI
-#else
-  : public ST7735_Soft
 #endif
-#ifdef LCD_PRINT
+#ifdef LCD_SOFT
+  : public ST7735_SOFT
+#endif
   , public PrintF
-#endif
-#ifdef LCD_DRAW
   , public Draw
-#endif
 {
 public:
   ST7735();
@@ -278,7 +266,7 @@ void ST7735::symbol(byte *source, uint16_t x, uint16_t y, byte dx, byte dy)
     #endif
 
     }
-    }
+  }
 
 #else
 
@@ -301,7 +289,7 @@ void ST7735::symbol(byte *source, uint16_t x, uint16_t y, byte dx, byte dy)
       if (data & bit) send_rgb(_color);
       else send_rgb(_background);
     }
-  }
+    }
 
 #endif
 
