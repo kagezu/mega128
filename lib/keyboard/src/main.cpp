@@ -2,6 +2,7 @@
 #include "font/micro_5x6.h"
 #include "font/standard_5x8.h"
 #include "font/arial_14.h"
+#include "config.h"
 #include "keyboard.h"
 #include "VS1053/VS1053.h"
 #include "velocity.h"

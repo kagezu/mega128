@@ -13,9 +13,11 @@
 #define IN(port, pin)         DDR(port)  &=~ _BV(pin)
 #define OUT(port, pin)        DDR(port)  |=  _BV(pin)
 #define SET(port, pin)        PORT(port) |=  _BV(pin)
+#define RES(port, pin)        PORT(port) &=~ _BV(pin)
 #define CLR(port, pin)        PORT(port) &=~ _BV(pin)
 #define GET(port, pin)        (PIN(port)  &  _BV(pin))
 #define MASK(port, pin)                      _BV(pin)
+#define SFR(port, pin)        PORT(port)
 
 #define SET_BITS(target, bits)        target |=  (bits)
 #define CLR_BITS(target, bits)        target &= ~(bits)

@@ -3,11 +3,11 @@
 
 // Пины
 
-#define CS0(x)  x ( D, 0)
-#define CS1(x)  x ( D, 1)
-#define QH(x)   x ( D, 3)
-#define CLK(x)  x ( D, 4)
-#define LD(x)   x ( D, 5)
+#define CS0(x)  x ( D, 3)
+#define CS1(x)  x ( D, 6)
+#define QH(x)   x ( D, 2)
+#define CLK(x)  x ( D, 1)
+#define LD(x)   x ( D, 0)
 
 
 // Частота сканирования

@@ -9,7 +9,13 @@
 
 class ST7735_SPI {
 public:
-  ST7735_SPI() { INIT_SPI; }
+  ST7735_SPI()
+  {
+    SPCR = _BV(SPE) | _BV(MSTR);
+    SPSR = _BV(SPI2X);
+    TCCR0B |= _BV(CS00);
+    SPDR = 0;
+  }
 
   void send_command(byte data);
   void set_addr(byte x0, byte y0, byte x1, byte y1);

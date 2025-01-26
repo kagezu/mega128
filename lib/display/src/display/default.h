@@ -32,33 +32,6 @@
 #define FLIP_Y
 #define EX_X_Y
 
-// Подключаемые библиотеки
-
-// #define LCD_DRAW        // Подключает класс для рисования
-// #define LCD_PRINT       // Подключает класс для вывода текста
-
-
-// Подключение индивидуальных настроек дисплея
-
-#if  defined(_ST7735_)
-#include <ST7735/config.h>
-#elif defined(_ST7789_)
-#include <ST7789/config.h>
-#elif defined(_SSD1306_)
-#include <SSD1306/config.h>
-#endif
-
-///////////////////////////////////////////////////////////////////////////
-// Вторичные макросы, зависящие от настроек выше
-
-// #ifdef  EX_X_Y
-// #define MAX_X     LCD_MAX_Y
-// #define MAX_Y     LCD_MAX_X
-// #else
-// #define MAX_X     LCD_MAX_X
-// #define MAX_Y     LCD_MAX_Y
-// #endif
-
 // Interface pixel format
 #define RGB_12 0x03 // 4x4x4 bit
 #define RGB_16 0x05 // 5x6x5 bit

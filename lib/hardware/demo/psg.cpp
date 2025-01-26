@@ -1,14 +1,15 @@
 #include "timer/timer.h"
 #include "AY/AY.h"
-#include <display.h>
 #include "font/micro_5x6.h"
 #include "font/standard_5x8.h"
 #include "font/arial_14.h"
-#include "keyboard/keyboard.h"
+#include "config.h"
+#include "keyboard.h"
+
 
 Display lcd;
 AY psg;
-KEYBOARD(key, C, PC0, PC1, PC2, PC3);
+Keyboard key;
 
 // Функция, возвращающая количество свободного ОЗУ (RAM)
 byte memoryFree()
@@ -19,9 +20,10 @@ byte memoryFree()
 }
 
 
+char piano[62];
+
 void printKey(uint64_t x)
 {
-  char piano[62];
   piano[0] = ' ';
   piano[61] = 0;
   x >>= 4;
@@ -32,7 +34,7 @@ void printKey(uint64_t x)
     x >>= 1;
   }
   lcd.font(&arial_14);
-  lcd.printf(F("  %s\n"), piano);
+  lcd.printf(P("  %s\n"), piano);
 }
 
 byte time, time2, fps;
@@ -58,13 +60,14 @@ int main()
     time2 = 0;
 
     lcd.font(&standard_5x8);
-    lcd.printf(F("\fcpu %u%% | mem %u%% | fps %u \n\n"), time, memoryFree(), fps);
+    lcd.printf(P("\fcpu %u%% | mem %u%% | fps %u \n\n"), time, memoryFree(), fps);
 
     lcd.font(&arial_14);
-    lcd.printf(F("   Keyboard  60-keys\n"));
+    lcd.printf(P("   Keyboard  60-keys\n"));
 
-    printKey(*(uint64_t *)key._on);
-    printKey(*(uint64_t *)key._off);
+    printKey(key.get_on());
+    printKey(key.get_off());
+    lcd.printf(P("\n"));
 
     char v[] = "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
     for (byte i = 0; i < 3; i++)
@@ -75,6 +78,8 @@ int main()
 
 ISR(TIMER0_COMPA_vect)
 {
+  keyboard.scan();
+  keyboard.key_detect();
   char k = key.tick();
   if (k + 1) {
     if (key._keys[(byte)k]) {

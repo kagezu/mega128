@@ -1,7 +1,8 @@
 #pragma once
 #include <core.h>
 #include "display/default.h"
-#include "comands.h"
+#include "const.h"
+#include "pin.h"
 #include "rgb/rgb.h"
 
 class ST7735_SOFT {
@@ -10,18 +11,16 @@ protected:
   void set_addr(byte x0, byte y0, byte x1, byte y1);
   void send_zero();
   void send_byte(byte data);
-  void send_rgb(byte r, byte g, byte b);
-  void send_rgb(uint16_t data); // формат 0x0rgb / RGB_16
-  void send_rgb(uint32_t color);
   void send_rgb(RGB color);
   void rect(byte x0, byte y0, byte x1, byte y1, RGB color);
+  // void send_rgb(uint16_t data);
 };
 
 void ST7735_SOFT::send_command(byte command)
 {
-  COMMAND_MODE; // Запись команды
+  L_RS(RES); // Запись команды
   send_byte(command);
-  DATA_MODE // Запись данных
+  L_RS(SET); // Запись данных
 };
 
 void ST7735_SOFT::set_addr(byte x0, byte y0, byte x1, byte y1)
@@ -43,300 +42,278 @@ void ST7735_SOFT::set_addr(byte x0, byte y0, byte x1, byte y1)
 
 void ST7735_SOFT::send_zero()
 {
-  LCD_PORT &= ~LCD_SDA;
+  L_SDA(RES);
 
-  byte res = LCD_PORT & ~LCD_SCK;
-  byte set = LCD_PORT | LCD_SCK;
+  byte res = L_SCK(SFR) & ~L_SCK(MASK);
+  byte set = L_SCK(SFR) | L_SCK(MASK);
 
-  LCD_PORT = res;
-  LCD_PORT = set;
-  LCD_PORT = res;
-  LCD_PORT = set;
-  LCD_PORT = res;
-  LCD_PORT = set;
-  LCD_PORT = res;
-  LCD_PORT = set;
-  LCD_PORT = res;
-  LCD_PORT = set;
-  LCD_PORT = res;
-  LCD_PORT = set;
-  LCD_PORT = res;
-  LCD_PORT = set;
-  LCD_PORT = res;
-  LCD_PORT = set;
+  L_SCK(SFR) = res;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = res;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = res;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = res;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = res;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = res;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = res;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = res;
+  L_SCK(SFR) = set;
 };
 
 void ST7735_SOFT::send_byte(byte data)
 {
-  byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
-  byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
-  byte set = LCD_PORT;
+  byte b0 = L_SCK(SFR) & ~(L_SDA(MASK) | L_SCK(MASK));
+  byte b1 = (L_SCK(SFR) | L_SDA(MASK)) & ~L_SCK(MASK);
+  byte set = L_SCK(SFR) | L_SCK(MASK);
 
-  LCD_PORT = data & 0x80 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x40 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x20 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x10 ? b1 : b0;
-  LCD_PORT = set;
-
-  LCD_PORT = data & 0x8 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x4 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x2 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x1 ? b1 : b0;
-  LCD_PORT = set;
+  L_SCK(SFR) = data & 0x80 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = data & 0x40 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = data & 0x20 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = data & 0x10 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = data & 0x8 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = data & 0x4 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = data & 0x2 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = data & 0x1 ? b1 : b0;
+  L_SCK(SFR) = set;
 };
 
-#if RGB_FORMAT == RGB_12
-void ST7735_SOFT::send_rgb(uint16_t data)
-{
-  byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
-  byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
-  byte set = LCD_PORT;
-
-  LCD_PORT = data & 0x800 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x400 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x200 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x100 ? b1 : b0;
-  LCD_PORT = set;
-
-  LCD_PORT = data & 0x80 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x40 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x20 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x10 ? b1 : b0;
-  LCD_PORT = set;
-
-  LCD_PORT = data & 0x8 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x4 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x2 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x1 ? b1 : b0;
-  LCD_PORT = set;
-};
-
-#elif RGB_FORMAT == RGB_16
-void ST7735_SOFT::send_rgb(uint16_t data)
-{
-  byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
-  byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
-  byte set = LCD_PORT;
-
-  LCD_PORT = data & 0x8000 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x4000 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x2000 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x1000 ? b1 : b0;
-  LCD_PORT = set;
-
-  LCD_PORT = data & 0x800 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x400 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x200 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x100 ? b1 : b0;
-  LCD_PORT = set;
-
-  LCD_PORT = data & 0x80 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x40 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x20 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x10 ? b1 : b0;
-  LCD_PORT = set;
-
-  LCD_PORT = data & 0x8 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x4 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x2 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = data & 0x1 ? b1 : b0;
-  LCD_PORT = set;
-};
-
-#elif RGB_FORMAT == RGB_18
-void ST7735_SOFT::send_rgb(uint16_t data) // формат 0x0rgb
-{
-  send_rgb((data >> 4) & 0xf0, data & 0xf0, data << 4);
-}
-#endif
-
-void ST7735_SOFT::send_rgb(uint32_t color)
-{
-  send_rgb(color >> 16, color >> 8, color);
-}
 
 void ST7735_SOFT::send_rgb(RGB color)
 {
-#if RGB_FORMAT == RGB_12 || RGB_FORMAT == RGB_16
-  send_rgb((uint16_t)color);
-#elif RGB_FORMAT == RGB_18
-  send_rgb(color.red, color.green, color.blue);
-#endif
-}
+  byte r = color.red;
+  byte g = color.green;
+  byte b = color.blue;
 
-void ST7735_SOFT::send_rgb(byte r, byte g, byte b)
-{
-  byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
-  byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
-  byte set = LCD_PORT;
+  byte b0 = L_SCK(SFR) & ~(L_SDA(MASK) | L_SCK(MASK));
+  byte b1 = (L_SCK(SFR) | L_SDA(MASK)) & ~L_SCK(MASK);
+  byte set = L_SCK(SFR) | L_SCK(MASK);
 
-  LCD_PORT = b & 0x80 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = b & 0x40 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = b & 0x20 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = b & 0x10 ? b1 : b0;
-  LCD_PORT = set;
+  L_SCK(SFR) = r & 0x80 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = r & 0x40 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = r & 0x20 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = r & 0x10 ? b1 : b0;
+  L_SCK(SFR) = set;
 #if RGB_FORMAT == RGB_18 || RGB_FORMAT == RGB_16
-  LCD_PORT = b & 0x8 ? b1 : b0;
-  LCD_PORT = set;
+  L_SCK(SFR) = r & 0x8 ? b1 : b0;
+  L_SCK(SFR) = set;
 #endif
 #if RGB_FORMAT == RGB_18
-  LCD_PORT = b & 0x4 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = b0;
-  LCD_PORT = set;
-  LCD_PORT = b0;
-  LCD_PORT = set;
+  L_SCK(SFR) = r & 0x4 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = b0;
+  L_SCK(SFR) = set;
 #endif
 
-  LCD_PORT = g & 0x80 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = g & 0x40 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = g & 0x20 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = g & 0x10 ? b1 : b0;
-  LCD_PORT = set;
+  L_SCK(SFR) = g & 0x80 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = g & 0x40 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = g & 0x20 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = g & 0x10 ? b1 : b0;
+  L_SCK(SFR) = set;
 #if RGB_FORMAT == RGB_18 || RGB_FORMAT == RGB_16
-  LCD_PORT = g & 0x8 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = g & 0x4 ? b1 : b0;
-  LCD_PORT = set;
+  L_SCK(SFR) = g & 0x8 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = g & 0x4 ? b1 : b0;
+  L_SCK(SFR) = set;
 #endif
 #if RGB_FORMAT == RGB_18
-  LCD_PORT = b0;
-  LCD_PORT = set;
-  LCD_PORT = b0;
-  LCD_PORT = set;
+  L_SCK(SFR) = b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = b0;
+  L_SCK(SFR) = set;
 #endif
 
-  LCD_PORT = r & 0x80 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = r & 0x40 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = r & 0x20 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = r & 0x10 ? b1 : b0;
-  LCD_PORT = set;
+  L_SCK(SFR) = b & 0x80 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = b & 0x40 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = b & 0x20 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = b & 0x10 ? b1 : b0;
+  L_SCK(SFR) = set;
 #if RGB_FORMAT == RGB_18 || RGB_FORMAT == RGB_16
-  LCD_PORT = r & 0x8 ? b1 : b0;
-  LCD_PORT = set;
+  L_SCK(SFR) = b & 0x8 ? b1 : b0;
+  L_SCK(SFR) = set;
 #endif
 #if RGB_FORMAT == RGB_18
-  LCD_PORT = r & 0x4 ? b1 : b0;
-  LCD_PORT = set;
-  LCD_PORT = b0;
-  LCD_PORT = set;
-  LCD_PORT = b0;
-  LCD_PORT = set;
+  L_SCK(SFR) = b & 0x4 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = b0;
+  L_SCK(SFR) = set;
 #endif
 };
 
 void ST7735_SOFT::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
 {
-  byte r = color.red();
-  byte g = color.green();
-  byte b = color.blue();
+  byte r = color.red;
+  byte g = color.green;
+  byte b = color.blue;
 
-  DISPLAY_CONNECT;
+  L_CS(RES);
   set_addr(x0, y0, x1, y1);
   uint16_t len = (x1 - x0 + 1) * (y1 - y0 + 1);
-  byte b0 = LCD_PORT & ~(LCD_SDA | LCD_SCK);
-  byte b1 = (LCD_PORT | LCD_SDA) & ~LCD_SCK;
-  byte set = LCD_PORT;
 
+  byte b0 = L_SCK(SFR) & ~(L_SDA(MASK) | L_SCK(MASK));
+  byte b1 = (L_SCK(SFR) | L_SDA(MASK)) & ~L_SCK(MASK);
+  byte set = L_SCK(SFR) | L_SCK(MASK);
+
+  // Дублирование кода намеренно, так как оптимизатор ускоряет тут выполнение в 2 раза
   while (len--) {
-    LCD_PORT = b & 0x80 ? b1 : b0;
-    LCD_PORT = set;
-    LCD_PORT = b & 0x40 ? b1 : b0;
-    LCD_PORT = set;
-    LCD_PORT = b & 0x20 ? b1 : b0;
-    LCD_PORT = set;
-    LCD_PORT = b & 0x10 ? b1 : b0;
-    LCD_PORT = set;
+    L_SCK(SFR) = r & 0x80 ? b1 : b0;
+    L_SCK(SFR) = set;
+    L_SCK(SFR) = r & 0x40 ? b1 : b0;
+    L_SCK(SFR) = set;
+    L_SCK(SFR) = r & 0x20 ? b1 : b0;
+    L_SCK(SFR) = set;
+    L_SCK(SFR) = r & 0x10 ? b1 : b0;
+    L_SCK(SFR) = set;
   #if RGB_FORMAT == RGB_18 || RGB_FORMAT == RGB_16
-    LCD_PORT = b & 0x8 ? b1 : b0;
-    LCD_PORT = set;
+    L_SCK(SFR) = r & 0x8 ? b1 : b0;
+    L_SCK(SFR) = set;
   #endif
   #if RGB_FORMAT == RGB_18
-    LCD_PORT = b & 0x4 ? b1 : b0;
-    LCD_PORT = set;
-    LCD_PORT = b0;
-    LCD_PORT = set;
-    LCD_PORT = b0;
-    LCD_PORT = set;
+    L_SCK(SFR) = r & 0x4 ? b1 : b0;
+    L_SCK(SFR) = set;
+    L_SCK(SFR) = b0;
+    L_SCK(SFR) = set;
+    L_SCK(SFR) = b0;
+    L_SCK(SFR) = set;
   #endif
 
-    LCD_PORT = g & 0x80 ? b1 : b0;
-    LCD_PORT = set;
-    LCD_PORT = g & 0x40 ? b1 : b0;
-    LCD_PORT = set;
-    LCD_PORT = g & 0x20 ? b1 : b0;
-    LCD_PORT = set;
-    LCD_PORT = g & 0x10 ? b1 : b0;
-    LCD_PORT = set;
+    L_SCK(SFR) = g & 0x80 ? b1 : b0;
+    L_SCK(SFR) = set;
+    L_SCK(SFR) = g & 0x40 ? b1 : b0;
+    L_SCK(SFR) = set;
+    L_SCK(SFR) = g & 0x20 ? b1 : b0;
+    L_SCK(SFR) = set;
+    L_SCK(SFR) = g & 0x10 ? b1 : b0;
+    L_SCK(SFR) = set;
   #if RGB_FORMAT == RGB_18 || RGB_FORMAT == RGB_16
-    LCD_PORT = g & 0x8 ? b1 : b0;
-    LCD_PORT = set;
-    LCD_PORT = g & 0x4 ? b1 : b0;
-    LCD_PORT = set;
+    L_SCK(SFR) = g & 0x8 ? b1 : b0;
+    L_SCK(SFR) = set;
+    L_SCK(SFR) = g & 0x4 ? b1 : b0;
+    L_SCK(SFR) = set;
   #endif
   #if RGB_FORMAT == RGB_18
-    LCD_PORT = b0;
-    LCD_PORT = set;
-    LCD_PORT = b0;
-    LCD_PORT = set;
+    L_SCK(SFR) = b0;
+    L_SCK(SFR) = set;
+    L_SCK(SFR) = b0;
+    L_SCK(SFR) = set;
   #endif
 
-    LCD_PORT = r & 0x80 ? b1 : b0;
-    LCD_PORT = set;
-    LCD_PORT = r & 0x40 ? b1 : b0;
-    LCD_PORT = set;
-    LCD_PORT = r & 0x20 ? b1 : b0;
-    LCD_PORT = set;
-    LCD_PORT = r & 0x10 ? b1 : b0;
-    LCD_PORT = set;
+    L_SCK(SFR) = b & 0x80 ? b1 : b0;
+    L_SCK(SFR) = set;
+    L_SCK(SFR) = b & 0x40 ? b1 : b0;
+    L_SCK(SFR) = set;
+    L_SCK(SFR) = b & 0x20 ? b1 : b0;
+    L_SCK(SFR) = set;
+    L_SCK(SFR) = b & 0x10 ? b1 : b0;
+    L_SCK(SFR) = set;
   #if RGB_FORMAT == RGB_18 || RGB_FORMAT == RGB_16
-    LCD_PORT = r & 0x8 ? b1 : b0;
-    LCD_PORT = set;
+    L_SCK(SFR) = b & 0x8 ? b1 : b0;
+    L_SCK(SFR) = set;
   #endif
   #if RGB_FORMAT == RGB_18
-    LCD_PORT = r & 0x4 ? b1 : b0;
-    LCD_PORT = set;
-    LCD_PORT = b0;
-    LCD_PORT = set;
-    LCD_PORT = b0;
-    LCD_PORT = set;
+    L_SCK(SFR) = b & 0x4 ? b1 : b0;
+    L_SCK(SFR) = set;
+    L_SCK(SFR) = b0;
+    L_SCK(SFR) = set;
+    L_SCK(SFR) = b0;
+    L_SCK(SFR) = set;
   #endif
   }
-  DISPLAY_DISCONNECT;
+  L_CS(SET);
 };
+
+/*
+void ST7735_SOFT::send_rgb(uint16_t data)
+{
+  byte b0 = L_SCK(SFR) & ~(L_SDA(MASK) | L_SCK(MASK));
+  byte b1 = (L_SCK(SFR) | L_SDA(MASK)) & ~L_SCK(MASK);
+  byte set = L_SCK(SFR) | L_SCK(MASK);
+
+#if RGB_FORMAT == RGB_18 || RGB_FORMAT == RGB_16
+  L_SCK(SFR) = data & 0x8000 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = data & 0x4000 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = data & 0x2000 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = data & 0x1000 ? b1 : b0;
+  L_SCK(SFR) = set;
+#endif
+
+  L_SCK(SFR) = data & 0x800 ? b1 : b0;
+  L_SCK(SFR) = set;
+
+#if RGB_FORMAT == RGB_18
+  L_SCK(SFR) = data & 0x8000 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = data & 0x8000 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = data & 0x8000 ? b1 : b0;
+  L_SCK(SFR) = set;
+#endif
+
+  L_SCK(SFR) = data & 0x400 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = data & 0x200 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = data & 0x100 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = data & 0x80 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = data & 0x40 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = data & 0x20 ? b1 : b0;
+  L_SCK(SFR) = set;
+
+#if RGB_FORMAT == RGB_18
+  L_SCK(SFR) = data & 0x400 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = data & 0x400 ? b1 : b0;
+  L_SCK(SFR) = set;
+#endif
+
+  L_SCK(SFR) = data & 0x10 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = data & 0x8 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = data & 0x4 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = data & 0x2 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = data & 0x1 ? b1 : b0;
+  L_SCK(SFR) = set;
+
+#if RGB_FORMAT == RGB_18
+  L_SCK(SFR) = data & 0x10 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = data & 0x10 ? b1 : b0;
+  L_SCK(SFR) = set;
+  L_SCK(SFR) = data & 0x10 ? b1 : b0;
+  L_SCK(SFR) = set;
+#endif
+};
+*/

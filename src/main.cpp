@@ -31,7 +31,7 @@
 // #include "../lib/psg/demo/demo.cpp"
 
 // Тест клавиатуры
-// #include "../lib/shift/demo/psg.cpp"
+// #include "../lib/hardware/demo/psg.cpp"
 
 // -------------  libray AVR OS  ----------------
 // Выделение памяти
@@ -41,6 +41,6 @@
 // 
 #include "../lib/keyboard/src/main.cpp"
 
-// -------------  libray VS1053  -------------------
+// -------------  libray framework  -------------------
 // 
 // #include "../lib/framework/demo/framework.cpp"
