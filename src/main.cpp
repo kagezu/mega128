@@ -9,7 +9,7 @@
 // #include "../lib/display/demo/rect.cpp"
 
 // Скринсейвер
-// #include "../lib/display/demo/screensaver.cpp"
+#include "../lib/display/demo/screensaver.cpp"
 
 // Вывод памяти на экран
 // #include "../lib/display/demo/memory_scroll.cpp"
@@ -39,7 +39,7 @@
 
 // -------------  libray VS1053  -------------------
 // 
-#include "../lib/keyboard/src/main.cpp"
+// #include "../lib/keyboard/src/main.cpp"
 
 // -------------  libray framework  -------------------
 // 

@@ -83,7 +83,7 @@ ST7789::ST7789()
   D_CS(SET);
 }
 
-void ST7789::send_command(byte command)
+void ST7789::send_command(uint8_t command)
 {
   D_RS(CLR);
   send_byte(command);
@@ -91,7 +91,7 @@ void ST7789::send_command(byte command)
 }
 
 
-void ST7789::send_byte(byte data)
+void ST7789::send_byte(uint8_t data)
 {
   PORT(D_DATA) = data;
   D_WR(SET);
@@ -121,7 +121,7 @@ void ST7789::set_addr(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
   send_command(RAMWR); // Memory Write
 }
 
-void ST7789::send_rgb(byte r, byte g, byte b)
+void ST7789::send_rgb(uint8_t r, uint8_t g, uint8_t b)
 {
   PORT(D_DATA) = b;
   D_WR(SET);
@@ -172,9 +172,9 @@ void ST7789::rect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, RGB color)
 
 // PrintF
 
-void ST7789::symbol(byte *source, uint16_t x, uint16_t y, byte dx, byte dy)
+void ST7789::symbol(uint8_t *source, uint16_t x, uint16_t y, uint8_t dx, uint8_t dy)
 {
-  byte sreg = SREG;
+  uint8_t sreg = SREG;
   cli();
   D_CS(CLR);
 
@@ -204,13 +204,13 @@ void ST7789::symbol(byte *source, uint16_t x, uint16_t y, byte dx, byte dy)
 #ifdef FLIP_X
   for (char i = dx - 1; i >= 0; i--) {
   #else
-  for (byte i = 0; i < dx; i++) {
+  for (uint8_t i = 0; i < dx; i++) {
   #endif
 
-    byte  data;
+    uint8_t  data;
 
   #ifdef FLIP_Y
-    byte bit = 1 << ((dy - 1) & 7);
+    uint8_t bit = 1 << ((dy - 1) & 7);
     data = pgm_read_byte((uint16_t)source + ((dy - 1) >> 3) * dx + i);
     for (char j = dy - 1; j >= 0; j--) {
       if ((j & 7) == 7) {
@@ -221,7 +221,7 @@ void ST7789::symbol(byte *source, uint16_t x, uint16_t y, byte dx, byte dy)
       else send_rgb(_background);
       bit >>= 1;
     #else
-    for (byte j = 0; j < dy; j++) {
+    for (uint8_t j = 0; j < dy; j++) {
       if (!(j & 7)) data = pgm_read_byte((uint16_t)source + (j >> 3) * dx + i);
       if (data & 1) send_rgb(_color);
       else send_rgb(_background);
@@ -236,19 +236,19 @@ void ST7789::symbol(byte *source, uint16_t x, uint16_t y, byte dx, byte dy)
 #ifdef FLIP_Y
   for (char j = dy - 1; j >= 0; j--) {
   #else
-  for (byte j = 0; j < dy; j++) {
+  for (uint8_t j = 0; j < dy; j++) {
   #endif
 
     uint16_t offset = (uint16_t)source + (j >> 3) * dx;
-    byte bit = 1 << (j & 7);
+    uint8_t bit = 1 << (j & 7);
 
   #ifdef FLIP_X
     for (char i = dx - 1; i >= 0; i--) {
     #else
-    for (byte i = 0; i < dx; i++) {
+    for (uint8_t i = 0; i < dx; i++) {
     #endif
 
-      byte data = pgm_read_byte(offset + i);
+      uint8_t data = pgm_read_byte(offset + i);
       if (data & bit) send_rgb(_color);
       else send_rgb(_background);
     }
@@ -260,7 +260,7 @@ void ST7789::symbol(byte *source, uint16_t x, uint16_t y, byte dx, byte dy)
   SREG = sreg;
   }
 
-void ST7789::bitmap(byte * source, uint16_t x, uint16_t y, uint16_t dx, uint16_t dy)
+void ST7789::bitmap(uint8_t * source, uint16_t x, uint16_t y, uint16_t dx, uint16_t dy)
 {
   D_CS(CLR);
 
@@ -299,7 +299,7 @@ void ST7789::bitmap(byte * source, uint16_t x, uint16_t y, uint16_t dx, uint16_t
 #define VIEWPORT_OFFSET 30
 
 
-void ST7789::demo(byte d)
+void ST7789::demo(uint8_t d)
 {
   D_CS(CLR);
   set_addr(0, 0, LCD_MAX_X, LCD_MAX_Y);
@@ -309,7 +309,7 @@ void ST7789::demo(byte d)
     for (uint16_t x = VIEWPORT_OFFSET; x < LCD_MAX_X + VIEWPORT_OFFSET + 1; x++) {
       uint16_t xx = x * x;
 
-      byte e = d << 2;
+      uint8_t e = d << 2;
       uint16_t r = ((xx + yy) >> 7) + e;
       uint16_t g = ((yy - xx) >> 7) + e;
       uint16_t b = ((x * y) >> 7) - e;

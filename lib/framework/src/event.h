@@ -3,5 +3,5 @@
 #include "core.h"
 
 struct  Event {
-  byte type;
+  uint8_t type;
 };

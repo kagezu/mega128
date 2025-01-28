@@ -25,9 +25,9 @@
 
 class XPage : public Memory {
 private:
-  byte _xmm;           // Значение битов XMM[0-2] в регистре XMCRB
-  byte _highAddress;   // Биты A[23:16] физической памяти
-  byte _lowAddress;    // Биты A[15:8]  физической памяти
+  uint8_t _xmm;           // Значение битов XMM[0-2] в регистре XMCRB
+  uint8_t _highAddress;   // Биты A[23:16] физической памяти
+  uint8_t _lowAddress;    // Биты A[15:8]  физической памяти
 
 public:
   /**
@@ -37,7 +37,7 @@ public:
    */
   XPage(
     uint16_t physicalAddress = 0, // Начало физ. памяти
-    byte bitMask = XMEM_60K,   // Всё доступное адресное пространство
+    uint8_t bitMask = XMEM_60K,   // Всё доступное адресное пространство
     uint16_t start = XMEM_START   // Первый доступный адрес eXternal SRAM
   ) :
     _xmm(bitMask),

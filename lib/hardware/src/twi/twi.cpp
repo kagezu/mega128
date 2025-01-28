@@ -1,10 +1,10 @@
 #include "twi.h"
 
-volatile byte TWI_Master::_state;
-volatile byte TWI_Master::_master_address;
+volatile uint8_t TWI_Master::_state;
+volatile uint8_t TWI_Master::_master_address;
 volatile uint16_t TWI_Master::_master_index;
 
-volatile byte *TWI_Master::_master_buffer;
+volatile uint8_t *TWI_Master::_master_buffer;
 volatile uint16_t TWI_Master::_master_buffer_length;
 
 
@@ -29,7 +29,7 @@ void TWI_Master::set_freq(uint32_t freq)
   TWBR = ((F_CPU / freq) - 16) / 2;
 }
 
-void TWI_Master::write(byte *data, uint16_t length)
+void TWI_Master::write(uint8_t *data, uint16_t length)
 {
   while (_state & TWI_BUSY);
   if (_index) {
@@ -59,7 +59,7 @@ void TWI_Master::write(byte *data, uint16_t length)
   }
 }
 
-void TWI_Master::write(byte data)
+void TWI_Master::write(uint8_t data)
 {
   if (_index >= BUFFER_LENGTH) {
     write(_buffer, _index);

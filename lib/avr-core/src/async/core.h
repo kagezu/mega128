@@ -11,12 +11,12 @@
 #pragma GCC push_options
 #pragma GCC optimize "O0"
 namespace Core {
-  static byte memory[TASK_MAX_COUNT][TASK_STACK_SIZE];
-  static Array<Task, byte> tasks(TASK_MAX_COUNT);
+  static uint8_t memory[TASK_MAX_COUNT][TASK_STACK_SIZE];
+  static Array<Task, uint8_t> tasks(TASK_MAX_COUNT);
 
   // Количество запущенных задач включая main
   // но без учёта прерываний
-  inline byte count() { return tasks.length(); }
+  inline uint8_t count() { return tasks.length(); }
 
   // Текущая задача
   inline Task *current() { return tasks.tail(); }
@@ -44,7 +44,7 @@ namespace Core {
   // для 16 МГц от 15625 до 61 Гц
   void GCC_INLINE init()
   {
-    for (byte i = 0; i < TASK_MAX_COUNT; i++) {
+    for (uint8_t i = 0; i < TASK_MAX_COUNT; i++) {
       Task t((uint16_t)memory[i], TASK_STACK_SIZE);
       tasks.write(t);
     }
@@ -66,7 +66,7 @@ namespace Core {
   }
 
   // Ждать завершения асинхронных функций
-  void GCC_NO_INLINE await(byte limit = 1)
+  void GCC_NO_INLINE await(uint8_t limit = 1)
   {
     while (count() - limit)
       next_task();

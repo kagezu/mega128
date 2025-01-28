@@ -10,8 +10,6 @@
 
 class PrintF {
 public:
-  PrintF() {};
-
   void printf(const char *, ...);
   void print(const char *);
   void print(char *);
@@ -22,20 +20,20 @@ public:
   void print_h(uint64_t);
   void print_h(uint32_t);
   void print_h(uint16_t);
-  void print_h(byte);
+  void print_h(uint8_t);
   void print(char);
-  void letter(byte);
+  void letter(uint8_t);
 
   void font(const Font *);
   void at(uint16_t x, uint16_t y) { point_x = x; point_y = y; }
-  void set_interline(byte interline) { _interline = _font.height + interline; }
-  void set_interval(byte interval) { _interval = interval; }
-  byte get_height() { return _font.height; }
-  byte get_weight() { return _font.weight; }
-  byte get_row() { return ((uint16_t)MAX_Y + 1) / _interline; }
-  byte get_col() { return ((uint16_t)MAX_X + 1) / (_interval + _font.weight); }
+  void set_interline(uint8_t interline) { _interline = _font.height + interline; }
+  void set_interval(uint8_t interval) { _interval = interval; }
+  uint8_t get_height() { return _font.height; }
+  uint8_t get_weight() { return _font.weight; }
+  uint8_t get_row() { return ((uint16_t)MAX_Y + 1) / _interline; }
+  uint8_t get_col() { return ((uint16_t)MAX_X + 1) / (_interval + _font.weight); }
 
-  virtual void symbol(byte *, uint16_t, uint16_t, byte, byte) = 0;
+  virtual void symbol(uint8_t *, uint16_t, uint16_t, uint8_t, uint8_t);
   // inline  virtual uint16_t min_x() = 0;
   // inline  virtual uint16_t min_y() = 0;
   // inline  virtual uint16_t max_x() = 0;
@@ -44,11 +42,11 @@ public:
 
 private:
   Font  _font = {};     // Шрифт
-  byte  _charSize = 0;  // Размер символа в байтах
-  byte  _line = 0;      // Высота символа в байтах
-  byte  _interline = 0; // Расстояние между строками
-  byte  _interval = 0;  // Расстояние между символами
-  byte  _tab_factor = FONT_TAB_FACTOR;
+  uint8_t  _charSize = 0;  // Размер символа в байтах
+  uint8_t  _line = 0;      // Высота символа в байтах
+  uint8_t  _interline = 0; // Расстояние между строками
+  uint8_t  _interval = 0;  // Расстояние между символами
+  uint8_t  _tab_factor = FONT_TAB_FACTOR;
   uint16_t point_x = 0;
   uint16_t point_y = 0;
 
@@ -72,12 +70,12 @@ void PrintF::font(const Font *font)
 }
 
 
-void PrintF::letter(byte ch)
+void PrintF::letter(uint8_t ch)
 {
   ch -= _font.first_char;
   if (_font.count_char <= ch) ch = 0;
 
-  byte dx = _font.weight;
+  uint8_t dx = _font.weight;
   uint16_t source;
 
   if (_font.offset) {
@@ -95,7 +93,7 @@ void PrintF::letter(byte ch)
     point_x = 0;
   }
   if (point_y + _font.height > MAX_Y) { point_x = point_y = 0; }
-  symbol((byte *)source, point_x, point_y, dx, _font.height);
+  symbol((uint8_t *)source, point_x, point_y, dx, _font.height);
   point_x += dx + _interval;
 }
 
@@ -111,7 +109,7 @@ void PrintF::print(char ch)
     case '\v': LF(); break;                   // Вертикальная табуляция / Перевод строки
     case '\e': escape(); break;
     case '\0': point_x += _font.weight + _interval; break;
-    default: if ((byte)ch < 0xd0) letter(ch);
+    default: if ((uint8_t)ch < 0xd0) letter(ch);
   }
 }
 
@@ -151,7 +149,7 @@ void PrintF::printf(const char *string, ...)
             case 'x':
               switch (arg) {
                 case '0':
-                case '1':  print_h((byte)va_arg(args, uint16_t)); break;
+                case '1':  print_h((uint8_t)va_arg(args, uint16_t)); break;
                 case '2':  print_h((uint16_t)va_arg(args, uint16_t)); break;
                 case '4':  print_h((uint32_t)va_arg(args, uint32_t)); break;
                 case '8':  print_h((uint64_t)va_arg(args, uint64_t)); break;
@@ -160,22 +158,22 @@ void PrintF::printf(const char *string, ...)
             case '%': print('%'); break;
           } break;
         }
-      default: if ((byte)ch < 0xd0) print(ch);
+      default: if ((uint8_t)ch < 0xd0) print(ch);
     }
   }
   va_end(args);
 }
-
+/*
 
 void PrintF::print(char *string)
 {
-  while (char ch = *string++) if ((byte)ch < 0xd0) print(ch);
+  while (char ch = *string++) if ((uint8_t)ch < 0xd0) print(ch);
 }
 
 
 void PrintF::print(const char *string)
 {
-  while (char ch = pgm_read_byte(string++)) if ((byte)ch < 0xd0) print(ch);
+  while (char ch = pgm_read_byte(string++)) if ((uint8_t)ch < 0xd0) print(ch);
 }
 
 
@@ -200,10 +198,10 @@ void PrintF::print(uint32_t number)
   *ptr = 0;
 
   while (number > 9) {
-    byte mod;
+    uint8_t mod;
 
   #ifdef ACCEL
-    byte tmp;
+    uint8_t tmp;
     div10_32bit(number, mod, tmp);
   #else
     mod = number % 10;
@@ -225,10 +223,10 @@ void PrintF::print(uint16_t number)
   *ptr = 0;
 
   while (number > 9) {
-    byte mod;
+    uint8_t mod;
 
   #ifdef ACCEL
-    byte tmp;
+    uint8_t tmp;
     div10_16bit(number, mod, tmp);
   #else
     mod = number % 10;
@@ -244,7 +242,7 @@ void PrintF::print(uint16_t number)
 
 void PrintF::print_h(uint64_t number)
 {
-  union { uint64_t val; struct { byte a; byte b; byte c; byte d; byte e; byte f; byte g; byte h; }; } out;
+  union { uint64_t val; struct { uint8_t a; uint8_t b; uint8_t c; uint8_t d; uint8_t e; uint8_t f; uint8_t g; uint8_t h; }; } out;
   out.val = number;
   print('#');
   print_h(out.h);
@@ -276,10 +274,11 @@ void PrintF::print_h(uint16_t number)
 }
 
 
-void PrintF::print_h(byte number)
+void PrintF::print_h(uint8_t number)
 {
-  byte low = number & 0xf;
-  byte high = number >> 4;
+  uint8_t low = number & 0xf;
+  uint8_t high = number >> 4;
   letter(high > 9 ? high + '7' : high + '0');
   letter(low > 9 ? low + '7' : low + '0');
 }
+*/

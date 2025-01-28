@@ -33,11 +33,11 @@ public:
 
   void key_detect()
   {
-    byte mask = _BV(KEY_OFFSET);
-    byte *on = _on;      // Все нажатые клавиши
-    byte *off = _off;    // Все отжатые клавиши
-    byte *last = _last;  // Последнее состояние клавиши
-    byte *timer = _timer;
+    uint8_t mask = _BV(KEY_OFFSET);
+    uint8_t *on = _on;      // Все нажатые клавиши
+    uint8_t *off = _off;    // Все отжатые клавиши
+    uint8_t *last = _last;  // Последнее состояние клавиши
+    uint8_t *timer = _timer;
     Key key;
 
     for (char i = KEY_COUNT - 1; i >= 0; i--) { // Порядок соответствующий сканированию
@@ -84,17 +84,17 @@ public:
   }
 
 private:
-  byte _on[KEY_SIZE] = {};    // Все нажатые клавиши
-  byte _off[KEY_SIZE] = {};   // Все отжатые клавиши
-  byte _last[KEY_SIZE] = {};  // Последнее состояние клавиши
-  byte _timer[KEY_COUNT] = {};
+  uint8_t _on[KEY_SIZE] = {};    // Все нажатые клавиши
+  uint8_t _off[KEY_SIZE] = {};   // Все отжатые клавиши
+  uint8_t _last[KEY_SIZE] = {};  // Последнее состояние клавиши
+  uint8_t _timer[KEY_COUNT] = {};
 
   void load() { LD(CLR); LD(SET); }
-  void read(byte *buffer, byte length)
+  void read(uint8_t *buffer, uint8_t length)
   {
-    byte data = 0;
+    uint8_t data = 0;
     while (length--) {
-      byte i = 8;
+      uint8_t i = 8;
       while (i--) {
         data >>= 1;
         if (QH(GET)) data |= 0x80;

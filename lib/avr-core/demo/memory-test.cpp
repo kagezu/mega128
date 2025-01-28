@@ -10,11 +10,11 @@
 #define WEIGHT        48
 #define TEXT_X        WEIGHT + 5
 
-byte *ptr[FRAGMENTATION];
-byte s[FRAGMENTATION];
+uint8_t *ptr[FRAGMENTATION];
+uint8_t s[FRAGMENTATION];
 Display lcd;
 
-void fill(byte *ptr, byte size, byte filler)
+void fill(uint8_t *ptr, uint8_t size, uint8_t filler)
 {
   if (ptr) {
     size >>= 1;
@@ -32,8 +32,8 @@ const uint16_t buffer_size = RAMEND - 0x100;
 void view()
 {
   uint16_t count = buffer_size;
-  byte *ptr = (byte *)0x100;
-  byte w = count / MAX_Y;
+  uint8_t *ptr = (uint8_t *)0x100;
+  uint8_t w = count / MAX_Y;
 
   lcd.bitmap(ptr, 0, 0, w, MAX_Y);
 }
@@ -46,15 +46,15 @@ int main()
   lcd.background(RGB(0, 0, 64));
   lcd.color(RGB(255, 255, 127));
 
-  byte i = 0;
+  uint8_t i = 0;
   uint16_t n = 0;
   uint32_t total = 0;
   uint32_t deny = 0;
 
   while (true) {
-    byte rnd = rand() >> 8;
-    byte size = (rnd * rnd >> 8) + 1;
-    byte filler = rand();
+    uint8_t rnd = rand() >> 8;
+    uint8_t size = (rnd * rnd >> 8) + 1;
+    uint8_t filler = rand();
     i = rand() % FRAGMENTATION;
 
     lcd.at(TEXT_X, 15);
@@ -70,7 +70,7 @@ int main()
     lcd.at(TEXT_X, 55);
     lcd.printf(F("%2u  "), memory.heap());
     lcd.at(TEXT_X, 65);
-    lcd.printf(F("free: %u %%  "), (byte)(((uint32_t)memory.heap() * 100) / buffer_size));
+    lcd.printf(F("free: %u %%  "), (uint8_t)(((uint32_t)memory.heap() * 100) / buffer_size));
   #endif
 
     fill(ptr[i], s[i], 0);
@@ -90,7 +90,7 @@ int main()
     else
       ptr[i] = memory.malloc(size);
   #else
-    ptr[i] = (byte *)malloc(size);
+    ptr[i] = (uint8_t *)malloc(size);
   #endif
 
     s[i] = size;
@@ -106,7 +106,7 @@ int main()
     lcd.at(TEXT_X, 110);
     lcd.printf(F("deny:"));
     lcd.at(TEXT_X, 120);
-    lcd.printf(F("%u %% "), (byte)((deny * 100) / total));
+    lcd.printf(F("%u %% "), (uint8_t)((deny * 100) / total));
 
     view();
   }

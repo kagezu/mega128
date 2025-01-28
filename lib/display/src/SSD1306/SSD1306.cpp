@@ -5,7 +5,7 @@
 
 void SSD1306::init()
 {
-  static const byte PROGMEM init[] = {
+  static const uint8_t PROGMEM init[] = {
     SetDisplayClock, 0x80,
     SetDisplayOffset, 0,
     SetDisplayStartLine,
@@ -36,32 +36,32 @@ void SSD1306::init()
 }
 
 
-void SSD1306::pixel(byte x, byte y)
+void SSD1306::pixel(uint8_t x, uint8_t y)
 {
   if (x > MAX_X || y > MAX_Y) return;
-  byte *pixel = &buffer[x + (y >> 3) * (LCD_MAX_X + 1)];
-  byte bit = (1 << (y & 7));
+  uint8_t *pixel = &buffer[x + (y >> 3) * (LCD_MAX_X + 1)];
+  uint8_t bit = (1 << (y & 7));
   *pixel &= ~bit;
   *pixel |= _color ? bit : 0;
 }
 
-void SSD1306::rect_fill(byte x, byte y, byte x1, byte y1)
+void SSD1306::rect_fill(uint8_t x, uint8_t y, uint8_t x1, uint8_t y1)
 {
-  for (byte xx = x; xx <= x1; xx++)
-    for (byte yy = x; yy <= y1; yy++)
+  for (uint8_t xx = x; xx <= x1; xx++)
+    for (uint8_t yy = x; yy <= y1; yy++)
       pixel(xx, yy);
 }
 
-void SSD1306::symbol(byte *source, byte x, byte y, byte dx, byte dy)
+void SSD1306::symbol(uint8_t *source, uint8_t x, uint8_t y, uint8_t dx, uint8_t dy)
 {
-  for (byte j = 0; j < dy; j++) {
+  for (uint8_t j = 0; j < dy; j++) {
 
     uint16_t offset = (uint16_t)source + (j >> 3) * dx;
-    byte bit = 1 << (j & 7);
+    uint8_t bit = 1 << (j & 7);
 
-    for (byte i = 0; i < dx; i++) {
+    for (uint8_t i = 0; i < dx; i++) {
 
-      byte data = pgm_read_byte(offset + i);
+      uint8_t data = pgm_read_byte(offset + i);
       if (data & bit) pixel(x + i, y + j);
     }
   }

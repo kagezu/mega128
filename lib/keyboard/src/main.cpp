@@ -10,11 +10,11 @@
 Display lcd;
 Keyboard keyboard;
 VS1053 midi;
-Buffer<Key, byte> KeyBuffer(KEY_BUFFER_SIZE);
+Buffer<Key, uint8_t> KeyBuffer(KEY_BUFFER_SIZE);
 
 // Функция, возвращающая количество свободного ОЗУ (RAM)
 // Вся память под стек считается занятой
-byte memory_free()
+uint8_t memory_free()
 {
   return  100 - ((25 * memory.heap()) >> 9);// Всего 2048 байт ОЗУ
 }
@@ -26,7 +26,7 @@ void printKey(uint64_t x)
   piano[0] = ' ';
   piano[61] = 0;
   x >>= 4;
-  for (byte i = 60; i; i--) {
+  for (uint8_t i = 60; i; i--) {
     if (x & 1) piano[i] = '!';
     else if (i % 8) piano[i] = '.';
     else piano[i] = ',';
@@ -41,7 +41,7 @@ uint16_t cpu = 0;
 uint16_t fps = 10;
 uint16_t time2 = F_SCAN / fps;
 const char *pgm_text;
-byte vel, tms;
+uint8_t vel, tms;
 
 void init_main()
 {
@@ -93,7 +93,7 @@ int main()
   }
 }
 
-void extra(byte i)
+void extra(uint8_t i)
 {
   switch (i) {
     case 1:

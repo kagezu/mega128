@@ -9,7 +9,7 @@ Display lcd;
 
 int main(void)
 {
-  byte i;
+  uint8_t i;
 
   lcd.clear(0);
   lcd.init();

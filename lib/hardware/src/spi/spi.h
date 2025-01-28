@@ -11,10 +11,10 @@
 class SPI_Master {
 public:
   SPI_Master() { TCCR0B |= _BV(CS00); } // Включить тактирование
-  void init(uint16_t fq = 0xffff, byte mode = SPI_MODE_0);
+  void init(uint16_t fq = 0xffff, uint8_t mode = SPI_MODE_0);
   void end() { SPI_STOP; }
-  void send(byte);
-  byte read(byte);
+  void send(uint8_t);
+  uint8_t read(uint8_t);
   uint16_t transfer(uint16_t);
 };
 

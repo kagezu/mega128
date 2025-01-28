@@ -4,21 +4,21 @@
 class NumPad {
 private:
   AY *_psg;
-  byte _key = 0;
+  uint8_t _key = 0;
 
 public:
   NumPad(AY *psg) :_psg(psg) {}
 
 public:
-  byte getKey()
+  uint8_t getKey()
   {
-    byte key = _psg->getKey();
+    uint8_t key = _psg->getKey();
     if (key == _key) key = 0;
     else _key = key;
     return key;
   }
 
-  byte getSymbol()
+  uint8_t getSymbol()
   {
     switch (_key & 0x1f) {
       case 0x01: return '1';

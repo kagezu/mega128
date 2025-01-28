@@ -10,10 +10,10 @@ Display lcd;
 
 #define COUNT_STAR  50
 
-byte cycle[COUNT_STAR][2];
+uint8_t cycle[COUNT_STAR][2];
 RGB black(0, 0, 0);
 RGB white(255, 255, 255);
-byte i;
+uint8_t i;
 
 int main()
 {
@@ -30,7 +30,7 @@ int main()
     lcd.at(30, (MAX_Y - lcd.get_height()) >> 1);
     lcd.printf(F("Hello World"));
     for (char j = 0; j < 20; j++) {
-      byte x = rand() & MAX_X, y = rand() & MAX_Y;
+      uint8_t x = rand() & MAX_X, y = rand() & MAX_Y;
       lcd.color(black);
       lcd.pixel(cycle[i][0], cycle[i][1]);
       lcd.color(white);

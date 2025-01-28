@@ -12,8 +12,8 @@
  */
 class Memory {
 protected:
-  byte                      _status;
-  Stack<MemoryBlock, byte>  _stack;
+  uint8_t                      _status;
+  Stack<MemoryBlock, uint8_t>  _stack;
 
 public:
   Memory() {}
@@ -22,7 +22,7 @@ public:
 public:
   void init(uint16_t start, uint16_t length);
   uint16_t  heap();
-  byte *malloc(uint16_t size);
+  uint8_t *malloc(uint16_t size);
   void  malloc(void **var, uint16_t size);
   void  free(void **var);
   void  free(void *var);
@@ -33,7 +33,7 @@ private:
   static MemoryBlock *_ptr;
 
   MemoryBlock *_find(uint16_t size);
-  void _union(byte index);
+  void _union(uint8_t index);
 
   static bool _find_link(MemoryBlock *block) { return block->cmp_link(_var); }
   static bool _find_start(MemoryBlock *block) { return block->cmp_start(_var); }

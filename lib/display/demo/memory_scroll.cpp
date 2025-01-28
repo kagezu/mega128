@@ -1,4 +1,4 @@
-﻿#include <display.h>
+﻿#include "display.h"
 #include "font/system_5x7.h"
 #include "font/micro_5x6.h"
 #include "font/standard_5x8.h"
@@ -25,15 +25,15 @@ int main(void)
   // lcd.font(&arial_14);
   lcd.set_interline(INTERLINE);
 
-  byte *ptr = (byte *)0x100;
+  uint8_t *ptr = (uint8_t *)0x100;
 
   while (true) {
     for (char k = lcd.get_height() + INTERLINE; k > 0; k--) {
-      byte *p = ptr;
+      uint8_t *p = ptr;
       lcd.at(0, k);
-      for (byte i = 0; i < lcd.get_row(); i++) {
-        lcd.printf(F("%2x %x %x %x %x"), p, *p, *(p + 1), *(p + 2), *(p + 3));
-        lcd.printf(F(" %x %x %x %x \n"), *(p + 4), *(p + 5), *(p + 6), *(p + 7));
+      for (uint8_t i = 0; i < lcd.get_row(); i++) {
+        lcd.printf(P("%2x %x %x %x %x"), p, *p, *(p + 1), *(p + 2), *(p + 3));
+        lcd.printf(P(" %x %x %x %x \n"), *(p + 4), *(p + 5), *(p + 6), *(p + 7));
         p += 8;
       }
     }

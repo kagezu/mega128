@@ -47,15 +47,15 @@
 
 class TWI_Master {
 private:
-  static volatile byte *_master_buffer;
+  static volatile uint8_t *_master_buffer;
   static volatile uint16_t _master_index;
   static volatile uint16_t _master_buffer_length;
-  static volatile byte _state;
-  static volatile byte _master_address;
+  static volatile uint8_t _state;
+  static volatile uint8_t _master_address;
 
-  byte _buffer[TWI_BUFFER_LENGTH];
-  byte _index = 0;
-  byte _address;
+  uint8_t _buffer[TWI_BUFFER_LENGTH];
+  uint8_t _index = 0;
+  uint8_t _address;
 
 public:
   static void send_address();
@@ -66,11 +66,11 @@ public:
   void init();
   void destroy();
   void set_freq(uint32_t freq);
-  void write(byte *, uint16_t);
-  void write(byte);
+  void write(uint8_t *, uint16_t);
+  void write(uint8_t);
   void begin();
 
 public:
-  void set_address(byte address) { _address = address << 1; }
+  void set_address(uint8_t address) { _address = address << 1; }
   void end(void);
 };

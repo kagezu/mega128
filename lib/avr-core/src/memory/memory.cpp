@@ -29,12 +29,12 @@ void Memory::malloc(void **var, uint16_t size)
   I_REST;
 }
 
-byte *Memory::malloc(uint16_t size)
+uint8_t *Memory::malloc(uint16_t size)
 {
   I_SAVE;
   MemoryBlock *block = _find(size);
-  byte *ptr;
-  if (block) { block->use(); ptr = (byte *)block->start(); } // Указать, что блок используется и заблокирован
+  uint8_t *ptr;
+  if (block) { block->use(); ptr = (uint8_t *)block->start(); } // Указать, что блок используется и заблокирован
   else ptr = nullptr;
   I_REST;
   return ptr;
@@ -45,7 +45,7 @@ void Memory::free(void **var)
   if ((uint16_t)var >= RAMSTART) { // Указатель находиться в допустимой области памяти
     I_SAVE;
     _var = (uint16_t)var;
-    byte index = _stack.findindex(this->_find_link);
+    uint8_t index = _stack.findindex(this->_find_link);
     if (index && _stack.at(index)->is_used()) {
       _stack.at(index)->free();
       _union(index); // Объединить пустые блоки, если они рядом
@@ -60,7 +60,7 @@ void Memory::free(void *var)
   if ((uint16_t)var >= RAMSTART) { // Ссылка указывает на допустимую область памяти
     I_SAVE;
     _var = (uint16_t)var;
-    byte index = _stack.findindex(this->_find_start);
+    uint8_t index = _stack.findindex(this->_find_start);
     if (index && _stack.at(index)->is_used()) {
       _stack.at(index)->free();
       _union(index); // Объединить пустые блоки, если они рядом
@@ -71,8 +71,8 @@ void Memory::free(void *var)
 
 void Memory::shrink()
 {
-  byte length = _stack.size() - 1;
-  byte i = 1;
+  uint8_t length = _stack.size() - 1;
+  uint8_t i = 1;
   while (i < length) {
     MemoryBlock *block = _stack.at(i++);
     if (block->is_fixed() || block->is_used()) continue;
@@ -123,9 +123,9 @@ MemoryBlock *Memory::_find(uint16_t size)
   return _ptr;
 }
 
-void Memory::_union(byte index)
+void Memory::_union(uint8_t index)
 {
-  byte i = index - 1;
+  uint8_t i = index - 1;
   MemoryBlock *ptr = _stack.at(i);
   if (ptr && !ptr->is_used()) {
     ptr->size(ptr->size() + _stack.at(index)->size());

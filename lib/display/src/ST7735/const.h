@@ -17,7 +17,7 @@
 #define NORON 0x13     // Partial off (Normal)
 #define INVOFF 0x20    // Display inversion off
 #define INVON 0x21     // Display inversion on
-#define GAMSET 0x26    // Gamma curve select              byte   [ GC3 GC2 GC1 GC0 ]
+#define GAMSET 0x26    // Gamma curve select              uint8_t   [ GC3 GC2 GC1 GC0 ]
 #define DISPOFF 0x28   // Display off
 #define DISPON 0x29    // Display on
 #define CASET 0x2a     // Column address set              start: duint16_t      stop: duint16_t
@@ -40,7 +40,7 @@
 #define FRMCTR1 0xb1  // In normal mode (Full colors)
 #define FRMCTR2 0xb2  // In Idle mode (8-colors)
 #define FRMCTR3 0xb3  // In partial mode + Full colors
-#define INVCTR 0xb4   // Display inversion control        byte  [ NLA NLB NLC ] set inversion
+#define INVCTR 0xb4   // Display inversion control        uint8_t  [ NLA NLB NLC ] set inversion
 #define DISSET5 0xb6  // Display function setting
 #define PWCTR1 0xc0   // Power control setting
 #define PWCTR2 0xc1   // Power control setting
@@ -69,7 +69,7 @@
 #define LCD_MAX_X 127
 #define LCD_MAX_Y 159
 
-static const byte ST7735_CONFIG[] PROGMEM = {
+static const uint8_t ST7735_CONFIG[] PROGMEM = {
   FRMCTR1 ,0x05,0x3C,0x3C,0xFF,
   FRMCTR2 ,0x05,0X3C,0X3C,0xFF,
   FRMCTR3 ,0x05,0x3C,0x3C,0x05,0x3C,0x3C,0xFF,

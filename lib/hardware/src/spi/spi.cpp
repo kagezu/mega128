@@ -6,9 +6,9 @@
 #define SPI_DIV_128 0x03
 
 // Частота в кГц
-void SPI_Master::init(uint16_t fq, byte mode)
+void SPI_Master::init(uint16_t fq, uint8_t mode)
 {
-  byte sck, spi2x;
+  uint8_t sck, spi2x;
   sck = spi2x = 0;
 
   if (fq >= F_CPU / 2000) { sck = SPI_DIV_4; spi2x = _BV(SPI2X); }
@@ -25,14 +25,14 @@ void SPI_Master::init(uint16_t fq, byte mode)
   // SPDR = 0;
 }
 
-void SPI_Master::send(byte data)
+void SPI_Master::send(uint8_t data)
 {
   SPDR = data;
   asm volatile("nop");
   while (!(SPSR & _BV(SPIF)));
 }
 
-byte SPI_Master::read(byte data)
+uint8_t SPI_Master::read(uint8_t data)
 {
   SPDR = data;
   asm volatile("nop");
@@ -44,14 +44,14 @@ uint16_t SPI_Master::transfer(uint16_t data)
 {
   dbyte buf;
   buf.word = data;
-  SPDR = buf.byte[1];
+  SPDR = buf.uint8_t[1];
   asm volatile("nop");
   while (!(SPSR & _BV(SPIF)));
-  buf.byte[1] = SPDR;
-  SPDR = buf.byte[0];
+  buf.uint8_t[1] = SPDR;
+  SPDR = buf.uint8_t[0];
   asm volatile("nop");
   while (!(SPSR & _BV(SPIF)));
-  buf.byte[0] = SPDR;
+  buf.uint8_t[0] = SPDR;
   return buf.word;
 }
 

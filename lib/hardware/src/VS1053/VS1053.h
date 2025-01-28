@@ -57,27 +57,27 @@ public:
 
   void set_left(char left) { _vol_left = left; set_volume(); }
   void set_right(char right) { _vol_right = right; set_volume(); }
-  void set_master(byte vol) { _vol_master = vol; set_volume(); }
+  void set_master(uint8_t vol) { _vol_master = vol; set_volume(); }
 
-  byte get_master() { return _vol_master; }
+  uint8_t get_master() { return _vol_master; }
   char get_left() { return _vol_left; }
   char get_right() { return _vol_right; }
 
 
 protected:
-  byte _vol_master;
+  uint8_t _vol_master;
   char _vol_left = 0;
   char _vol_right = 0;
 
-  void send_midi(byte);
-  void send_midi(byte, byte);
-  void send_midi(byte, byte, byte);
+  void send_midi(uint8_t);
+  void send_midi(uint8_t, uint8_t);
+  void send_midi(uint8_t, uint8_t, uint8_t);
 
 private:
   void load_patch(const uint16_t *);
   void write_register(uint8_t, uint16_t);
   uint16_t read_register(uint8_t);
-  byte sum_vol(char);
+  uint8_t sum_vol(char);
   void get_volume();
   void set_volume();
 };

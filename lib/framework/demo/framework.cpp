@@ -9,10 +9,10 @@ Display lcd;
 union EventMidi {
   Event evt;
   struct {
-    byte type;
-    byte key;
-    byte chanel;
-    byte velocity;
+    uint8_t type;
+    uint8_t key;
+    uint8_t chanel;
+    uint8_t velocity;
   };
   // EventMidi() { type = 0; }
 };
@@ -33,7 +33,7 @@ int main()
 
 
 
-  lcd.printf(F("Event: %u byte  \n"), sizeof(EventMidi));
+  lcd.printf(F("Event: %u uint8_t  \n"), sizeof(EventMidi));
   lcd.printf(F("evt.type: %u  \n"), evt.type);
   lcd.printf(F("evt.key: %u  \n"), evt.key);
 }

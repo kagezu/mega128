@@ -17,7 +17,8 @@
 #define CLR(port, pin)        PORT(port) &=~ _BV(pin)
 #define GET(port, pin)        (PIN(port)  &  _BV(pin))
 #define MASK(port, pin)                      _BV(pin)
-#define SFR(port, pin)        PORT(port)
+#define MMO(port, pin)        PORT(port)
+#define MMI(port, pin)        PIN(port)
 
 #define SET_BITS(target, bits)        target |=  (bits)
 #define CLR_BITS(target, bits)        target &= ~(bits)
@@ -25,7 +26,7 @@
 
 // Доступ к байтам
 
-#define to_byte(w,x)  (((byte *)&w)[x])
+#define to_byte(w,x)  (((uint8_t *)&w)[x])
 
 union dbyte {
   uint16_t word;
@@ -51,11 +52,15 @@ union dword {
 void delay_us(uint16_t us);
 void delay_ms(uint16_t ms);
 
+// Типы
+
+typedef uint8_t reg;
+
 // Прочее
 
 #define P(x) PSTR(x)
 
-#define I_SAVE byte _sreg = SREG; __asm__ __volatile__ ("cli" :: )
+#define I_SAVE uint8_t _sreg = SREG; __asm__ __volatile__ ("cli" :: )
 #define I_REST SREG = _sreg
 
 #define SWAP(x, y)    { x^=y; y^=x; x^=y; }

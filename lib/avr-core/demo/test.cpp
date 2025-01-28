@@ -7,13 +7,13 @@ Display lcd;
 
 void func()
 {
-  byte *sp = (byte *)SP;
+  uint8_t *sp = (uint8_t *)SP;
   lcd.printf(F("SP = %2x \n"), sp);
 }
 
-void func(byte x)
+void func(uint8_t x)
 {
-  // byte *sp = (byte *)SP;
+  // uint8_t *sp = (uint8_t *)SP;
   lcd.printf(F("X = %x \n"), x);
 }
 
@@ -29,19 +29,19 @@ int main()
   lcd.color(RGB(255, 255, 127));
 
   while (true) {
-    // byte *sp = (byte *)SP;
+    // uint8_t *sp = (uint8_t *)SP;
 
     // func();
     Core::async(func);
-    volatile byte t1 = Core::count();
+    volatile uint8_t t1 = Core::count();
     Core::async(func, t1);
-    volatile byte t2 = Core::count();
+    volatile uint8_t t2 = Core::count();
     Core::async(func, t2);
-    volatile byte t3 = Core::count();
+    volatile uint8_t t3 = Core::count();
     Core::async(func, t1);
-    volatile byte t4 = Core::count();
+    volatile uint8_t t4 = Core::count();
     Core::async(func, t1);
-    volatile byte t5 = Core::count();
+    volatile uint8_t t5 = Core::count();
     Core::await();
 
     I_SAVE;

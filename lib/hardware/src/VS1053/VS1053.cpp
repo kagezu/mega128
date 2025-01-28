@@ -66,7 +66,7 @@ void VS1053::write_register(uint8_t addr, uint16_t data)
   X_CS(SET);
 }
 
-void VS1053::send_midi(byte msg)
+void VS1053::send_midi(uint8_t msg)
 {
   X_DCS(CLR);
   spi.send(SCI_MIDI);
@@ -74,7 +74,7 @@ void VS1053::send_midi(byte msg)
   X_DCS(SET);
 }
 
-void VS1053::send_midi(byte msg, byte data)
+void VS1053::send_midi(uint8_t msg, uint8_t data)
 {
   X_DCS(CLR);
   spi.send(SCI_MIDI);
@@ -84,7 +84,7 @@ void VS1053::send_midi(byte msg, byte data)
   X_DCS(SET);
 }
 
-void VS1053::send_midi(byte msg, byte data1, byte data2)
+void VS1053::send_midi(uint8_t msg, uint8_t data1, uint8_t data2)
 {
   X_DCS(CLR);
   spi.send(SCI_MIDI);
@@ -117,7 +117,7 @@ void VS1053::load_patch(const uint16_t *data)
   }
 }
 
-byte VS1053::sum_vol(char vol_ch)
+uint8_t VS1053::sum_vol(char vol_ch)
 {
   int16_t vol = (int16_t)_vol_master + vol_ch;
   return vol < 0 ? 0 : vol>0xfe ? 0xfe : vol;

@@ -32,15 +32,15 @@ public:
   void clear(RGB color) { memset(buffer, color, (LCD_MAX_X + 1) * ((LCD_MAX_Y >> 3) + 1)); }
 
   // Скринсейвер
-  void demo(byte);
-  void test(byte);
+  void demo(uint8_t);
+  void test(uint8_t);
 
   // Реализация интерфейса PrintLCD
-  void symbol(byte *source, byte x, byte y, byte dx, byte dy);
+  void symbol(uint8_t *source, uint8_t x, uint8_t y, uint8_t dx, uint8_t dy);
 
   // Реализация интерфейса GFX
-  void pixel(byte, byte);
-  void rect_fill(byte x, byte y, byte x1, byte y1);
+  void pixel(uint8_t, uint8_t);
+  void rect_fill(uint8_t x, uint8_t y, uint8_t x1, uint8_t y1);
 };
 
 #endif

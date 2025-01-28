@@ -29,11 +29,11 @@
 #define  KEY_OFF_PREFIX     0x40
 
 struct Key {
-  byte num;
-  byte value;
+  uint8_t num;
+  uint8_t value;
 };
 
-extern Buffer<Key, byte> KeyBuffer;
+extern Buffer<Key, uint8_t> KeyBuffer;
 
 // Дисплей
 

@@ -2,23 +2,23 @@
 
 class RGB {
 private:
-  byte _blue;
-  byte _green;
-  byte _red;
+  uint8_t _blue;
+  uint8_t _green;
+  uint8_t _red;
 
 public:
   RGB() {}
-  RGB(byte red, byte green, byte blue) : _blue(blue), _green(green), _red(red) {}
+  RGB(uint8_t red, uint8_t green, uint8_t blue) : _blue(blue), _green(green), _red(red) {}
   RGB(uint32_t rgb) : _blue(rgb), _green(rgb >> 8), _red(rgb >> 16) {} // формат 0x00rrggbb
 
 
-  void blue(byte blue) { _blue = blue; }
-  void green(byte green) { _green = green; }
-  void red(byte red) { _red = red; }
+  void blue(uint8_t blue) { _blue = blue; }
+  void green(uint8_t green) { _green = green; }
+  void red(uint8_t red) { _red = red; }
 
-  byte blue() { return _blue; }
-  byte green() { return _green; }
-  byte red() { return _red; }
+  uint8_t blue() { return _blue; }
+  uint8_t green() { return _green; }
+  uint8_t red() { return _red; }
 
 
   operator uint32_t() { return *(uint32_t *)this; }

@@ -17,7 +17,7 @@ unsigned char counter = 0;
 void pseudoInterrupt()
 {
   unsigned int adr = pgm_read_uint16_t(&strem[cb++]);
-  byte d = pgm_read_uint16_t(&raw[adr++]);
+  uint8_t d = pgm_read_uint16_t(&raw[adr++]);
 
   while (d != 15) {
     if (d >= 240) {
@@ -61,8 +61,8 @@ int main()
   lcd.background(RGB(0, 0, 64));
   lcd.color(RGB(255, 255, 0));
 
-  byte oldKey = 0;
-  byte key;
+  uint8_t oldKey = 0;
+  uint8_t key;
 
   while (true) {
     lcd.printf(PSTR("Регистры\tAY-3-8910\n"));
@@ -98,7 +98,7 @@ int main()
   }
 
   /*
-    byte x = 0;
+    uint8_t x = 0;
     while (true) {
       lcd.demo(x++);
     }

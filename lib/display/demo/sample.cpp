@@ -6,7 +6,7 @@ int main(void)
 {
   lcd.clear(RGB(0, 255, 255));
 
-  byte k = 0;
+  uint8_t k = 0;
   for (;;) {
     lcd.test(k);
     k += 4;

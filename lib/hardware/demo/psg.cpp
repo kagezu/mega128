@@ -12,7 +12,7 @@ AY psg;
 Keyboard key;
 
 // Функция, возвращающая количество свободного ОЗУ (RAM)
-byte memoryFree()
+uint8_t memoryFree()
 {
   extern int __bss_end;
   uint16_t freeValue = ((uint16_t)&freeValue) - ((uint16_t)&__bss_end);
@@ -27,7 +27,7 @@ void printKey(uint64_t x)
   piano[0] = ' ';
   piano[61] = 0;
   x >>= 4;
-  for (byte i = 60; i; i--) {
+  for (uint8_t i = 60; i; i--) {
     if (x & 1) piano[i] = '!';
     else if (i % 8) piano[i] = '.';
     else piano[i] = ',';
@@ -37,13 +37,13 @@ void printKey(uint64_t x)
   lcd.printf(P("  %s\n"), piano);
 }
 
-byte time, time2, fps;
+uint8_t time, time2, fps;
 
 int main()
 {
   T0_DIV_1024;
   T0_CTC;
-  byte div = 100; // 16 Mhz -> 155 Hz
+  uint8_t div = 100; // 16 Mhz -> 155 Hz
   OCR0A = div;
   T0_COMPA_ON;
   sei();
@@ -70,7 +70,7 @@ int main()
     lcd.printf(P("\n"));
 
     char v[] = "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
-    for (byte i = 0; i < 3; i++)
+    for (uint8_t i = 0; i < 3; i++)
       lcd.printf(F("   %s         \n"), &v[32 - (psg.volume[i] << 1)]);
   }
 
@@ -82,9 +82,9 @@ ISR(TIMER0_COMPA_vect)
   keyboard.key_detect();
   char k = key.tick();
   if (k + 1) {
-    if (key._keys[(byte)k]) {
+    if (key._keys[(uint8_t)k]) {
       psg.div = 16;
-      psg.note(k, key._keys[(byte)k]);
+      psg.note(k, key._keys[(uint8_t)k]);
     }
     else psg.div = 8;
   }

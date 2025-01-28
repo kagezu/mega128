@@ -4,11 +4,11 @@
 
 class  Element {
 public:
-  byte type;
+  uint8_t type;
   Element *parent;
 
 public:
-  Element *create_element(byte);
+  Element *create_element(uint8_t);
   void draw();
 };
 

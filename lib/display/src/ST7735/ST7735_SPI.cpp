@@ -6,7 +6,7 @@
 
 #define SPI_WAIT  while (!(SPSR & _BV(SPIF)));
 
-void ST7735_SPI::send_command(byte command)
+void ST7735_SPI::send_command(uint8_t command)
 {
   SPI_WAIT;
   COMMAND_MODE; // Запись команды
@@ -16,7 +16,7 @@ void ST7735_SPI::send_command(byte command)
   DATA_MODE // Запись данных
 };
 
-void ST7735_SPI::set_addr(byte x0, byte y0, byte x1, byte y1)
+void ST7735_SPI::set_addr(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
 {
   send_command(CASET); // Column Address Set
   SPDR = 0;
@@ -35,7 +35,7 @@ void ST7735_SPI::set_addr(byte x0, byte y0, byte x1, byte y1)
   send_command(RAMWR); // Memory Write
 };
 
-void ST7735_SPI::send_byte(byte data)
+void ST7735_SPI::send_byte(uint8_t data)
 {
   SPI_WAIT;
   SPDR = data;
@@ -44,8 +44,8 @@ void ST7735_SPI::send_byte(byte data)
 #if RGB_FORMAT == RGB_12
 void ST7735_SPI::send_rgb(uint16_t color)
 {
-  static byte half, flag = 0;
-  byte data;
+  static uint8_t half, flag = 0;
+  uint8_t data;
 
   if (flag) {
     data = half | (color >> 8);
@@ -95,13 +95,13 @@ void ST7735_SPI::send_rgb(RGB color)
 #endif
 }
 
-void ST7735_SPI::send_rgb(byte r, byte g, byte b)
+void ST7735_SPI::send_rgb(uint8_t r, uint8_t g, uint8_t b)
 {
 
 #if RGB_FORMAT == RGB_12
 
-  static byte half, flag = 0;
-  byte data;
+  static uint8_t half, flag = 0;
+  uint8_t data;
   if (flag) {
     data = half | (b >> 4);
     SPI_WAIT;
@@ -121,7 +121,7 @@ void ST7735_SPI::send_rgb(byte r, byte g, byte b)
 
 #elif RGB_FORMAT == RGB_16
 
-  byte data = (g >> 5) | (b & 0xf8);
+  uint8_t data = (g >> 5) | (b & 0xf8);
   SPI_WAIT;
   SPDR = data;
 
@@ -145,7 +145,7 @@ void ST7735_SPI::send_rgb(byte r, byte g, byte b)
 
 };
 
-void ST7735_SPI::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
+void ST7735_SPI::rect(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, RGB color)
 {
   DISPLAY_CONNECT;
 
@@ -154,15 +154,15 @@ void ST7735_SPI::rect(byte x0, byte y0, byte x1, byte y1, RGB color)
 
 #if RGB_FORMAT == RGB_12
 
-  byte hbyte = color >> 4;
-  byte mbyte = (color << 4) | ((color & 0xf00) >> 8);
-  byte lbyte = color;
+  uint8_t hbyte = color >> 4;
+  uint8_t mbyte = (color << 4) | ((color & 0xf00) >> 8);
+  uint8_t lbyte = color;
   len >>= 1;
 
 #elif RGB_FORMAT == RGB_16
 
-  byte hbyte = (uint16_t)color >> 8;
-  byte lbyte = (uint16_t)color;
+  uint8_t hbyte = (uint16_t)color >> 8;
+  uint8_t lbyte = (uint16_t)color;
 
 #endif
 

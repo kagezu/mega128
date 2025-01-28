@@ -23,7 +23,7 @@ int main(void)
   lcd.font(&arial_14);
   lcd.set_interline(3);
 
-  byte x = 48;
+  uint8_t x = 48;
 
   lcd.print(F("\f123456789"));
   lcd.printf(F("%2u \n"), x);

@@ -10,7 +10,7 @@ SSD1306_I2C::SSD1306_I2C()
   twi.set_address(LCD_I2C_ADDR);
 }
 
-void SSD1306_I2C::send_command(byte command)
+void SSD1306_I2C::send_command(uint8_t command)
 {
   twi.begin();
   twi.write(0);
@@ -18,7 +18,7 @@ void SSD1306_I2C::send_command(byte command)
   twi.end();
 }
 
-void SSD1306_I2C::send_command(byte command, byte arg)
+void SSD1306_I2C::send_command(uint8_t command, uint8_t arg)
 {
   twi.begin();
   twi.write(0);
@@ -27,7 +27,7 @@ void SSD1306_I2C::send_command(byte command, byte arg)
   twi.end();
 }
 
-void SSD1306_I2C::send_command(byte command, byte arg1, byte arg2)
+void SSD1306_I2C::send_command(uint8_t command, uint8_t arg1, uint8_t arg2)
 {
   twi.begin();
   twi.write(0);
@@ -37,7 +37,7 @@ void SSD1306_I2C::send_command(byte command, byte arg1, byte arg2)
   twi.end();
 }
 
-void SSD1306_I2C::send_command_list(const byte *command, byte count)
+void SSD1306_I2C::send_command_list(const uint8_t *command, uint8_t count)
 {
   twi.begin();
   twi.write(0);
@@ -53,7 +53,7 @@ void SSD1306_I2C::update(void)
   send_command(SetColumnAddress, 0, LCD_MAX_X);
 
   twi.begin();
-  twi.write((byte)0x40);
+  twi.write((uint8_t)0x40);
   twi.write(buffer, count);
   twi.end();
 }

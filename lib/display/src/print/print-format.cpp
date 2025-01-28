@@ -1,7 +1,7 @@
 // #include "print-format.h"
 // #include <macros/accel.h>
 
-// template class PrintF<byte>;
+// template class PrintF<uint8_t>;
 // template class PrintF<uint16_t>;
 
 // template<typename I>
@@ -15,12 +15,12 @@
 // }
 
 // template<typename I>
-// void PrintF<I>::letter(byte ch)
+// void PrintF<I>::letter(uint8_t ch)
 // {
 //   ch -= _font.first_char;
 //   if (_font.count_char <= ch) ch = 0;
 
-//   byte dx = _font.weight;
+//   uint8_t dx = _font.weight;
 //   uint16_t source;
 
 //   if (_font.offset) {
@@ -38,7 +38,7 @@
 //     point_x = 0;
 //   }
 //   if (point_y + _font.height > MAX_Y) { point_x = point_y = 0; }
-//   symbol((byte *)source, point_x, point_y, dx, _font.height);
+//   symbol((uint8_t *)source, point_x, point_y, dx, _font.height);
 //   point_x += dx + _interval;
 // }
 
@@ -54,7 +54,7 @@
 //     case '\v': LF(); break;                   // Вертикальная табуляция / Перевод строки
 //     case '\e': escape(); break;
 //     case '\0': point_x += _font.weight + _interval; break;
-//     default: if ((byte)ch < 0xd0) letter(ch);
+//     default: if ((uint8_t)ch < 0xd0) letter(ch);
 //   }
 // }
 
@@ -95,7 +95,7 @@
 //             case 'x':
 //               switch (arg) {
 //                 case '0':
-//                 case '1':  print_h((byte)va_arg(args, uint16_t)); break;
+//                 case '1':  print_h((uint8_t)va_arg(args, uint16_t)); break;
 //                 case '2':  print_h((uint16_t)va_arg(args, uint16_t)); break;
 //                 case '4':  print_h((uint32_t)va_arg(args, uint32_t)); break;
 //                 case '8':  print_h((uint64_t)va_arg(args, uint64_t)); break;
@@ -104,7 +104,7 @@
 //             case '%': print('%'); break;
 //           } break;
 //         }
-//       default: if ((byte)ch < 0xd0) print(ch);
+//       default: if ((uint8_t)ch < 0xd0) print(ch);
 //     }
 //   }
 //   va_end(args);
@@ -113,20 +113,20 @@
 // template<typename I>
 // void PrintF<I>::print(char *string)
 // {
-//   while (char ch = *string++) if ((byte)ch < 0xd0) print(ch);
+//   while (char ch = *string++) if ((uint8_t)ch < 0xd0) print(ch);
 // }
 
 // template<typename I>
 // void PrintF<I>::print(const __FlashStringHelper *string)
 // {
 //   PGM_P ptr = reinterpret_cast<PGM_P>(string);
-//   while (char ch = pgm_read_byte(ptr++)) if ((byte)ch < 0xd0) print(ch);
+//   while (char ch = pgm_read_byte(ptr++)) if ((uint8_t)ch < 0xd0) print(ch);
 // }
 
 // template<typename I>
 // void PrintF<I>::print(const char *string)
 // {
-//   while (char ch = pgm_read_byte(string++)) if ((byte)ch < 0xd0) print(ch);
+//   while (char ch = pgm_read_byte(string++)) if ((uint8_t)ch < 0xd0) print(ch);
 // }
 
 // template<typename I>
@@ -151,10 +151,10 @@
 //   *ptr = 0;
 
 //   while (number > 9) {
-//     byte mod;
+//     uint8_t mod;
 
 //   #ifdef ACCEL
-//     byte tmp;
+//     uint8_t tmp;
 //     div10_32bit(number, mod, tmp);
 //   #else
 //     mod = number % 10;
@@ -176,10 +176,10 @@
 //   *ptr = 0;
 
 //   while (number > 9) {
-//     byte mod;
+//     uint8_t mod;
 
 //   #ifdef ACCEL
-//     byte tmp;
+//     uint8_t tmp;
 //     div10_16bit(number, mod, tmp);
 //   #else
 //     mod = number % 10;
@@ -195,7 +195,7 @@
 // template<typename I>
 // void PrintF<I>::print_h(uint64_t number)
 // {
-//   union { uint64_t val; struct { byte a; byte b; byte c; byte d; byte e; byte f; byte g; byte h; }; } out;
+//   union { uint64_t val; struct { uint8_t a; uint8_t b; uint8_t c; uint8_t d; uint8_t e; uint8_t f; uint8_t g; uint8_t h; }; } out;
 //   out.val = number;
 //   print('#');
 //   print_h(out.h);
@@ -227,10 +227,10 @@
 // }
 
 // template<typename I>
-// void PrintF<I>::print_h(byte number)
+// void PrintF<I>::print_h(uint8_t number)
 // {
-//   byte low = number & 0xf;
-//   byte high = number >> 4;
+//   uint8_t low = number & 0xf;
+//   uint8_t high = number >> 4;
 //   letter(high > 9 ? high + '7' : high + '0');
 //   letter(low > 9 ? low + '7' : low + '0');
 // }

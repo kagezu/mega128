@@ -159,7 +159,7 @@ const uint16_t fdiv[] = {
 
 class AY {
 public:
-  byte _mixio = _BV(_MIOB);
+  uint8_t _mixio = _BV(_MIOB);
 
 public:
   AY()
@@ -179,9 +179,9 @@ public:
     write(_AC, 0);
   }
 
-  byte read(byte reg)
+  uint8_t read(uint8_t reg)
   {
-    byte data;
+    uint8_t data;
     AY_OUT;
     AY_PORT = reg;
     AY_LATCH_ADR;
@@ -194,7 +194,7 @@ public:
     return data;
   }
 
-  void write(byte reg, byte data)
+  void write(uint8_t reg, uint8_t data)
   {
     AY_OUT;
     AY_PORT = reg;
@@ -207,19 +207,19 @@ public:
     AY_IN;
   }
 
-  void writeW(byte reg, uint16_t data)
+  void writeW(uint8_t reg, uint16_t data)
   {
     write(reg++, data);
     write(reg, data >> 8);
   }
 
-  byte getKey()
+  uint8_t getKey()
   {
-    byte key = 0;
+    uint8_t key = 0;
     cli();
-    for (byte a = 0; a < 4; a++) {
+    for (uint8_t a = 0; a < 4; a++) {
       write(_IOB, (1 << a) ^ 0xff);
-      byte d = (read(_IOA) ^ 0xff) >> 3;
+      uint8_t d = (read(_IOA) ^ 0xff) >> 3;
       if (d & 0x1) key |= (4 - a) << 5;
       d &= 0x1e;
       if (d) {
@@ -236,7 +236,7 @@ public:
 
   char volume[3];
 
-  void note(byte key, byte vol = 16)
+  void note(uint8_t key, uint8_t vol = 16)
   {
     uint16_t  f = fdiv[60 - key + 15];
     if (vol < 4) vol = 4;
@@ -251,8 +251,8 @@ public:
 
   // Для полной ноты, один шаг = 0.1 с
   // DIV = 2 ~ 1/8,  4 ~ 1/4,  8 ~ 1/2,  16 ~ 1 
-  byte div = 16;
-  byte counter = 0;
+  uint8_t div = 16;
+  uint8_t counter = 0;
 
   void tick()
   {

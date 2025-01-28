@@ -32,24 +32,24 @@ public:
   void background(RGB b) { _background = b; }
   void clear() { rect(0, 0, LCD_MAX_X, LCD_MAX_Y, _background); }
   void clear(RGB color) { rect(0, 0, LCD_MAX_X, LCD_MAX_Y, color); }
-  void bitmap(byte *, uint16_t, uint16_t, uint16_t, uint16_t);
+  void bitmap(uint8_t *, uint16_t, uint16_t, uint16_t, uint16_t);
 
   // Скринсейвер
-  void demo(byte);
+  void demo(uint8_t);
 
   // Реализация интерфейса PrintF
-  void symbol(byte *, uint16_t, uint16_t, byte, byte);
+  void symbol(uint8_t *, uint16_t, uint16_t, uint8_t, uint8_t);
 
   // Реализация интерфейса GFX
   // void pixel(uint16_t, uint16_t);
   // void rect_fill(uint16_t x, uint16_t y, uint16_t x1, uint16_t y1);
 
 protected:
-  void send_command(byte data);
+  void send_command(uint8_t data);
   void set_addr(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
-  void send_byte(byte data);
+  void send_byte(uint8_t data);
   void send_word(uint16_t data);
-  void send_rgb(byte r, byte g, byte b);
+  void send_rgb(uint8_t r, uint8_t g, uint8_t b);
   // void send_rgb(uint16_t data); // формат 0x0rgb / RGB_16
   // void send_rgb(uint32_t color);
   void send_rgb(RGB color);
